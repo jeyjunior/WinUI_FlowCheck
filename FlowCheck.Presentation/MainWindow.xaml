@@ -7,9 +7,28 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
-    Title="FlowCheck.Presentation">
+    Title="FlowCheck">
 
-    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-        <Button x:Name="myButton" Click="myButton_Click">Click Me</Button>
-    </StackPanel>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="60"/>
+        </Grid.RowDefinitions>
+
+        <Frame x:Name="MainFrame" Grid.Row="0"/>
+
+        <Border Background="#FF191919" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Height="60" Grid.Row="1" >
+            <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+
+                <Button Grid.Column="0" x:Name="btnTarefa" Click="BtnTarefas_Click"  HorizontalAlignment="Center" Style="{StaticResource AlternateCloseButtonStyle}">
+                        <Image Source="Assets/Tarefa-icone-48.png"  Width="32" Height="32"/>
+                </Button>
+
+                <Button Grid.Column="1" x:Name="btnAnotacao" Click="BtnAnotacoes_Click" HorizontalAlignment="Center" Style="{StaticResource AlternateCloseButtonStyle}">
+                    <Image Source="Assets/Anotacao-icone-48.png" Width="32" Height="32"/>
+                </Button>
+                
+            </StackPanel>
+        </Border>
+    </Grid>
 </Window>
