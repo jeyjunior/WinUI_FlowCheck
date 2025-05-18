@@ -13,6 +13,7 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
   <ItemGroup>
+    <None Remove="Themes\Colors.xaml" />
     <None Remove="View\AnotacaoView.xaml" />
     <None Remove="View\TarefaView.xaml" />
   </ItemGroup>
@@ -50,6 +51,11 @@
   </ItemGroup>
   <ItemGroup>
     <Page Update="View\TarefaView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="Themes\Colors.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
