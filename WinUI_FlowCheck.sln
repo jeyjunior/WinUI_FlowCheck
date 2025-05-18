@@ -13,7 +13,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FlowCheck.ViewModel", "Flow
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FlowCheck.InfraData", "FlowCheck.InfraData\FlowCheck.InfraData.csproj", "{C0E8073E-C855-4807-ACFC-9545FE29A4D0}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Itens de Solução", "Itens de Solução", "{380A7511-A354-6D7A-0CC0-8FA1F1BA7B6C}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DLL", "DLL", "{380A7511-A354-6D7A-0CC0-8FA1F1BA7B6C}"
 	ProjectSection(SolutionItems) = preProject
 		DLL\JJ.NET.Core.dll = DLL\JJ.NET.Core.dll
 		DLL\JJ.NET.CrossData.dll = DLL\JJ.NET.CrossData.dll
