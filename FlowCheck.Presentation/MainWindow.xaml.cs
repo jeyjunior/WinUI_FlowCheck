@@ -12,7 +12,6 @@ using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
-
 using Microsoft.UI;           
 using Microsoft.UI.Windowing;
 using WinRT.Interop;
@@ -33,6 +32,7 @@ namespace FlowCheck.Presentation
         public MainWindow()
         {
             this.InitializeComponent();
+
             DefinirPadraoUI();
             CarregarPagina(typeof(TarefaView), btnTarefa);
         }

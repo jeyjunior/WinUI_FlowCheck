@@ -10,7 +10,7 @@
   <Identity
     Name="4248d181-9d2b-41fc-b2dc-4279fbe327fd"
     Publisher="CN=jeyjr"
-    Version="1.0.0.0" />
+    Version="1.0.2.0" />
 
   <mp:PhoneIdentity PhoneProductId="4248d181-9d2b-41fc-b2dc-4279fbe327fd" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
 

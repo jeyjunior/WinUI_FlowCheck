@@ -41,11 +41,11 @@ namespace FlowCheck.Presentation
         /// Invoked when the application is launched.
         /// </summary>
         /// <param name="args">Details about the launch request and process.</param>
-        protected override async void OnLaunched(Microsoft.UI.Xaml.LaunchActivatedEventArgs args)
+        protected override void OnLaunched(Microsoft.UI.Xaml.LaunchActivatedEventArgs args)
         {
             try
             {
-                await Bootstrap.IniciarAsync();
+                Bootstrap.Iniciar();
 
                 m_window = new MainWindow();
                 m_window.Activate();

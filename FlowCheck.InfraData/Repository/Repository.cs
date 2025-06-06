@@ -1,18 +1,20 @@
-﻿using JJ.NET.CrossData.Enumerador;
-using JJ.NET.CrossData.Extensao;
-using JJ.NET.CrossData.Interface;
+﻿using JJ.Net.CrossData_WinUI_3.Atributo;
 using JJ.NET.Data.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using JJ.Net.CrossData_WinUI_3.Enumerador;
+using JJ.Net.CrossData_WinUI_3.Interfaces;
+using JJ.Net.CrossData_WinUI_3.Extensao;
 
 namespace FlowCheck.InfraData.Repository
 {
     public abstract class Repository<TEntity> : IRepository<TEntity> where TEntity : class
     {
-        public Conexao Conexao { get; set; }
+        public TipoBancoDados Conexao { get; set; } = TipoBancoDados.SQLite;
+
         protected IUnitOfWork unitOfWork = null;
 
         public Repository(IUnitOfWork unitOfWork)

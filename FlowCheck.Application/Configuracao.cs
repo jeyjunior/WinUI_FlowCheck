@@ -1,11 +1,16 @@
 ﻿using Dapper;
+using FlowCheck.Domain.Entidades;
 using FlowCheck.Domain.Interfaces;
-using JJ.NET.CrossData;
-using JJ.NET.CrossData.Atributo;
-using JJ.NET.CrossData.Enumerador;
-using JJ.NET.CrossData.Extensao;
+using FlowCheck.InfraData.Repository;
+using JJ.Net.CrossData_WinUI_3.Atributo;
+using JJ.Net.CrossData_WinUI_3.CrossData;
+using JJ.Net.CrossData_WinUI_3.Enumerador;
+using JJ.Net.CrossData_WinUI_3.Extensao;
+using JJ.Net.CrossData_WinUI_3.Interfaces;
+using JJ.NET.Data;
 using JJ.NET.Data.Interfaces;
 using Microsoft.Data.SqlClient;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -17,81 +22,84 @@ using Windows.Storage;
 
 namespace FlowCheck.Application
 {
-    internal static class Configuracao
+    public static class Configuracao
     {
-        public static Conexao ConexaoAtiva { get; private set; } = Conexao.SQLite;
-        public static IDbConnection ConexaoBaseDados => ObterConexao();
         public static void Iniciar()
         {
-            ConfiguracaoBancoDados.IniciarConfiguracao(ConexaoAtiva, ApplicationData.Current.LocalFolder.Path, "flowcheck");
-        }
-        private static IDbConnection ObterConexao()
-        {
-            return ConfiguracaoBancoDados.ObterConexao();
+            RegistrarEntidades();
+            RegistrarParametros();
         }
         public static void RegistrarEntidades()
         {
-            var uow = Bootstrap.Container.GetInstance<IUnitOfWork>();
+            var config = Bootstrap.ServiceProvider.GetRequiredService<IConfiguracaoBancoDados>();
 
-            var entidades = ObterEntidadesMapeadas();
-            var tabelasExistentes = uow.Connection.VerificarEntidadeExiste(entidades);
-
-            if (tabelasExistentes.Any(i => !i.Existe))
+            using (var uow = new UnitOfWork(config.ConexaoAtiva))
             {
-                try
-                {
-                    uow.Begin();
+                var entidades = ObterEntidadesMapeadas();
+                var tabelasExistentes = uow.Connection.VerificarEntidadeExiste(entidades);
 
-                    foreach (var entidade in tabelasExistentes.Where(e => !e.Existe))
-                        uow.Connection.CriarTabela(entidade.TipoEntidade, uow.Transaction);
+                if (tabelasExistentes.Any(i => !i.Existe))
+                {
+                    try
+                    {
+                        uow.Begin();
 
-                    uow.Commit();
-                }
-                catch (SqlException ex)
-                {
-                    uow.Rollback();
-                    throw new Exception("Erro ao criar as entidades no banco de dados", ex);
-                }
-                catch (Exception ex)
-                {
-                    uow.Rollback();
-                    throw new Exception("Erro inesperado ao criar as entidades", ex);
+                        foreach (var entidade in tabelasExistentes.Where(e => !e.Existe))
+                            uow.Connection.CriarTabela(entidade.TipoEntidade, uow.Transaction);
+
+                        uow.Commit();
+                    }
+                    catch (SqlException ex)
+                    {
+                        uow.Rollback();
+                        throw new Exception("Erro ao criar as entidades no banco de dados", ex);
+                    }
+                    catch (Exception ex)
+                    {
+                        uow.Rollback();
+                        throw new Exception("Erro inesperado ao criar as entidades", ex);
+                    }
                 }
             }
         }
         public static void RegistrarParametros()
         {
-            var uow = Bootstrap.Container.GetInstance<IUnitOfWork>();
-            var parametroRepository = Bootstrap.Container.GetInstance<IParametroRepository>();
+            var config = Bootstrap.ServiceProvider.GetRequiredService<IConfiguracaoBancoDados>();
 
-            try
+            using (var uow = new UnitOfWork(config.ConexaoAtiva))
             {
-                if (parametroRepository.ObterLista(" Parametro.Nome = 'TituloTarefa' ").FirstOrDefault() == null)
-                {
-                    uow.Begin();
+                var parametroRepository = new ParametroRepository(uow);
 
-                    parametroRepository.Adicionar(new Domain.Entidades.Parametro { Nome = "TituloTarefa", Valor = "Defina um título para as tarefas." });
+                //try
+                //{
+                //    string parametro = eParametro.TituloTarefa.ToString();
 
-                    uow.Commit();
-                }
-            }
-            catch (SqlException ex)
-            {
-                uow.Rollback();
-                throw new Exception("Erro ao criar as entidades no banco de dados", ex);
-            }
-            catch (Exception ex)
-            {
-                uow.Rollback();
-                throw new Exception("Erro inesperado ao criar as entidades", ex);
+                //    if (parametroRepository.ObterLista($" Parametro.Nome = '{parametro}' ").FirstOrDefault() == null)
+                //    {
+                //        uow.Begin();
+
+                //        //parametroRepository.Adicionar(new Domain.Entidades.Parametro { Nome = eParametro.TituloTarefa.ToString(), Valor = "Tarefas" });
+                //        //parametroRepository.Adicionar(new Domain.Entidades.Parametro { Nome = eParametro.TituloTarefa.ToString(), Valor = "Anotações" });
+
+                //        uow.Commit();
+                //    }
+                //}
+                //catch (SqlException ex)
+                //{
+                //    uow.Rollback();
+                //    throw new Exception("Erro ao criar as entidades no banco de dados", ex);
+                //}
+                //catch (Exception ex)
+                //{
+                //    uow.Rollback();
+                //    throw new Exception("Erro inesperado ao criar as entidades", ex);
+                //}
             }
         }
         private static IEnumerable<Type> ObterEntidadesMapeadas()
         {
-            // Carrega todos os assemblies, inclusive os que ainda não foram tocados
             var assemblies = AppDomain.CurrentDomain.GetAssemblies().ToList();
 
-            // Aqui você pode carregar o assembly se não estiver na lista
             if (!assemblies.Any(a => a.FullName.Contains("FlowCheck.Domain")))
             {
                 var domainAssembly = Assembly.Load("FlowCheck.Domain");

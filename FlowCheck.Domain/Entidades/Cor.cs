@@ -1,6 +1,6 @@
-﻿using JJ.NET.Core.Extensoes;
+﻿using JJ.Net.CrossData_WinUI_3.Atributo;
+using JJ.NET.Core.Extensoes;
 using JJ.NET.Core.Validador;
-using JJ.NET.CrossData.Atributo;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;

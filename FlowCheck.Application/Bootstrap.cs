@@ -1,41 +1,61 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.Common;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using FlowCheck.Domain.Interfaces;
+using FlowCheck.InfraData.Repository;
 using JJ.NET.Data.Interfaces;
 using JJ.NET.Data;
-using SimpleInjector;
-using FlowCheck.Domain.Interfaces;
-using FlowCheck.InfraData.Repository;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using System;
+using System.IO;
+using Windows.Storage;
+using JJ.Net.CrossData_WinUI_3.Extensao;
+using JJ.Net.CrossData_WinUI_3.Enumerador;
+using JJ.Net.CrossData_WinUI_3.Interfaces;
 
 namespace FlowCheck.Application
 {
     public static class Bootstrap
     {
-        public static Container Container { get; private set; }
+        public static IServiceProvider ServiceProvider { get; private set; }
 
-        public static async Task IniciarAsync()
+        public static void Iniciar()
         {
-            Configuracao.Iniciar();
+            try
+            {
+                var host = Host.CreateDefaultBuilder()
+                    .ConfigureServices((context, services) =>
+                    {
+                        services.AddCrossData(config =>
+                        {
+                            config.TipoBanco = TipoBancoDados.SQLite;
+                            config.NomeAplicacao = "FlowCheck";
+                        });
 
-            Container = new Container();
-            Container.Options.DefaultLifestyle = Lifestyle.Scoped;
+                        RegistrarServicos(services);
+                    })
+                    .Build();
 
-            Container.Register<IUnitOfWork>(() => new UnitOfWork(Configuracao.ConexaoBaseDados), Lifestyle.Singleton);
+                ServiceProvider = host.Services;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Erro na inicialização: {ex}");
+            }
+        }
 
-            Container.Register<IAnotacaoRepository, AnotacaoRepository>(Lifestyle.Singleton);
-            Container.Register<ICategoriaRepository, CategoriaRepository>(Lifestyle.Singleton);
-            Container.Register<ICorRepository, CorRepository>(Lifestyle.Singleton);
-            Container.Register<IParametroRepository, ParametroRepository>(Lifestyle.Singleton);
-            Container.Register<ITarefaAnotacaoRepository, TarefaAnotacaoRepository>(Lifestyle.Singleton);
-            Container.Register<ITarefaRepository, TarefaRepository>(Lifestyle.Singleton);
+        private static void RegistrarServicos(IServiceCollection services)
+        {
+            services.AddSingleton<IUnitOfWork>(provider =>
+            {
+                var config = provider.GetRequiredService<IConfiguracaoBancoDados>();
+                return new UnitOfWork(config.ConexaoAtiva);
+            });
 
-            Container.Options.EnableAutoVerification = false;
-
-            Configuracao.RegistrarEntidades();
-            Configuracao.RegistrarParametros();
+            services.AddSingleton<IAnotacaoRepository, AnotacaoRepository>();
+            services.AddSingleton<ICategoriaRepository, CategoriaRepository>();
+            services.AddSingleton<ICorRepository, CorRepository>();
+            services.AddSingleton<IParametroRepository, ParametroRepository>();
+            services.AddSingleton<ITarefaAnotacaoRepository, TarefaAnotacaoRepository>();
+            services.AddSingleton<ITarefaRepository, TarefaRepository>();
         }
     }
 }
