@@ -26,9 +26,6 @@
     <Reference Include="JJ.NET.Core">
       <HintPath>..\DLL\JJ.NET.Core.dll</HintPath>
     </Reference>
-    <Reference Include="JJ.Net.CrossData">
-      <HintPath>..\..\DLLs\JJ.NET.CrossData.dll</HintPath>
-    </Reference>
     <Reference Include="JJ.Net.CrossData_WinUI_3">
       <HintPath>..\DLL\JJ.Net.CrossData_WinUI_3.dll</HintPath>
     </Reference>

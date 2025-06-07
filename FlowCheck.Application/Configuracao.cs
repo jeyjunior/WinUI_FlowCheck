@@ -1,5 +1,6 @@
 ﻿using Dapper;
 using FlowCheck.Domain.Entidades;
+using FlowCheck.Domain.Enumerador;
 using FlowCheck.Domain.Interfaces;
 using FlowCheck.InfraData.Repository;
 using JJ.Net.CrossData_WinUI_3.Atributo;
@@ -17,6 +18,7 @@ using System.Data;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Windows.Storage;
 
@@ -32,7 +34,6 @@ namespace FlowCheck.Application
         public static void RegistrarEntidades()
         {
             var config = Bootstrap.ServiceProvider.GetRequiredService<IConfiguracaoBancoDados>();
-
             using (var uow = new UnitOfWork(config.ConexaoAtiva))
             {
                 var entidades = ObterEntidadesMapeadas();
@@ -70,30 +71,29 @@ namespace FlowCheck.Application
             {
                 var parametroRepository = new ParametroRepository(uow);
 
-                //try
-                //{
-                //    string parametro = eParametro.TituloTarefa.ToString();
+                try 
+                {
+                    string parametro =  eParametro.TituloTarefa.ToString();
 
-                //    if (parametroRepository.ObterLista($" Parametro.Nome = '{parametro}' ").FirstOrDefault() == null)
-                //    {
-                //        uow.Begin();
+                    if (parametroRepository.ObterLista($" Parametro.Nome = '{parametro}' ").FirstOrDefault() == null)
+                    {
+                        uow.Begin();
 
-                //        //parametroRepository.Adicionar(new Domain.Entidades.Parametro { Nome = eParametro.TituloTarefa.ToString(), Valor = "Tarefas" });
-                //        //parametroRepository.Adicionar(new Domain.Entidades.Parametro { Nome = eParametro.TituloTarefa.ToString(), Valor = "Anotações" });
+                        parametroRepository.Adicionar(new Domain.Entidades.Parametro { Nome = eParametro.TituloTarefa.ToString(), Valor = "Tarefas" });
 
-                //        uow.Commit();
-                //    }
-                //}
-                //catch (SqlException ex)
-                //{
-                //    uow.Rollback();
-                //    throw new Exception("Erro ao criar as entidades no banco de dados", ex);
-                //}
-                //catch (Exception ex)
-                //{
-                //    uow.Rollback();
-                //    throw new Exception("Erro inesperado ao criar as entidades", ex);
-                //}
+                        uow.Commit();
+                    }
+                }
+                catch (SqlException ex)
+                {
+                    uow.Rollback();
+                    throw new Exception("Erro ao criar as entidades no banco de dados", ex);
+                }
+                catch (Exception ex)
+                {
+                    uow.Rollback();
+                    throw new Exception("Erro inesperado ao criar as entidades", ex);
+                }
             }
         }
         private static IEnumerable<Type> ObterEntidadesMapeadas()

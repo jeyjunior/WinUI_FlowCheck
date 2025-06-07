@@ -7,20 +7,23 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
+    Loaded="Page_Loaded"
     Background="{StaticResource Cinza12}">
-    <Grid>
+    
+    <Grid RowSpacing="0">
         <Grid.RowDefinitions>
-            <RowDefinition Height="36"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="70"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <!-- Título -->
-        <StackPanel Margin="20,0,20,0" Padding="0" Background="{StaticResource Nenhuma}" CornerRadius="5">
+        <StackPanel Margin="20,0" Padding="0" Background="{StaticResource Nenhuma}" CornerRadius="5">
             
             <TextBox x:Name="txtTituloTarefa" 
                      LostFocus="txtTituloTarefa_LostFocus" 
                      Visibility="Collapsed"  
+                     TextWrapping="Wrap"
+                     MaxLength="200"
                      VerticalAlignment="Center" 
                      Text="{Binding Titulo, Mode=TwoWay}" 
                      Foreground="{StaticResource Branco}" 
@@ -30,44 +33,83 @@
                        Text="{Binding Titulo}" 
                        DoubleTapped="txbTituloTarefa_DoubleTapped" 
                        Visibility="Visible" 
+                       TextWrapping="Wrap"
                        Padding="10,10,0,0" VerticalAlignment="Center"
                        Foreground="{StaticResource Branco}" 
                        FontWeight="Bold"/>
         </StackPanel>
         
-        <!-- Botões de adicionar/deletar -->
-        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Grid.Row="1" Margin="0,8,12,0">
-            <Button Content="+" Width="32" Height="32" Margin="4"/>
-            <Button Content="🗑️" Width="32" Height="32" Margin="4"/>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Grid.Row="1" Margin="20,0">
+            <Button x:Name="btnAdicionarTarefa" Click="btnAdicionarTarefa_Click" Padding="0" Width="32" Height="32" Style="{StaticResource AccentButtonStyle}">
+                <FontIcon Glyph="&#xE710;" FontFamily="Segoe Fluent Icons" FontSize="18"/>
+            </Button>
         </StackPanel>
 
-        <!-- Lista de Tarefas -->
         <ScrollViewer Grid.Row="2" Margin="12,0,12,0">
             <StackPanel Spacing="8">
-                <!-- Exemplo de tarefa -->
-                <Border Background="#222" CornerRadius="6" Padding="10">
-                    <StackPanel Orientation="Horizontal">
-                        <CheckBox Width="24" Height="24" VerticalAlignment="Top"/>
-                        <StackPanel Margin="10,0,0,0" >
-                            <TextBlock Text="Potenti Mauris Bibendum Commodo Senectus Lacinia Risus Viverra"
-                                       FontWeight="Bold"
-                                       TextWrapping="Wrap"/>
-                            <TextBlock Text="Descrição opcional da tarefa. Pode conter detalhes adicionais."
-                                       FontSize="12"
-                                       Foreground="Gray"
-                                       TextWrapping="Wrap"
-                                       Margin="0,4,0,0"/>
-                        </StackPanel>
-                        <StackPanel Orientation="Vertical" HorizontalAlignment="Right">
-                            <Button Content="▲" Width="24" Height="24" Margin="4" />
-                            <Button Content="X" Width="24" Height="24" Margin="4" />
-                        </StackPanel>
-                    </StackPanel>
-                </Border>
+                <StackPanel Padding="0" Margin="0" Background="{StaticResource Nenhuma}">
+                    <Grid Background="{StaticResource Cinza11}" Padding="16,10" CornerRadius="6">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="20"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="24"/>
+                            <ColumnDefinition Width="4"/>
+                            <ColumnDefinition Width="24"/>
+                        </Grid.ColumnDefinitions>
 
-                <!-- Repita mais tarefas aqui -->
+                        <CheckBox/>
+                        
+                        <TextBox x:Name="txtTarefa" 
+                                 Grid.Column="1"
+                                 LostFocus="txtTarefa_LostFocus" 
+                                 Visibility="Collapsed"  
+                                 TextWrapping="Wrap"
+                                 MaxLength="150"
+                                 VerticalAlignment="Center" 
+                                 Text="Teste" 
+                                 Foreground="{StaticResource Branco}" 
+                                 FontWeight="Bold" />
+
+                        <TextBlock x:Name="txbTarefa" 
+                                   Grid.Column="1"
+                                   Text="Teste" 
+                                   DoubleTapped="txbTarefa_DoubleTapped" 
+                                   Visibility="Visible" 
+                                   TextWrapping="Wrap"
+                                   Padding="20,0,0,0" VerticalAlignment="Center"
+                                   Foreground="{StaticResource Branco}" 
+                                   FontWeight="SemiBold"/>
+
+                        <Button x:Name="btnExibirTarefaAnotacao" Click="btnExibirTarefaAnotacao_Click" Grid.Column="2" Padding="0" Width="24" Height="24" Style="{StaticResource DefaultButtonStyle}">
+                            <FontIcon Glyph="&#xE70D;" FontFamily="Segoe Fluent Icons" FontSize="14"/>
+                        </Button>
+
+                        <Button x:Name="btnExcluirTarefa" Click="btnExcluirTarefa_Click" Grid.Column="4" VerticalAlignment="Center" HorizontalAlignment="Center" Padding="0" Width="24" Height="24" Style="{StaticResource AlternateCloseButtonStyle}">
+                            <FontIcon Glyph="&#xE712;" FontFamily="Segoe Fluent Icons" FontSize="14"/>
+                        </Button>
+                    </Grid>
+                    
+                    <Border Background="{StaticResource Nenhuma}" BorderBrush="{StaticResource Nenhuma}" BorderThickness="0" CornerRadius="6" Padding="0" MaxHeight="200">
+                        <TextBox x:Name="txtTarefaAnotacao"
+                                 Grid.Column="1"
+                                 Height="200"
+                                 MaxHeight="200"
+                                 MinHeight="200"
+                                 BorderBrush="{StaticResource Cinza10}"
+                                 BorderThickness="0"
+                                 Visibility="Visible"
+                                 Padding="12"
+                                 TextWrapping="Wrap"
+                                 AcceptsReturn="True" MaxLength="2000"
+                                 VerticalAlignment="Stretch"
+                                 HorizontalAlignment="Stretch"
+                                 Text="Teste"
+                                 Background="{StaticResource Cinza10}"
+                                 Foreground="{StaticResource Branco}"
+                                 FontWeight="Normal" />
+                    </Border>
+                </StackPanel>
             </StackPanel>
         </ScrollViewer>
-        
     </Grid>
 </Page>

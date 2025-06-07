@@ -41,5 +41,35 @@ namespace FlowCheck.Presentation.View
             txtTituloTarefa.Focus( FocusState.Keyboard);
             txtTituloTarefa.SelectAll();
         }
+
+        private void Page_Loaded(object sender, RoutedEventArgs e)
+        {
+            txtTituloTarefa.Text = (Windows.Storage.ApplicationData.Current.LocalFolder).Path;
+        }
+
+        private void btnAdicionarTarefa_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void txtTarefa_LostFocus(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void txbTarefa_DoubleTapped(object sender, DoubleTappedRoutedEventArgs e)
+        {
+
+        }
+
+        private void btnExibirTarefaAnotacao_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void btnExcluirTarefa_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }

@@ -24,7 +24,7 @@ namespace FlowCheck.Application
                 var host = Host.CreateDefaultBuilder()
                     .ConfigureServices((context, services) =>
                     {
-                        services.AddCrossData(config =>
+                        services.AddSingletonConfiguracao(config =>
                         {
                             config.TipoBanco = TipoBancoDados.SQLite;
                             config.NomeAplicacao = "FlowCheck";

@@ -13,11 +13,8 @@ namespace FlowCheck.InfraData.Repository
 {
     public class AnotacaoRepository : Repository<Anotacao>, IAnotacaoRepository
     {
-        TipoBancoDados IRepository<Anotacao>.Conexao { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-
         public AnotacaoRepository(IUnitOfWork unitOfWork) : base(unitOfWork)
         {
         }
-
     }
 }

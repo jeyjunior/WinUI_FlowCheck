@@ -16,6 +16,7 @@ using Microsoft.UI;
 using Microsoft.UI.Windowing;
 using WinRT.Interop;
 using FlowCheck.Presentation.View;
+using FlowCheck.Application;
 
 namespace FlowCheck.Presentation
 {
@@ -34,6 +35,9 @@ namespace FlowCheck.Presentation
             this.InitializeComponent();
 
             DefinirPadraoUI();
+
+            Configuracao.Iniciar();
+
             CarregarPagina(typeof(TarefaView), btnTarefa);
         }
         #endregion
