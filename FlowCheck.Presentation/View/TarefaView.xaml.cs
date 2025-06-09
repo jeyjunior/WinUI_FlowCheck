@@ -67,7 +67,7 @@ namespace FlowCheck.Presentation.View
 
         }
 
-        private void btnExcluirTarefa_Click(object sender, RoutedEventArgs e)
+        private void btnOpcoes_Click(object sender, RoutedEventArgs e)
         {
 
         }

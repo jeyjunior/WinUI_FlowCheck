@@ -46,70 +46,83 @@
         </StackPanel>
 
         <ScrollViewer Grid.Row="2" Margin="12,0,12,0">
-            <StackPanel Spacing="8">
-                <StackPanel Padding="0" Margin="0" Background="{StaticResource Nenhuma}">
-                    <Grid Background="{StaticResource Cinza11}" Padding="16,10" CornerRadius="6">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="20"/>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="24"/>
-                            <ColumnDefinition Width="4"/>
-                            <ColumnDefinition Width="24"/>
-                        </Grid.ColumnDefinitions>
+            <ItemsControl x:Name="spPrincipal">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <VirtualizingStackPanel/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
 
-                        <CheckBox/>
-                        
-                        <TextBox x:Name="txtTarefa" 
-                                 Grid.Column="1"
-                                 LostFocus="txtTarefa_LostFocus" 
-                                 Visibility="Collapsed"  
-                                 TextWrapping="Wrap"
-                                 MaxLength="150"
-                                 VerticalAlignment="Center" 
-                                 Text="Teste" 
-                                 Foreground="{StaticResource Branco}" 
-                                 FontWeight="Bold" />
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
 
-                        <TextBlock x:Name="txbTarefa" 
-                                   Grid.Column="1"
-                                   Text="Teste" 
-                                   DoubleTapped="txbTarefa_DoubleTapped" 
-                                   Visibility="Visible" 
-                                   TextWrapping="Wrap"
-                                   Padding="20,0,0,0" VerticalAlignment="Center"
-                                   Foreground="{StaticResource Branco}" 
-                                   FontWeight="SemiBold"/>
+                        <StackPanel x:Name="spTarefa" Padding="0" Margin="0" Background="{StaticResource Nenhuma}">
+                            <Grid Background="{StaticResource Cinza11}" Padding="16,10" CornerRadius="6">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="20"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="24"/>
+                                    <ColumnDefinition Width="4"/>
+                                    <ColumnDefinition Width="24"/>
+                                </Grid.ColumnDefinitions>
 
-                        <Button x:Name="btnExibirTarefaAnotacao" Click="btnExibirTarefaAnotacao_Click" Grid.Column="2" Padding="0" Width="24" Height="24" Style="{StaticResource DefaultButtonStyle}">
-                            <FontIcon Glyph="&#xE70D;" FontFamily="Segoe Fluent Icons" FontSize="14"/>
-                        </Button>
+                                <CheckBox x:Name="chkConcluido" 
+                                          IsChecked="{Binding Concluido}"/>
 
-                        <Button x:Name="btnExcluirTarefa" Click="btnExcluirTarefa_Click" Grid.Column="4" VerticalAlignment="Center" HorizontalAlignment="Center" Padding="0" Width="24" Height="24" Style="{StaticResource AlternateCloseButtonStyle}">
-                            <FontIcon Glyph="&#xE712;" FontFamily="Segoe Fluent Icons" FontSize="14"/>
-                        </Button>
-                    </Grid>
-                    
-                    <Border Background="{StaticResource Nenhuma}" BorderBrush="{StaticResource Nenhuma}" BorderThickness="0" CornerRadius="6" Padding="0" MaxHeight="200">
-                        <TextBox x:Name="txtTarefaAnotacao"
-                                 Grid.Column="1"
-                                 Height="200"
-                                 MaxHeight="200"
-                                 MinHeight="200"
-                                 BorderBrush="{StaticResource Cinza10}"
-                                 BorderThickness="0"
-                                 Visibility="Visible"
-                                 Padding="12"
-                                 TextWrapping="Wrap"
-                                 AcceptsReturn="True" MaxLength="2000"
-                                 VerticalAlignment="Stretch"
-                                 HorizontalAlignment="Stretch"
-                                 Text="Teste"
-                                 Background="{StaticResource Cinza10}"
-                                 Foreground="{StaticResource Branco}"
-                                 FontWeight="Normal" />
-                    </Border>
-                </StackPanel>
-            </StackPanel>
+                                <TextBox x:Name="txtTarefa" 
+                                         Grid.Column="1"
+                                         LostFocus="txtTarefa_LostFocus" 
+                                         Visibility="Collapsed"  
+                                         TextWrapping="Wrap"
+                                         MaxLength="150"
+                                         VerticalAlignment="Center" 
+                                         Text="{Binding Tarefa, Mode=TwoWay}" 
+                                         Foreground="{StaticResource Branco}" 
+                                         FontWeight="Bold" />
+
+                                <TextBlock x:Name="txbTarefa" 
+                                          Grid.Column="1"
+                                          Text="{Binding Tarefa}" 
+                                          DoubleTapped="txbTarefa_DoubleTapped" 
+                                          Visibility="Visible" 
+                                          TextWrapping="Wrap"
+                                          Padding="20,0,0,0" VerticalAlignment="Center"
+                                          Foreground="{StaticResource Branco}" 
+                                          FontWeight="SemiBold"/>
+
+                                <Button x:Name="btnExibirTarefaAnotacao" Click="btnExibirTarefaAnotacao_Click" Grid.Column="2" Padding="0" Width="24" Height="24" Style="{StaticResource DefaultButtonStyle}">
+                                    <FontIcon Glyph="&#xE70D;" FontFamily="Segoe Fluent Icons" FontSize="14"/>
+                                </Button>
+
+                                <Button x:Name="btnOpcoes" Click="btnOpcoes_Click" Grid.Column="4" VerticalAlignment="Center" HorizontalAlignment="Center" Padding="0" Width="24" Height="24" Style="{StaticResource AlternateCloseButtonStyle}">
+                                    <FontIcon Glyph="&#xE712;" FontFamily="Segoe Fluent Icons" FontSize="14"/>
+                                </Button>
+                            </Grid>
+
+                            <Border Background="{StaticResource Nenhuma}" BorderBrush="{StaticResource Nenhuma}" BorderThickness="0" CornerRadius="6" Padding="0" MaxHeight="200">
+                                <TextBox x:Name="txtTarefaAnotacao"
+                                         Grid.Column="1"
+                                         Height="200"
+                                         MaxHeight="200"
+                                         MinHeight="200"
+                                         BorderBrush="{StaticResource Cinza10}"
+                                         BorderThickness="0"
+                                         Visibility="Visible"
+                                         Padding="12"
+                                         TextWrapping="Wrap"
+                                         AcceptsReturn="True" MaxLength="2000"
+                                         VerticalAlignment="Stretch"
+                                         HorizontalAlignment="Stretch"
+                                         Text="{Binding AnotacaoTarefa, Mode=TwoWay}"
+                                         Background="{StaticResource Cinza10}"
+                                         Foreground="{StaticResource Branco}"
+                                         FontWeight="Normal" />
+                            </Border>
+                        </StackPanel>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
         </ScrollViewer>
     </Grid>
 </Page>
+
