@@ -4,30 +4,46 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using FlowCheck.Domain.Entidades;
 
 namespace FlowCheck.ViewModel.TarefaView
 {
     public class TarefaViewModel : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
-        protected void OnPropertyChanged(string name) 
+
+        private readonly Tarefa _tarefa;
+        public Tarefa Tarefa { get => _tarefa; }
+        
+        public TarefaViewModel(Tarefa tarefa)
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+            _tarefa = tarefa;
         }
 
-        private string _titulo;
-        public string Titulo
+        public bool Concluido
         {
-            get => _titulo;
+            get => _tarefa.Concluido;
             set
             {
-                if (_titulo != value)
-                {
-                    _titulo = value;
-                    OnPropertyChanged(nameof(Titulo));
-                }
+                _tarefa.Concluido = value;
+                OnPropertyChanged(nameof(Concluido));
             }
+        }
+        public string Descricao
+        {
+            get => _tarefa.Descricao;
+            set
+            {
+                _tarefa.Descricao = value;
+                OnPropertyChanged(nameof(Descricao));
+            }
+        }
 
+        public string AnotacaoTarefa { get => "Teste"; }
+
+        protected void OnPropertyChanged(string name)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
     }
 }

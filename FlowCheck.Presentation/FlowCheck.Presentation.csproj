@@ -13,8 +13,6 @@
   </PropertyGroup>
   <ItemGroup>
     <None Remove="Themes\Colors.xaml" />
-    <None Remove="View\AnotacaoView.xaml" />
-    <None Remove="View\TarefaView.xaml" />
   </ItemGroup>
 
   <ItemGroup>
@@ -48,12 +46,20 @@
     <ProjectReference Include="..\FlowCheck.ViewModel\FlowCheck.ViewModel.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <Page Update="View\AnotacaoView.xaml">
+    <Reference Include="JJ.NET.Core">
+      <HintPath>..\DLL\JJ.NET.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="JJ.Net.CrossData_WinUI_3">
+      <HintPath>..\DLL\JJ.Net.CrossData_WinUI_3.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="View\AnotacaoPage.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Page Update="View\TarefaView.xaml">
+    <Page Update="View\TarefaPage.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>

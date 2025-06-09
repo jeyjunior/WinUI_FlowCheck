@@ -16,9 +16,9 @@ using Windows.Foundation.Collections;
 
 namespace FlowCheck.Presentation.View
 {
-    public sealed partial class AnotacaoView : Page
+    public sealed partial class AnotacaoPage : Page
     {
-        public AnotacaoView()
+        public AnotacaoPage()
         {
             this.InitializeComponent();
         }

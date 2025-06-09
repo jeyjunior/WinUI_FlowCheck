@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Page
-    x:Class="FlowCheck.Presentation.View.TarefaView"
+    x:Class="FlowCheck.Presentation.View.TarefaPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:FlowCheck.Presentation.View"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
+    
     Loaded="Page_Loaded"
+    
     Background="{StaticResource Cinza12}">
     
     <Grid RowSpacing="0">
@@ -46,7 +48,7 @@
         </StackPanel>
 
         <ScrollViewer Grid.Row="2" Margin="12,0,12,0">
-            <ItemsControl x:Name="spPrincipal">
+            <ItemsControl x:Name="spPrincipal" ItemsSource="{Binding Tarefas}" >
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
                         <VirtualizingStackPanel/>
@@ -67,7 +69,7 @@
                                 </Grid.ColumnDefinitions>
 
                                 <CheckBox x:Name="chkConcluido" 
-                                          IsChecked="{Binding Concluido}"/>
+                                          IsChecked="{Binding Concluido, Mode=TwoWay}"/>
 
                                 <TextBox x:Name="txtTarefa" 
                                          Grid.Column="1"
@@ -76,13 +78,13 @@
                                          TextWrapping="Wrap"
                                          MaxLength="150"
                                          VerticalAlignment="Center" 
-                                         Text="{Binding Tarefa, Mode=TwoWay}" 
+                                         Text="{Binding Descricao, Mode=TwoWay}" 
                                          Foreground="{StaticResource Branco}" 
                                          FontWeight="Bold" />
 
                                 <TextBlock x:Name="txbTarefa" 
                                           Grid.Column="1"
-                                          Text="{Binding Tarefa}" 
+                                          Text="{Binding Descricao}" 
                                           DoubleTapped="txbTarefa_DoubleTapped" 
                                           Visibility="Visible" 
                                           TextWrapping="Wrap"
@@ -107,7 +109,7 @@
                                          MinHeight="200"
                                          BorderBrush="{StaticResource Cinza10}"
                                          BorderThickness="0"
-                                         Visibility="Visible"
+                                         Visibility="Collapsed"
                                          Padding="12"
                                          TextWrapping="Wrap"
                                          AcceptsReturn="True" MaxLength="2000"

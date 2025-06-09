@@ -38,18 +38,18 @@ namespace FlowCheck.Presentation
 
             Configuracao.Iniciar();
 
-            CarregarPagina(typeof(TarefaView), btnTarefa);
+            CarregarPagina(typeof(TarefaPage), btnTarefa);
         }
         #endregion
 
         #region Eventos
         private void BtnTarefas_Click(object sender, RoutedEventArgs e)
         {
-            CarregarPagina(typeof(TarefaView), btnTarefa);
+            CarregarPagina(typeof(TarefaPage), btnTarefa);
         }
         private void BtnAnotacoes_Click(object sender, RoutedEventArgs e)
         {
-            CarregarPagina(typeof(AnotacaoView), btnAnotacao);
+            CarregarPagina(typeof(AnotacaoPage), btnAnotacao);
         }
         #endregion
 
