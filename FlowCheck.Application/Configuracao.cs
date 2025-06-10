@@ -1,4 +1,13 @@
-﻿using Dapper;
+﻿using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Linq;
+using System.Reflection;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
+using Windows.Storage;
+using Dapper;
 using FlowCheck.Domain.Entidades;
 using FlowCheck.Domain.Enumerador;
 using FlowCheck.Domain.Interfaces;
@@ -8,19 +17,9 @@ using JJ.Net.CrossData_WinUI_3.CrossData;
 using JJ.Net.CrossData_WinUI_3.Enumerador;
 using JJ.Net.CrossData_WinUI_3.Extensao;
 using JJ.Net.CrossData_WinUI_3.Interfaces;
-using JJ.NET.Data;
-using JJ.NET.Data.Interfaces;
+using JJ.Net.Data;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using Windows.Storage;
 
 namespace FlowCheck.Application
 {

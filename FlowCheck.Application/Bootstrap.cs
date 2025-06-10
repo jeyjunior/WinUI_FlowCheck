@@ -1,15 +1,17 @@
-﻿using FlowCheck.Domain.Interfaces;
-using FlowCheck.InfraData.Repository;
-using JJ.NET.Data.Interfaces;
-using JJ.NET.Data;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using System;
+﻿using System;
 using System.IO;
 using Windows.Storage;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using JJ.Net.CrossData_WinUI_3.Extensao;
 using JJ.Net.CrossData_WinUI_3.Enumerador;
 using JJ.Net.CrossData_WinUI_3.Interfaces;
+using JJ.Net.Data.Interfaces;
+using JJ.Net.Data;
+using FlowCheck.Domain.Interfaces;
+using FlowCheck.InfraData.Repository;
+using FlowCheck.Application.Interfaces;
+using FlowCheck.Application.Services;
 
 namespace FlowCheck.Application
 {
@@ -56,6 +58,8 @@ namespace FlowCheck.Application
             services.AddSingleton<IParametroRepository, ParametroRepository>();
             services.AddSingleton<ITarefaAnotacaoRepository, TarefaAnotacaoRepository>();
             services.AddSingleton<ITarefaRepository, TarefaRepository>();
+
+            services.AddSingleton<ITarefaAppService, TarefaAppService>();
         }
     }
 }

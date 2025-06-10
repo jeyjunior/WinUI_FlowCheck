@@ -1,5 +1,4 @@
 ﻿using JJ.Net.CrossData_WinUI_3.Atributo;
-using JJ.NET.Data.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,6 +7,7 @@ using System.Threading.Tasks;
 using JJ.Net.CrossData_WinUI_3.Enumerador;
 using JJ.Net.CrossData_WinUI_3.Interfaces;
 using JJ.Net.CrossData_WinUI_3.Extensao;
+using JJ.Net.Data.Interfaces;
 
 namespace FlowCheck.InfraData.Repository
 {

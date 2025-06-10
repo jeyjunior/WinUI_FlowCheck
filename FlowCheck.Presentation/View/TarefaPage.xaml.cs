@@ -1,4 +1,5 @@
 using System;
+using System.Text;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -12,42 +13,62 @@ using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
+using Microsoft.Extensions.DependencyInjection;
 using FlowCheck.ViewModel.TarefaView;
-using System.Text;
 using FlowCheck.Domain.Interfaces;
 using FlowCheck.Application;
-using Microsoft.Extensions.DependencyInjection;
+using FlowCheck.Application.Interfaces;
+using FlowCheck.Domain.Entidades;
+using JJ.Net.Core.Validador;
+using FlowCheck.InfraData.Repository;
 
 namespace FlowCheck.Presentation.View
 {
     public sealed partial class TarefaPage : Page
     {
         private readonly ITarefaRepository tarefaRepository;
+        private readonly ITarefaAppService tarefaAppService;
+        
         public TarefaPageViewModel ViewModel { get; set; }
-
         public TarefaPage()
         {
             this.InitializeComponent();
 
             ViewModel = new TarefaPageViewModel();
             this.DataContext = ViewModel;
-            tarefaRepository = Bootstrap.ServiceProvider.GetRequiredService<ITarefaRepository>();
-        }
 
+            tarefaRepository = Bootstrap.ServiceProvider.GetRequiredService<ITarefaRepository>();
+            tarefaAppService = Bootstrap.ServiceProvider.GetRequiredService<ITarefaAppService>();
+        }
         protected override void OnNavigatedFrom(NavigationEventArgs e)
         {
-            base.OnNavigatedFrom(e);
+            try
+            {
+                base.OnNavigatedFrom(e);
 
-            foreach (var item in ViewModel.Tarefas)
-                tarefaRepository.Atualizar(item.Tarefa);
+                var request = new Tarefa_AppServiceRequest
+                {
+                    Tarefas = ViewModel.Tarefas.Select(i => i.Tarefa).ToList(),
+                    ValidarResultado = new ValidarResultado()
+                };
+
+                tarefaAppService.SalvarTarefas(request);
+
+                if (!request.ValidarResultado.EhValido)
+                {
+                    // Mensagem com erros?
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
         }
-
         private void txtTituloTarefa_LostFocus(object sender, RoutedEventArgs e)
         {
             txbTituloTarefa.Visibility = Visibility.Visible;
             txtTituloTarefa.Visibility = Visibility.Collapsed;
         }
-
         private void txbTituloTarefa_DoubleTapped(object sender, DoubleTappedRoutedEventArgs e)
         {
             txbTituloTarefa.Visibility = Visibility.Collapsed;
@@ -55,7 +76,6 @@ namespace FlowCheck.Presentation.View
             txtTituloTarefa.Focus( FocusState.Keyboard);
             txtTituloTarefa.SelectAll();
         }
-
         private void Page_Loaded(object sender, RoutedEventArgs e)
         {
             txtTituloTarefa.Text = (Windows.Storage.ApplicationData.Current.LocalFolder).Path;
@@ -67,7 +87,6 @@ namespace FlowCheck.Presentation.View
 
             // CarregarTeste();
         }
-
         private void CarregarTeste()
         {
             Random random = new Random();
@@ -89,32 +108,26 @@ namespace FlowCheck.Presentation.View
                 });
             }
         }
-
         private void btnAdicionarTarefa_Click(object sender, RoutedEventArgs e)
         {
 
         }
-
         private void txtTarefa_LostFocus(object sender, RoutedEventArgs e)
         {
 
         }
-
         private void txbTarefa_DoubleTapped(object sender, DoubleTappedRoutedEventArgs e)
         {
 
         }
-
         private void btnExibirTarefaAnotacao_Click(object sender, RoutedEventArgs e)
         {
 
         }
-
         private void btnOpcoes_Click(object sender, RoutedEventArgs e)
         {
 
         }
-
         private string GerarTextoAleatorio(string[] palavras, int tamanhoMaximo)
         {
             Random random = new Random();
