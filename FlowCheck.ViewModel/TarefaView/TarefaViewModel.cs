@@ -19,7 +19,8 @@ namespace FlowCheck.ViewModel.TarefaView
         {
             _tarefa = tarefa;
             ToggleAnotacaoCommand = new RelayCommand(ToggleAnotacao);
-            
+            _idGenerico = Guid.NewGuid();
+
             DefinirPadraoInicial();
         }
         
@@ -32,6 +33,9 @@ namespace FlowCheck.ViewModel.TarefaView
         #endregion
 
         #region Tarefa
+        private Guid _idGenerico;
+        public string IDGenerico => _idGenerico.ToString();
+
         private readonly Tarefa _tarefa;
         public Tarefa Tarefa { get => _tarefa; }
         public bool Concluido
@@ -50,6 +54,32 @@ namespace FlowCheck.ViewModel.TarefaView
             {
                 _tarefa.Descricao = value;
                 OnPropertyChanged(nameof(Descricao));
+            }
+        }
+
+        private bool _editarTarefa;
+        public bool EditarTarefa
+        {
+            get => _editarTarefa;
+            set
+            {
+                _editarTarefa = value;
+                OnPropertyChanged(nameof(ExibirTextoEditavel));
+                OnPropertyChanged(nameof(ExibirTextoVisual));
+            }
+        }
+        public Visibility ExibirTextoEditavel
+        {
+            get
+            {
+                return ((_editarTarefa) ? Visibility.Visible : Visibility.Collapsed);
+            }
+        }
+        public Visibility ExibirTextoVisual
+        {
+            get
+            {
+                return ((_editarTarefa) ? Visibility.Collapsed : Visibility.Visible);
             }
         }
         #endregion
@@ -120,6 +150,9 @@ namespace FlowCheck.ViewModel.TarefaView
         }
         #endregion
 
+        #region TextTarefa
+
+        #endregion
         protected void OnPropertyChanged(string name)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));

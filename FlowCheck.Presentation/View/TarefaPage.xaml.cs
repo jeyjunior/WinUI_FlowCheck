@@ -20,7 +20,6 @@ using FlowCheck.Application;
 using FlowCheck.Application.Interfaces;
 using FlowCheck.Domain.Entidades;
 using JJ.Net.Core.Validador;
-using FlowCheck.InfraData.Repository;
 
 namespace FlowCheck.Presentation.View
 {
@@ -108,21 +107,65 @@ namespace FlowCheck.Presentation.View
                 });
             }
         }
-        private void btnAdicionarTarefa_Click(object sender, RoutedEventArgs e)
+        private async void btnAdicionarTarefa_Click(object sender, RoutedEventArgs e)
         {
+            txtNovaTarefa.Text =  "";
+            var result = await AdicionarTarefaDialog.ShowAsync();
 
+            if (result == ContentDialogResult.Primary && !string.IsNullOrWhiteSpace(txtNovaTarefa.Text))
+            {
+                var novaTarefa = new Tarefa
+                {
+                    Descricao = txtNovaTarefa.Text.Trim(),
+                    Concluido = false,
+                    IndiceExibicao = ViewModel.Tarefas.Count
+                };
+
+                ViewModel.AdicionarTarefa(novaTarefa);
+            }
         }
+
+        private void AdicionarTarefaDialog_PrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
+        {
+            if (string.IsNullOrWhiteSpace(txtNovaTarefa.Text))
+            {
+                args.Cancel = true; 
+            }
+        }
+
         private void txtTarefa_LostFocus(object sender, RoutedEventArgs e)
         {
+            try
+            {
+                if (sender is TextBox txt && txt.Tag is string IDGenerico)
+                {
+                    var tarefa = ViewModel.Tarefas.Where(i => i.IDGenerico.Equals(IDGenerico)).FirstOrDefault();
+                    
+                    if (tarefa != null)
+                        tarefa.EditarTarefa = false;
+                }
+            }
+            catch (Exception ex)
+            {
 
+            }
         }
         private void txbTarefa_DoubleTapped(object sender, DoubleTappedRoutedEventArgs e)
         {
+            try
+            {
+                if (sender is TextBlock txb && txb.Tag is string IDGenerico)
+                {
+                    var tarefa = ViewModel.Tarefas.Where(i => i.IDGenerico.Equals(IDGenerico)).FirstOrDefault();
 
-        }
-        private void btnExibirTarefaAnotacao_Click(object sender, RoutedEventArgs e)
-        {
+                    if (tarefa != null)
+                        tarefa.EditarTarefa = true;
+                }
+            }
+            catch (Exception ex)
+            {
 
+            }
         }
         private void btnOpcoes_Click(object sender, RoutedEventArgs e)
         {

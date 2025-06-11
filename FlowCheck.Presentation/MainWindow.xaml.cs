@@ -17,12 +17,19 @@ using Microsoft.UI.Windowing;
 using WinRT.Interop;
 using FlowCheck.Presentation.View;
 using FlowCheck.Application;
+using FlowCheck.Application.Services;
+using FlowCheck.Domain.Entidades;
+using JJ.Net.Core.Validador;
+using FlowCheck.Application.Interfaces;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace FlowCheck.Presentation
 {
     public sealed partial class MainWindow : Window
     {
         #region Propriedades
+        private readonly ITarefaAppService tarefaAppService;
+
         private const int Largura = 600;
         private const int Altura = 600;
         private AppWindow m_AppWindow;
@@ -38,11 +45,41 @@ namespace FlowCheck.Presentation
 
             Configuracao.Iniciar();
 
+            tarefaAppService = Bootstrap.ServiceProvider.GetRequiredService<ITarefaAppService>();
+            this.Closed += MainWindow_Closed;
+
             CarregarPagina(typeof(TarefaPage), btnTarefa);
         }
         #endregion
 
         #region Eventos
+        private async void MainWindow_Closed(object sender, WindowEventArgs args)
+        {
+            try
+            {
+                if (MainFrame.Content is TarefaPage tarefaPage)
+                {
+                    var viewModel = tarefaPage.ViewModel;
+
+                    var request = new Tarefa_AppServiceRequest
+                    {
+                        Tarefas = viewModel.Tarefas.Select(i => i.Tarefa).ToList(),
+                        ValidarResultado = new ValidarResultado()
+                    };
+
+                    tarefaAppService.SalvarTarefas(request); 
+
+                    if (!request.ValidarResultado.EhValido)
+                    {
+                        
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Erro ao salvar tarefas: {ex.Message}");
+            }
+        }
         private void BtnTarefas_Click(object sender, RoutedEventArgs e)
         {
             CarregarPagina(typeof(TarefaPage), btnTarefa);

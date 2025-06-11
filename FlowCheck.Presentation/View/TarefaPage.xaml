@@ -18,7 +18,7 @@
             <RowDefinition Height="70"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-
+        
         <StackPanel Margin="20,0" Padding="0" Background="{StaticResource Nenhuma}" CornerRadius="5">
             
             <TextBox x:Name="txtTituloTarefa" 
@@ -45,6 +45,28 @@
             <Button x:Name="btnAdicionarTarefa" Click="btnAdicionarTarefa_Click" Padding="0" Width="32" Height="32" Style="{StaticResource AccentButtonStyle}">
                 <FontIcon Glyph="&#xE710;" FontFamily="Segoe Fluent Icons" FontSize="18"/>
             </Button>
+
+            <ContentDialog x:Name="AdicionarTarefaDialog"
+               Title="Adicionar Tarefa"
+               PrimaryButtonText="Adicionar"
+               SecondaryButtonText="Cancelar"
+               PrimaryButtonClick="AdicionarTarefaDialog_PrimaryButtonClick"
+               DefaultButton="Primary"
+               Style="{StaticResource DefaultContentDialogStyle}">
+                <StackPanel>
+                    <TextBlock Text="Digite a descrição da nova tarefa:"
+                   Margin="0,0,0,12"
+                   Foreground="{StaticResource Branco}"/>
+                    <TextBox x:Name="txtNovaTarefa"
+                 PlaceholderText="Descrição da tarefa..."
+                 MaxLength="150"
+                 TextWrapping="Wrap"
+                 AcceptsReturn="True"
+                 Height="100"
+                 Foreground="{StaticResource Branco}"
+                 Background="{StaticResource Cinza10}"/>
+                </StackPanel>
+            </ContentDialog>
         </StackPanel>
 
         <ScrollViewer Grid.Row="2" Margin="12,0,12,0">
@@ -74,9 +96,10 @@
                                 <TextBox x:Name="txtTarefa" 
                                          Grid.Column="1"
                                          LostFocus="txtTarefa_LostFocus" 
-                                         Visibility="Collapsed"  
+                                         Visibility="{Binding ExibirTextoEditavel}"  
                                          TextWrapping="Wrap"
                                          MaxLength="150"
+                                         Tag="{Binding IDGenerico}"
                                          VerticalAlignment="Center" 
                                          Text="{Binding Descricao, Mode=TwoWay}" 
                                          Foreground="{StaticResource Branco}" 
@@ -86,8 +109,9 @@
                                           Grid.Column="1"
                                           Text="{Binding Descricao}" 
                                           DoubleTapped="txbTarefa_DoubleTapped" 
-                                          Visibility="Visible" 
+                                          Visibility="{Binding ExibirTextoVisual}"  
                                           TextWrapping="Wrap"
+                                          Tag="{Binding IDGenerico}"
                                           Padding="20,0,0,0" VerticalAlignment="Center"
                                           Foreground="{StaticResource Branco}" 
                                           FontWeight="SemiBold"/>
