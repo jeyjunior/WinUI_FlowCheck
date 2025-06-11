@@ -7,15 +7,14 @@
     <UseWinUI>true</UseWinUI>
   </PropertyGroup>
   <ItemGroup>
-	  <PackageReference Include="Dapper" Version="2.1.66" />
-	  <PackageReference Include="Microsoft.Data.SqlClient" Version="6.0.1" />
-	  <PackageReference Include="Microsoft.Data.Sqlite.Core" Version="9.0.3" />
     <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.26100.3916" />
     <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.7.250401001" />
-	  <PackageReference Include="MySqlConnector" Version="2.4.0" />
-	  <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-	  <PackageReference Include="SimpleInjector" Version="5.5.0" />
-	  <PackageReference Include="SQLitePCLRaw.bundle_green" Version="2.1.11" />
+	<PackageReference Include="Dapper" Version="2.1.66" />
+	<PackageReference Include="Microsoft.Data.SqlClient" Version="6.0.1" />
+	<PackageReference Include="Microsoft.Data.Sqlite.Core" Version="9.0.3" />
+	<PackageReference Include="MySqlConnector" Version="2.4.0" />
+	<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+	<PackageReference Include="SQLitePCLRaw.bundle_green" Version="2.1.11" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\FlowCheck.Domain\FlowCheck.Domain.csproj" />
@@ -24,8 +23,8 @@
     <Reference Include="JJ.NET.Core">
       <HintPath>..\DLL\JJ.NET.Core.dll</HintPath>
     </Reference>
-    <Reference Include="JJ.NET.CrossData">
-      <HintPath>..\DLL\JJ.NET.CrossData.dll</HintPath>
+    <Reference Include="JJ.Net.CrossData_WinUI_3">
+      <HintPath>..\DLL\JJ.Net.CrossData_WinUI_3.dll</HintPath>
     </Reference>
     <Reference Include="JJ.NET.Data">
       <HintPath>..\DLL\JJ.NET.Data.dll</HintPath>

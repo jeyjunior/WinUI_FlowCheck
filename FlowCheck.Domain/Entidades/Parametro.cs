@@ -1,11 +1,11 @@
-﻿using JJ.NET.Core.Extensoes;
-using JJ.NET.Core.Validador;
-using JJ.NET.CrossData.Atributo;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using JJ.Net.Core.Extensoes;
+using JJ.Net.Core.Validador;
+using JJ.Net.CrossData_WinUI_3.Atributo;
 
 namespace FlowCheck.Domain.Entidades
 {

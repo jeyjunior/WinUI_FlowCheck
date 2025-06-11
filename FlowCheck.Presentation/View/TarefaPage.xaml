@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Page
+    x:Class="FlowCheck.Presentation.View.TarefaPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:FlowCheck.Presentation.View"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    
+    Loaded="Page_Loaded"
+    
+    Background="{StaticResource Cinza12}">
+    
+    <Grid RowSpacing="0">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="70"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        
+        <StackPanel Margin="20,0" Padding="0" Background="{StaticResource Nenhuma}" CornerRadius="5">
+            
+            <TextBox x:Name="txtTituloTarefa" 
+                     LostFocus="txtTituloTarefa_LostFocus" 
+                     Visibility="Collapsed"  
+                     TextWrapping="Wrap"
+                     MaxLength="200"
+                     VerticalAlignment="Center" 
+                     Text="{Binding Titulo, Mode=TwoWay}" 
+                     Foreground="{StaticResource Branco}" 
+                     FontWeight="Bold" />
+            
+            <TextBlock x:Name="txbTituloTarefa" 
+                       Text="{Binding Titulo}" 
+                       DoubleTapped="txbTituloTarefa_DoubleTapped" 
+                       Visibility="Visible" 
+                       TextWrapping="Wrap"
+                       Padding="10,10,0,0" VerticalAlignment="Center"
+                       Foreground="{StaticResource Branco}" 
+                       FontWeight="Bold"/>
+        </StackPanel>
+        
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Grid.Row="1" Margin="20,0">
+            <Button x:Name="btnAdicionarTarefa" Click="btnAdicionarTarefa_Click" Padding="0" Width="32" Height="32" Style="{StaticResource AccentButtonStyle}">
+                <FontIcon Glyph="&#xE710;" FontFamily="Segoe Fluent Icons" FontSize="18"/>
+            </Button>
+
+            <ContentDialog x:Name="AdicionarTarefaDialog"
+               Title="Adicionar Tarefa"
+               PrimaryButtonText="Adicionar"
+               SecondaryButtonText="Cancelar"
+               PrimaryButtonClick="AdicionarTarefaDialog_PrimaryButtonClick"
+               DefaultButton="Primary"
+               Style="{StaticResource DefaultContentDialogStyle}">
+                <StackPanel>
+                    <TextBlock Text="Digite a descrição da nova tarefa:"
+                   Margin="0,0,0,12"
+                   Foreground="{StaticResource Branco}"/>
+                    <TextBox x:Name="txtNovaTarefa"
+                 PlaceholderText="Descrição da tarefa..."
+                 MaxLength="150"
+                 TextWrapping="Wrap"
+                 AcceptsReturn="True"
+                 Height="100"
+                 Foreground="{StaticResource Branco}"
+                 Background="{StaticResource Cinza10}"/>
+                </StackPanel>
+            </ContentDialog>
+        </StackPanel>
+
+        <ScrollViewer Grid.Row="2" Margin="12,0,12,0">
+            <ItemsControl x:Name="spPrincipal" ItemsSource="{Binding Tarefas}" >
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <VirtualizingStackPanel/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+
+                        <StackPanel x:Name="spTarefa" Padding="0" Margin="0,0,0,6" Background="{StaticResource Nenhuma}">
+                            <Grid Background="{StaticResource Cinza10}" Padding="16,10" CornerRadius="6">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="20"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="24"/>
+                                    <ColumnDefinition Width="4"/>
+                                    <ColumnDefinition Width="24"/>
+                                </Grid.ColumnDefinitions>
+
+                                <CheckBox x:Name="chkConcluido" 
+                                          IsChecked="{Binding Concluido, Mode=TwoWay}"/>
+
+                                <TextBox x:Name="txtTarefa" 
+                                         Grid.Column="1"
+                                         LostFocus="txtTarefa_LostFocus" 
+                                         Visibility="{Binding ExibirTextoEditavel}"  
+                                         TextWrapping="Wrap"
+                                         MaxLength="150"
+                                         Tag="{Binding IDGenerico}"
+                                         VerticalAlignment="Center" 
+                                         Text="{Binding Descricao, Mode=TwoWay}" 
+                                         Foreground="{StaticResource Branco}" 
+                                         FontWeight="Bold" />
+
+                                <TextBlock x:Name="txbTarefa" 
+                                          Grid.Column="1"
+                                          Text="{Binding Descricao}" 
+                                          DoubleTapped="txbTarefa_DoubleTapped" 
+                                          Visibility="{Binding ExibirTextoVisual}"  
+                                          TextWrapping="Wrap"
+                                          Tag="{Binding IDGenerico}"
+                                          Padding="20,0,0,0" VerticalAlignment="Center"
+                                          Foreground="{StaticResource Branco}" 
+                                          FontWeight="SemiBold"/>
+
+                                <Button x:Name="btnExibirTarefaAnotacao" 
+                                        Command="{Binding ToggleAnotacaoCommand}"
+                                        Grid.Column="2" 
+                                        Padding="0" 
+                                        Width="24" 
+                                        Height="24" 
+                                        Style="{StaticResource DefaultButtonStyle}">
+                                    <FontIcon Glyph="{Binding IconeBotaoExibirTarefaAnotacao}" FontFamily="Segoe Fluent Icons" FontSize="14"/>
+                                </Button>
+
+                                <Button x:Name="btnOpcoes" Click="btnOpcoes_Click" Grid.Column="4" VerticalAlignment="Center" HorizontalAlignment="Center" Padding="0" Width="24" Height="24" Style="{StaticResource AlternateCloseButtonStyle}">
+                                    <FontIcon Glyph="&#xE712;" FontFamily="Segoe Fluent Icons" FontSize="14"/>
+                                </Button>
+                            </Grid>
+
+                            <Border Background="{StaticResource Nenhuma}" BorderBrush="{StaticResource Nenhuma}" BorderThickness="0" CornerRadius="6" Padding="0"  MaxHeight="200">
+                                <TextBox x:Name="txtTarefaAnotacao"
+                                         Grid.Column="1"
+                                         Height="200"
+                                         MaxHeight="200"
+                                         MinHeight="200"
+                                         BorderBrush="{StaticResource Cinza3}"
+                                         BorderThickness="0"
+                                         Visibility="{Binding ExibirAnotacao}"
+                                         Padding="12"
+                                         TextWrapping="Wrap"
+                                         AcceptsReturn="True" 
+                                         MaxLength="2000"
+                                         VerticalAlignment="Stretch"
+                                         HorizontalAlignment="Stretch"
+                                         Text="{Binding AnotacaoTarefa, Mode=TwoWay}"
+                                         Background="{StaticResource Cinza9}"
+                                         Foreground="{StaticResource Branco}"
+                                         FontWeight="Normal" />
+                            </Border>
+                        </StackPanel>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
+    </Grid>
+</Page>
+

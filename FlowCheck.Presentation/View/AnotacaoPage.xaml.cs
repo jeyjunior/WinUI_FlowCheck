@@ -13,11 +13,12 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 
+
 namespace FlowCheck.Presentation.View
 {
-    public sealed partial class TarefaView : Page
+    public sealed partial class AnotacaoPage : Page
     {
-        public TarefaView()
+        public AnotacaoPage()
         {
             this.InitializeComponent();
         }
