@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project>
+	<PropertyGroup>
+		<DllsBasePath>$(MSBuildThisFileDirectory)FlowCheck.Domain\dlls</DllsBasePath>
+		<JJNetCoreDllPath>$(DllsBasePath)\JJ.Net.Core.dll</JJNetCoreDllPath>
+		<JJNetCrossDataDllPath>$(DllsBasePath)\JJ.Net.CrossData_WinUI_3.dll</JJNetCrossDataDllPath>
+		<JJNetDataDllPath>$(DllsBasePath)\JJ.Net.Data.dll</JJNetDataDllPath>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<Reference Include="JJ.Net.Core">
+			<HintPath>$(JJNetCoreDllPath)</HintPath>
+		</Reference>
+		<Reference Include="JJ.Net.CrossData_WinUI_3">
+			<HintPath>$(JJNetCrossDataDllPath)</HintPath>
+		</Reference>
+		<Reference Include="JJ.Net.Data">
+			<HintPath>$(JJNetDataDllPath)</HintPath>
+		</Reference>
+	</ItemGroup>
+</Project>

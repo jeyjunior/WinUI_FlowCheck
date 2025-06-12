@@ -10,13 +10,28 @@
     <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.26100.3916" />
     <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.7.250401001" />
   </ItemGroup>
-  <ItemGroup>
-    <Reference Include="JJ.NET.Core">
-      <HintPath>..\DLL\JJ.NET.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="JJ.Net.CrossData_WinUI_3">
-      <HintPath>..\DLL\JJ.Net.CrossData_WinUI_3.dll</HintPath>
-    </Reference>
-  </ItemGroup>
+	<ItemGroup>
+		<Reference Include="JJ.Net.Core">
+			<HintPath>$(JJNetCoreDllPath)</HintPath>
+		</Reference>
+		<Reference Include="JJ.Net.CrossData_WinUI_3">
+			<HintPath>$(JJNetCrossDataDllPath)</HintPath>
+		</Reference>
+		<Reference Include="JJ.Net.Data">
+			<HintPath>$(JJNetDataDllPath)</HintPath>
+		</Reference>
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Update="$(JJNetCoreDllPath)">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+		<None Update="$(JJNetCrossDataDllPath)">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+		<None Update="$(JJNetDataDllPath)">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+	</ItemGroup>
   
 </Project>

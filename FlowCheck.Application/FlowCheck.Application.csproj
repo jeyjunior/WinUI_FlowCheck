@@ -22,19 +22,5 @@
     <ProjectReference Include="..\FlowCheck.Domain\FlowCheck.Domain.csproj" />
     <ProjectReference Include="..\FlowCheck.InfraData\FlowCheck.InfraData.csproj" />
   </ItemGroup>
-  <ItemGroup>
-    <Reference Include="JJ.NET.Core">
-      <HintPath>..\DLL\JJ.NET.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="JJ.Net.CrossData_WinUI_3">
-      <HintPath>..\DLL\JJ.Net.CrossData_WinUI_3.dll</HintPath>
-    </Reference>
-    <Reference Include="JJ.NET.Cryptography">
-      <HintPath>..\DLL\JJ.NET.Cryptography.dll</HintPath>
-    </Reference>
-    <Reference Include="JJ.NET.Data">
-      <HintPath>..\DLL\JJ.NET.Data.dll</HintPath>
-    </Reference>
-  </ItemGroup>
   
 </Project>

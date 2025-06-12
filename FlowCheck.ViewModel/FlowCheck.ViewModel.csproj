@@ -14,10 +14,5 @@
     <ProjectReference Include="..\FlowCheck.Application\FlowCheck.Application.csproj" />
     <ProjectReference Include="..\FlowCheck.Domain\FlowCheck.Domain.csproj" />
   </ItemGroup>
-  <ItemGroup>
-    <Reference Include="JJ.Net.Core">
-      <HintPath>..\DLL\JJ.Net.Core.dll</HintPath>
-    </Reference>
-  </ItemGroup>
   
 </Project>
