@@ -60,6 +60,7 @@ namespace FlowCheck.Application
             services.AddSingleton<ITarefaRepository, TarefaRepository>();
 
             services.AddSingleton<ITarefaAppService, TarefaAppService>();
+            services.AddSingleton<IParametroAppService, ParametroAppService>();
         }
     }
 }

@@ -7,9 +7,8 @@ using System.Threading.Tasks;
 
 namespace FlowCheck.Application.Interfaces
 {
-    public interface ITarefaAppService
+    public interface IParametroAppService
     {
-        void SalvarTarefas(Tarefa_AppServiceRequest request);
-        bool RemoverTarefa(Tarefa tarefa);
+        void SalvarParametros(Parametro_AppServiceRequest request);
     }
 }

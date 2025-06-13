@@ -1,17 +1,18 @@
-﻿using System;
+﻿using Azure.Core;
+using FlowCheck.Application.Interfaces;
+using FlowCheck.Domain.Entidades;
+using FlowCheck.Domain.Interfaces;
+using FlowCheck.InfraData.Repository;
+using JJ.Net.Core.Validador;
+using JJ.Net.CrossData_WinUI_3.Interfaces;
+using JJ.Net.Data;
+using JJ.Net.Data.Interfaces;
+using Microsoft.Extensions.DependencyInjection;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using JJ.Net.Data.Interfaces;
-using JJ.Net.Core.Validador;
-using FlowCheck.Domain.Interfaces;
-using FlowCheck.Application.Interfaces;
-using FlowCheck.Domain.Entidades;
-using JJ.Net.Data;
-using JJ.Net.CrossData_WinUI_3.Interfaces;
-using Microsoft.Extensions.DependencyInjection;
-using FlowCheck.InfraData.Repository;
 
 namespace FlowCheck.Application.Services
 {
@@ -59,7 +60,7 @@ namespace FlowCheck.Application.Services
                             if (tarefa.TarefaAnotacao.PK_TarefaAnotacao > 0)
                             {
                                 tarefaAnotacaoRepository.Atualizar(tarefa.TarefaAnotacao);
-                                FK_TarefaAnotacao = tarefa.PK_Tarefa;
+                                FK_TarefaAnotacao = tarefa.TarefaAnotacao.PK_TarefaAnotacao;
                             }
                             else
                             {
@@ -89,6 +90,43 @@ namespace FlowCheck.Application.Services
             }
         }
 
+        public bool RemoverTarefa(Tarefa tarefa)
+        {
+            if (tarefa == null)
+                return false;
+
+            if (tarefa.ValidarResultado == null)
+                tarefa.ValidarResultado = new ValidarResultado();
+
+            var config = Bootstrap.ServiceProvider.GetRequiredService<IConfiguracaoBancoDados>();
+
+            using (var uow = new UnitOfWork(config.ConexaoAtiva))
+            {
+                var tarefaRepository = new TarefaRepository(uow);
+                var tarefaAnotacaoRepository = new TarefaAnotacaoRepository(uow);
+
+                try
+                {
+                    uow.Begin();
+
+                    if (tarefa.TarefaAnotacao != null)
+                        tarefaAnotacaoRepository.Deletar(tarefa.PK_Tarefa);
+
+                    tarefaRepository.Deletar(tarefa.PK_Tarefa);
+
+                    uow.Commit();
+
+                    return true;
+                }
+                catch (Exception ex)
+                {
+                    uow.Rollback();
+                    tarefa.ValidarResultado.Adicionar("Não foi possível deletar informações na base.\n " + ex.Message);
+                }
+            }
+
+            return false;
+        }
         public void Dispose()
         {
             _uow.Dispose();

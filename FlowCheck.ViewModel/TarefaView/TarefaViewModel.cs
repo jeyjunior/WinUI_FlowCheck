@@ -1,13 +1,14 @@
-﻿using System;
+﻿using FlowCheck.Domain.Entidades;
+using JJ.Net.Core.Commands;
+using JJ.Net.Core.Extensoes;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using FlowCheck.Domain.Entidades;
-using JJ.Net.Core.Commands;
-using JJ.Net.Core.Extensoes;
-using Microsoft.UI.Xaml;
 
 namespace FlowCheck.ViewModel.TarefaView
 {
@@ -19,6 +20,7 @@ namespace FlowCheck.ViewModel.TarefaView
         {
             _tarefa = tarefa;
             ToggleAnotacaoCommand = new RelayCommand(ToggleAnotacao);
+
             _idGenerico = Guid.NewGuid();
 
             DefinirPadraoInicial();

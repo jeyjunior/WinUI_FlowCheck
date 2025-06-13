@@ -1,11 +1,12 @@
 using System;
-using System.Text;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Text;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -13,22 +14,32 @@ using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
-using Microsoft.Extensions.DependencyInjection;
-using FlowCheck.ViewModel.TarefaView;
-using FlowCheck.Domain.Interfaces;
+using JJ.Net.Core.Validador;
 using FlowCheck.Application;
 using FlowCheck.Application.Interfaces;
 using FlowCheck.Domain.Entidades;
-using JJ.Net.Core.Validador;
+using FlowCheck.Domain.Enumerador;
+using FlowCheck.Domain.Interfaces;
+using FlowCheck.InfraData.Repository;
+using FlowCheck.ViewModel.TarefaView;
+using System.Threading.Tasks;
 
 namespace FlowCheck.Presentation.View
 {
     public sealed partial class TarefaPage : Page
     {
+        #region Interfaces
+        private readonly IParametroRepository parametroRepository;
         private readonly ITarefaRepository tarefaRepository;
         private readonly ITarefaAppService tarefaAppService;
+        private readonly IParametroAppService parametroAppService;
+        #endregion
         
+        #region Propriedades Públicas
         public TarefaPageViewModel ViewModel { get; set; }
+        #endregion
+
+        #region Construtor
         public TarefaPage()
         {
             this.InitializeComponent();
@@ -36,27 +47,33 @@ namespace FlowCheck.Presentation.View
             ViewModel = new TarefaPageViewModel();
             this.DataContext = ViewModel;
 
+            parametroRepository = Bootstrap.ServiceProvider.GetRequiredService<IParametroRepository>();
             tarefaRepository = Bootstrap.ServiceProvider.GetRequiredService<ITarefaRepository>();
             tarefaAppService = Bootstrap.ServiceProvider.GetRequiredService<ITarefaAppService>();
+            parametroAppService = Bootstrap.ServiceProvider.GetRequiredService<IParametroAppService>();
+        }
+        #endregion
+        
+        #region Eventos
+        private void Page_Loaded(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                CarregarParametros();
+                CarregarTarefas();
+            }
+            catch (Exception ex)
+            {
+
+            }
         }
         protected override void OnNavigatedFrom(NavigationEventArgs e)
         {
             try
             {
                 base.OnNavigatedFrom(e);
-
-                var request = new Tarefa_AppServiceRequest
-                {
-                    Tarefas = ViewModel.Tarefas.Select(i => i.Tarefa).ToList(),
-                    ValidarResultado = new ValidarResultado()
-                };
-
-                tarefaAppService.SalvarTarefas(request);
-
-                if (!request.ValidarResultado.EhValido)
-                {
-                    // Mensagem com erros?
-                }
+                SalvarParametros();
+                SalvarTarefas();
             }
             catch (Exception ex)
             {
@@ -67,6 +84,7 @@ namespace FlowCheck.Presentation.View
         {
             txbTituloTarefa.Visibility = Visibility.Visible;
             txtTituloTarefa.Visibility = Visibility.Collapsed;
+
         }
         private void txbTituloTarefa_DoubleTapped(object sender, DoubleTappedRoutedEventArgs e)
         {
@@ -75,44 +93,12 @@ namespace FlowCheck.Presentation.View
             txtTituloTarefa.Focus( FocusState.Keyboard);
             txtTituloTarefa.SelectAll();
         }
-        private void Page_Loaded(object sender, RoutedEventArgs e)
-        {
-            txtTituloTarefa.Text = (Windows.Storage.ApplicationData.Current.LocalFolder).Path;
-
-            var ret = tarefaRepository.ObterLista();
-
-            foreach (var item in ret)
-                ViewModel.AdicionarTarefa(item);
-
-            // CarregarTeste();
-        }
-        private void CarregarTeste()
-        {
-            Random random = new Random();
-            string[] palavrasLorem = new string[] { "Lorem", "ipsum", "dolor", "sit", "amet", "consectetur",
-                "adipiscing", "elit", "sed", "do", "eiusmod", "tempor", "incididunt", "ut", "labore",
-                "et", "dolore", "magna", "aliqua", "Ut", "enim", "ad", "minim", "veniam" };
-
-            for (int i = 0; i < 10; i++)
-            {
-                int tamanhoDescricao = random.Next(20, 201);
-                string descricao = GerarTextoAleatorio(palavrasLorem, tamanhoDescricao);
-                bool concluido = random.Next(0, 2) == 0;
-
-                ViewModel.AdicionarTarefa(new Domain.Entidades.Tarefa()
-                {
-                    Concluido = concluido,
-                    Descricao = $"Tarefa {i + 1}: {descricao}",
-                    IndiceExibicao = i
-                });
-            }
-        }
-        private async void btnAdicionarTarefa_Click(object sender, RoutedEventArgs e)
+        private void btnAdicionarTarefa_Click(object sender, RoutedEventArgs e)
         {
             txtNovaTarefa.Text =  "";
-            var result = await AdicionarTarefaDialog.ShowAsync();
+            var result = AdicionarTarefaDialog.ShowAsync();
 
-            if (result == ContentDialogResult.Primary && !string.IsNullOrWhiteSpace(txtNovaTarefa.Text))
+            if (result.GetResults() == ContentDialogResult.Primary && !string.IsNullOrWhiteSpace(txtNovaTarefa.Text))
             {
                 var novaTarefa = new Tarefa
                 {
@@ -124,25 +110,13 @@ namespace FlowCheck.Presentation.View
                 ViewModel.AdicionarTarefa(novaTarefa);
             }
         }
-
-        private void AdicionarTarefaDialog_PrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
-        {
-            if (string.IsNullOrWhiteSpace(txtNovaTarefa.Text))
-            {
-                args.Cancel = true; 
-            }
-        }
-
         private void txtTarefa_LostFocus(object sender, RoutedEventArgs e)
         {
             try
             {
                 if (sender is TextBox txt && txt.Tag is string IDGenerico)
                 {
-                    var tarefa = ViewModel.Tarefas.Where(i => i.IDGenerico.Equals(IDGenerico)).FirstOrDefault();
-                    
-                    if (tarefa != null)
-                        tarefa.EditarTarefa = false;
+                    ViewModel.EditarTarefa(IDGenerico, false);
                 }
             }
             catch (Exception ex)
@@ -156,10 +130,7 @@ namespace FlowCheck.Presentation.View
             {
                 if (sender is TextBlock txb && txb.Tag is string IDGenerico)
                 {
-                    var tarefa = ViewModel.Tarefas.Where(i => i.IDGenerico.Equals(IDGenerico)).FirstOrDefault();
-
-                    if (tarefa != null)
-                        tarefa.EditarTarefa = true;
+                    ViewModel.EditarTarefa(IDGenerico, true);
                 }
             }
             catch (Exception ex)
@@ -167,51 +138,82 @@ namespace FlowCheck.Presentation.View
 
             }
         }
-        private void btnOpcoes_Click(object sender, RoutedEventArgs e)
+        private void btnRemoverTarefa_Click(object sender, RoutedEventArgs e)
         {
-
-        }
-        private string GerarTextoAleatorio(string[] palavras, int tamanhoMaximo)
-        {
-            Random random = new Random();
-            StringBuilder texto = new StringBuilder();
-
-            while (texto.Length < tamanhoMaximo)
+            try
             {
-                string palavra = palavras[random.Next(palavras.Length)];
-
-                if (texto.Length + palavra.Length + 1 > tamanhoMaximo)
-                    break;
-
-                if (texto.Length > 0)
-                    texto.Append(" ");
-
-                texto.Append(palavra);
-
-                // Adiciona pontuação ocasionalmente
-                if (random.Next(0, 5) == 0 && texto.Length + 1 <= tamanhoMaximo) // ~20% de chance
+                if (sender is MenuFlyoutItem btn && btn.Tag is string IDGenerico)
                 {
-                    char[] pontuacao = new char[] { '.', ',', '!', '?' };
-                    texto.Append(pontuacao[random.Next(pontuacao.Length)]);
+                    var tarefa = ViewModel.ObterTarefa(IDGenerico);
+                    if (tarefa == null)
+                        return;
+
+                    if (tarefaAppService.RemoverTarefa(tarefa.Tarefa))
+                    {
+                        ViewModel.RemoverTarefa(IDGenerico);
+                    }
                 }
             }
-
-            // Garante que a primeira letra seja maiúscula
-            if (texto.Length > 0)
+            catch (Exception ex)
             {
-                texto[0] = char.ToUpper(texto[0]);
-            }
 
-            // Adiciona ponto final se não terminar com pontuação
-            if (texto.Length > 0 && !char.IsPunctuation(texto[texto.Length - 1]))
-            {
-                if (texto.Length + 1 <= tamanhoMaximo)
-                {
-                    texto.Append('.');
-                }
             }
-
-            return texto.ToString();
         }
+        private void AdicionarTarefaDialog_PrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
+        {
+            if (string.IsNullOrWhiteSpace(txtNovaTarefa.Text))
+            {
+                args.Cancel = true; 
+            }
+        }
+        #endregion
+
+        #region Métodos
+        private void CarregarTarefas()
+        {
+            var ret = tarefaRepository.ObterLista();
+
+            foreach (var item in ret)
+                ViewModel.AdicionarTarefa(item);
+        }
+        private void CarregarParametros()
+        {
+            var parametro = parametroRepository.ObterLista("Nome = @Nome", new { Nome = eParametro.TituloTarefa.ToString() }).FirstOrDefault();
+
+            if (parametro != null)
+                ViewModel.Parametro = parametro;
+        }
+
+        private void SalvarParametros()
+        {
+            var parametro_AppServiceRequest = new Parametro_AppServiceRequest
+            {
+                Parametros = new List<Parametro>() { ViewModel.Parametro },
+                ValidarResultado = new ValidarResultado()
+            };
+
+            parametroAppService.SalvarParametros(parametro_AppServiceRequest);
+
+            if (!parametro_AppServiceRequest.ValidarResultado.EhValido)
+            {
+                // Mensagem com erros?
+            }
+        }
+        private void SalvarTarefas()
+        {
+            var tarefa_AppServiceRequest = new Tarefa_AppServiceRequest
+            {
+                Tarefas = ViewModel.Tarefas.Select(i => i.Tarefa).ToList(),
+                ValidarResultado = new ValidarResultado()
+            };
+
+            tarefaAppService.SalvarTarefas(tarefa_AppServiceRequest);
+
+            if (!tarefa_AppServiceRequest.ValidarResultado.EhValido)
+            {
+                // Mensagem com erros?
+            }
+        }
+        #endregion
     }
 }
