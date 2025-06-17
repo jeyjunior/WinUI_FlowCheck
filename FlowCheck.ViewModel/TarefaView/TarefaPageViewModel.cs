@@ -1,14 +1,14 @@
-﻿using FlowCheck.Domain.Entidades;
-using JJ.Net.Core.Commands;
-using JJ.Net.Core.Extensoes;
-using Microsoft.UI.Xaml.Controls;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using FlowCheck.Domain.Entidades;
+using Microsoft.UI.Xaml.Controls;
+using JJ.Net.Core.Commands;
+using JJ.Net.Core.Extensoes;
 
 namespace FlowCheck.ViewModel.TarefaView
 {
@@ -19,7 +19,6 @@ namespace FlowCheck.ViewModel.TarefaView
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
-
         private Parametro _parametro { get; set; }
         public Parametro Parametro 
         { 
@@ -57,9 +56,12 @@ namespace FlowCheck.ViewModel.TarefaView
 
         #region Tarefa Itens
         public ObservableCollection<TarefaViewModel> Tarefas { get; } = new();
-        public void AdicionarTarefa(Tarefa tarefa)
+        public TarefaViewModel AdicionarTarefa(Tarefa tarefa)
         {
-            Tarefas.Add(new TarefaViewModel(tarefa));
+            var tarefaViewModel = new TarefaViewModel(tarefa);
+            Tarefas.Add(tarefaViewModel);
+
+            return tarefaViewModel;
         }
         public void RemoverTarefa(string IDGenerico)
         {

@@ -1,21 +1,27 @@
-﻿using FlowCheck.Domain.Entidades;
-using JJ.Net.Core.Commands;
-using JJ.Net.Core.Extensoes;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using FlowCheck.Domain.Entidades;
+using JJ.Net.Core.Commands;
+using JJ.Net.Core.Extensoes;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI;
 
 namespace FlowCheck.ViewModel.TarefaView
 {
     public class TarefaViewModel : INotifyPropertyChanged
     {
+        #region Propriedades
         public event PropertyChangedEventHandler PropertyChanged;
         public RelayCommand ToggleAnotacaoCommand { get; }
+        #endregion
+
+        #region Construtor
         public TarefaViewModel(Tarefa tarefa)
         {
             _tarefa = tarefa;
@@ -25,8 +31,13 @@ namespace FlowCheck.ViewModel.TarefaView
 
             DefinirPadraoInicial();
         }
-        
-        #region MetodosPadronizado
+        #endregion
+
+        #region Metodos
+        protected void OnPropertyChanged(string name)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+        }
         private void DefinirPadraoInicial()
         {
             ExibirAnotacao = Visibility.Collapsed;
@@ -97,6 +108,7 @@ namespace FlowCheck.ViewModel.TarefaView
                 {
                     _exibirAnotacao = value;
                     OnPropertyChanged(nameof(ExibirAnotacao));
+                    OnPropertyChanged(nameof(ExisteAnotacao));
                 }
             }
         }
@@ -123,10 +135,12 @@ namespace FlowCheck.ViewModel.TarefaView
                 ExibirAnotacao = Visibility.Visible;
                 IconeBotaoExibirTarefaAnotacao = "\xE70E";
             }
+
+            OnPropertyChanged(nameof(ExisteAnotacao));
         }
-        public string AnotacaoTarefa 
+        public string AnotacaoTarefa
         {
-            get 
+            get
             {
                 string valor = "";
 
@@ -148,6 +162,26 @@ namespace FlowCheck.ViewModel.TarefaView
                 }
 
                 OnPropertyChanged(nameof(AnotacaoTarefa));
+                OnPropertyChanged(nameof(ExisteAnotacao));
+            }
+        }
+
+
+        private SolidColorBrush _existeAnotacao = (SolidColorBrush)Microsoft.UI.Xaml.Application.Current.Resources["Nenhuma"];
+        public SolidColorBrush ExisteAnotacao
+        {
+            get
+            {
+                return AnotacaoTarefa.ObterValorOuPadrao("").Trim() != ""
+                    ? (SolidColorBrush)Microsoft.UI.Xaml.Application.Current.Resources["Roxo"] : (SolidColorBrush)Microsoft.UI.Xaml.Application.Current.Resources["Nenhuma"];
+            }
+            set
+            {
+                if (_existeAnotacao != value)
+                {
+                    _existeAnotacao = value;
+                    OnPropertyChanged(nameof(ExisteAnotacao));
+                }
             }
         }
         #endregion
@@ -155,9 +189,5 @@ namespace FlowCheck.ViewModel.TarefaView
         #region TextTarefa
 
         #endregion
-        protected void OnPropertyChanged(string name)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-        }
     }
 }

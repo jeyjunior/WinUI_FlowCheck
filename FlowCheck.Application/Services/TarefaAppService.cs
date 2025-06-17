@@ -1,34 +1,38 @@
-﻿using Azure.Core;
-using FlowCheck.Application.Interfaces;
-using FlowCheck.Domain.Entidades;
-using FlowCheck.Domain.Interfaces;
-using FlowCheck.InfraData.Repository;
-using JJ.Net.Core.Validador;
-using JJ.Net.CrossData_WinUI_3.Interfaces;
-using JJ.Net.Data;
-using JJ.Net.Data.Interfaces;
-using Microsoft.Extensions.DependencyInjection;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using FlowCheck.Application.Interfaces;
+using FlowCheck.Domain.Entidades;
+using FlowCheck.Domain.Interfaces;
+using FlowCheck.InfraData.Repository;
+using Microsoft.Extensions.DependencyInjection;
+using JJ.Net.Core.Validador;
+using JJ.Net.CrossData_WinUI_3.Interfaces;
+using JJ.Net.Data;
+using JJ.Net.Data.Interfaces;
 
 namespace FlowCheck.Application.Services
 {
     public class TarefaAppService : ITarefaAppService, IDisposable
     {
+        #region Interfaces
         private readonly IUnitOfWork _uow;
         private readonly ITarefaRepository _tarefaRepository;
         private readonly ITarefaAnotacaoRepository _tarefaAnotacaoRepository;
+        #endregion
 
+        #region Construtor
         public TarefaAppService(IUnitOfWork uow, ITarefaRepository tarefaRepository, ITarefaAnotacaoRepository tarefaAnotacaoRepository)
         {
             this._uow = uow;
             this._tarefaRepository = tarefaRepository;
             this._tarefaAnotacaoRepository = tarefaAnotacaoRepository;
         }
+        #endregion
 
+        #region Metodos
         public void SalvarTarefas(Tarefa_AppServiceRequest request)
         {
             if (request == null)
@@ -89,11 +93,13 @@ namespace FlowCheck.Application.Services
                 }
             }
         }
-
         public bool RemoverTarefa(Tarefa tarefa)
         {
             if (tarefa == null)
                 return false;
+
+            if (tarefa.PK_Tarefa <= 0)
+                return true;
 
             if (tarefa.ValidarResultado == null)
                 tarefa.ValidarResultado = new ValidarResultado();
@@ -110,7 +116,7 @@ namespace FlowCheck.Application.Services
                     uow.Begin();
 
                     if (tarefa.TarefaAnotacao != null)
-                        tarefaAnotacaoRepository.Deletar(tarefa.PK_Tarefa);
+                        tarefaAnotacaoRepository.Deletar(tarefa.TarefaAnotacao.PK_TarefaAnotacao);
 
                     tarefaRepository.Deletar(tarefa.PK_Tarefa);
 
@@ -133,5 +139,6 @@ namespace FlowCheck.Application.Services
             _tarefaRepository.Dispose();
             _tarefaAnotacaoRepository.Dispose();
         }
+        #endregion
     }
 }

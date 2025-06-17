@@ -23,6 +23,7 @@ using FlowCheck.Domain.Interfaces;
 using FlowCheck.InfraData.Repository;
 using FlowCheck.ViewModel.TarefaView;
 using System.Threading.Tasks;
+using JJ.Net.Core.Extensoes;
 
 namespace FlowCheck.Presentation.View
 {
@@ -39,6 +40,9 @@ namespace FlowCheck.Presentation.View
         public TarefaPageViewModel ViewModel { get; set; }
         #endregion
 
+        #region Propriedades
+        private bool tarefaAdicionada = false;
+        #endregion
         #region Construtor
         public TarefaPage()
         {
@@ -95,21 +99,19 @@ namespace FlowCheck.Presentation.View
         }
         private void btnAdicionarTarefa_Click(object sender, RoutedEventArgs e)
         {
-            txtNovaTarefa.Text =  "";
-            var result = AdicionarTarefaDialog.ShowAsync();
-
-            if (result.GetResults() == ContentDialogResult.Primary && !string.IsNullOrWhiteSpace(txtNovaTarefa.Text))
+            var novaTarefa = new Tarefa
             {
-                var novaTarefa = new Tarefa
-                {
-                    Descricao = txtNovaTarefa.Text.Trim(),
-                    Concluido = false,
-                    IndiceExibicao = ViewModel.Tarefas.Count
-                };
+                Descricao = "",
+                Concluido = false,
+                IndiceExibicao = ViewModel.Tarefas.Count
+            };
 
-                ViewModel.AdicionarTarefa(novaTarefa);
-            }
+            var tarefaViewModel = ViewModel.AdicionarTarefa(novaTarefa);
+
+            FocarTarefaNovaTextBox(tarefaViewModel);
+            //ViewModel.EditarTarefa(tarefaViewModel.IDGenerico, true);
         }
+
         private void txtTarefa_LostFocus(object sender, RoutedEventArgs e)
         {
             try
@@ -124,6 +126,7 @@ namespace FlowCheck.Presentation.View
 
             }
         }
+
         private void txbTarefa_DoubleTapped(object sender, DoubleTappedRoutedEventArgs e)
         {
             try
@@ -159,11 +162,26 @@ namespace FlowCheck.Presentation.View
 
             }
         }
-        private void AdicionarTarefaDialog_PrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
+        private void TxtTarefaAnotacao_PreviewKeyDown(object sender, KeyRoutedEventArgs e)
         {
-            if (string.IsNullOrWhiteSpace(txtNovaTarefa.Text))
+            if (e.Key == Windows.System.VirtualKey.Tab)
             {
-                args.Cancel = true; 
+                var textBox = sender as TextBox;
+                if (textBox != null)
+                {
+                    int pos = textBox.SelectionStart;
+                    textBox.Text = textBox.Text.Insert(pos, "\t");
+                    textBox.SelectionStart = pos + 1;
+                    e.Handled = true;
+                }
+            }
+        }
+        private void scroll_LayoutUpdated(object sender, object e)
+        {
+            if (tarefaAdicionada)
+            {
+                tarefaAdicionada = false;
+                scroll.ChangeView(null, scroll.ScrollableHeight, null);
             }
         }
         #endregion
@@ -213,6 +231,36 @@ namespace FlowCheck.Presentation.View
             {
                 // Mensagem com erros?
             }
+        }
+        private void FocarTarefaNovaTextBox(TarefaViewModel tarefaViewModel)
+        {
+            var container = spPrincipal.ContainerFromItem(tarefaViewModel) as FrameworkElement;
+            if (container != null)
+            {
+                var textBox = FindVisualChild<TextBox>(container, "txtTarefa");
+                if (textBox != null)
+                {
+                    tarefaAdicionada = true;
+                    ViewModel.EditarTarefa(tarefaViewModel.IDGenerico, true);
+                    textBox.Focus(FocusState.Programmatic);
+                    textBox.SelectAll();
+                }
+            }
+        }
+
+        private static T FindVisualChild<T>(DependencyObject parent, string name = null) where T : DependencyObject
+        {
+            for (int i = 0; i < VisualTreeHelper.GetChildrenCount(parent); i++)
+            {
+                var child = VisualTreeHelper.GetChild(parent, i);
+                if (child is T result && (name == null || (child is FrameworkElement fe && fe.Name == name)))
+                    return result;
+
+                var descendant = FindVisualChild<T>(child, name);
+                if (descendant != null)
+                    return descendant;
+            }
+            return null;
         }
         #endregion
     }
