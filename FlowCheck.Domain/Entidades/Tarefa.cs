@@ -24,6 +24,9 @@ namespace FlowCheck.Domain.Entidades
         [Relacionamento("TarefaAnotacao", "PK_TarefaAnotacao")]
         public int? FK_TarefaAnotacao { get; set; }
 
+        [Obrigatorio]
+        public bool Arquivado { get; set; } 
+
         /* Relacionamento */
         [Editavel(false)]
         public TarefaAnotacao TarefaAnotacao { get; set; }

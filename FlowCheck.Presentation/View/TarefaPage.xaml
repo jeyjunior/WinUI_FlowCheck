@@ -12,10 +12,9 @@
     
     Background="{StaticResource Cinza12}">
     
-    <Grid RowSpacing="0">
+    <Grid RowSpacing="8">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
-            <RowDefinition Height="70"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         
@@ -43,13 +42,7 @@
                        FontWeight="Bold"/>
         </StackPanel>
         
-        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Grid.Row="1" Margin="20,0">
-            <Button x:Name="btnAdicionarTarefa" Click="btnAdicionarTarefa_Click" Padding="0" Width="32" Height="32" Style="{StaticResource AccentButtonStyle}">
-                <FontIcon Glyph="&#xE710;" FontFamily="Segoe Fluent Icons" FontSize="18"/>
-            </Button>
-        </StackPanel>
-
-        <ScrollViewer Grid.Row="2" x:Name="scroll" Margin="12,0,12,0" LayoutUpdated="scroll_LayoutUpdated">
+        <ScrollViewer Grid.Row="1" x:Name="scroll" Margin="20,0" LayoutUpdated="scroll_LayoutUpdated">
             <ItemsControl x:Name="spPrincipal" ItemsSource="{Binding Tarefas}" >
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
@@ -125,27 +118,24 @@
                                 </Button>
                             </Grid>
 
-                            <Border Background="{StaticResource Nenhuma}" BorderBrush="{StaticResource Nenhuma}" BorderThickness="0" CornerRadius="6" Padding="0"  MaxHeight="200">
-                                <TextBox x:Name="txtTarefaAnotacao"
-                                         Grid.Column="1"
-                                         Height="200"
-                                         MaxHeight="200"
-                                         MinHeight="200"
-                                         BorderBrush="{StaticResource Cinza3}"
-                                         BorderThickness="0"
-                                         Visibility="{Binding ExibirAnotacao}"
-                                         Padding="12"
-                                         TextWrapping="Wrap"
-                                         AcceptsReturn="True" 
-                                         MaxLength="2000"
-                                         VerticalAlignment="Stretch"
-                                         HorizontalAlignment="Stretch"
-                                         Text="{Binding AnotacaoTarefa, Mode=TwoWay}"
-                                         Background="{StaticResource Cinza9}"
-                                         Foreground="{StaticResource Branco}"
-                                         FontWeight="Normal"
-                                         PreviewKeyDown="TxtTarefaAnotacao_PreviewKeyDown"/>
-                            </Border>
+                            <TextBox x:Name="txtTarefaAnotacao"
+                                     Grid.Column="1"
+                                     CornerRadius="5"
+                                     MinHeight="400"
+                                     BorderBrush="{StaticResource Cinza3}"
+                                     BorderThickness="0"
+                                     Visibility="{Binding ExibirAnotacao}"
+                                     Padding="12"
+                                     TextWrapping="Wrap"
+                                     AcceptsReturn="True" 
+                                     MaxLength="2000"
+                                     VerticalAlignment="Stretch"
+                                     HorizontalAlignment="Stretch"
+                                     Text="{Binding AnotacaoTarefa, Mode=TwoWay}"
+                                     Background="{StaticResource Cinza9}"
+                                     Foreground="{StaticResource Branco}"
+                                     FontWeight="Normal"
+                                     PreviewKeyDown="TxtTarefaAnotacao_PreviewKeyDown"/>
 
                         </StackPanel>
                     </DataTemplate>

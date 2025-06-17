@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text;
+using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Microsoft.Extensions.DependencyInjection;
@@ -14,6 +15,7 @@ using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
+using JJ.Net.Core.Extensoes;
 using JJ.Net.Core.Validador;
 using FlowCheck.Application;
 using FlowCheck.Application.Interfaces;
@@ -22,8 +24,6 @@ using FlowCheck.Domain.Enumerador;
 using FlowCheck.Domain.Interfaces;
 using FlowCheck.InfraData.Repository;
 using FlowCheck.ViewModel.TarefaView;
-using System.Threading.Tasks;
-using JJ.Net.Core.Extensoes;
 
 namespace FlowCheck.Presentation.View
 {
@@ -97,21 +97,6 @@ namespace FlowCheck.Presentation.View
             txtTituloTarefa.Focus( FocusState.Keyboard);
             txtTituloTarefa.SelectAll();
         }
-        private void btnAdicionarTarefa_Click(object sender, RoutedEventArgs e)
-        {
-            var novaTarefa = new Tarefa
-            {
-                Descricao = "",
-                Concluido = false,
-                IndiceExibicao = ViewModel.Tarefas.Count
-            };
-
-            var tarefaViewModel = ViewModel.AdicionarTarefa(novaTarefa);
-
-            FocarTarefaNovaTextBox(tarefaViewModel);
-            //ViewModel.EditarTarefa(tarefaViewModel.IDGenerico, true);
-        }
-
         private void txtTarefa_LostFocus(object sender, RoutedEventArgs e)
         {
             try
@@ -126,7 +111,6 @@ namespace FlowCheck.Presentation.View
 
             }
         }
-
         private void txbTarefa_DoubleTapped(object sender, DoubleTappedRoutedEventArgs e)
         {
             try
@@ -201,7 +185,6 @@ namespace FlowCheck.Presentation.View
             if (parametro != null)
                 ViewModel.Parametro = parametro;
         }
-
         private void SalvarParametros()
         {
             var parametro_AppServiceRequest = new Parametro_AppServiceRequest
@@ -247,7 +230,6 @@ namespace FlowCheck.Presentation.View
                 }
             }
         }
-
         private static T FindVisualChild<T>(DependencyObject parent, string name = null) where T : DependencyObject
         {
             for (int i = 0; i < VisualTreeHelper.GetChildrenCount(parent); i++)
@@ -261,6 +243,22 @@ namespace FlowCheck.Presentation.View
                     return descendant;
             }
             return null;
+        }
+        #endregion
+
+        #region Métodos Público
+        public void AdicionarTarefa()
+        {
+            var novaTarefa = new Tarefa
+            {
+                Descricao = "",
+                Concluido = false,
+                IndiceExibicao = ViewModel.Tarefas.Count
+            };
+
+            var tarefaViewModel = ViewModel.AdicionarTarefa(novaTarefa);
+
+            FocarTarefaNovaTextBox(tarefaViewModel);
         }
         #endregion
     }

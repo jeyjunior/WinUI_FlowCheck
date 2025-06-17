@@ -22,6 +22,7 @@ using FlowCheck.Domain.Entidades;
 using JJ.Net.Core.Validador;
 using FlowCheck.Application.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
+using FlowCheck.Domain.Enumerador;
 
 namespace FlowCheck.Presentation
 {
@@ -34,6 +35,8 @@ namespace FlowCheck.Presentation
         private const int Altura = 600;
         private AppWindow m_AppWindow;
         private Type paginaAtiva;
+
+        private eTelaEmExecucao telaEmExecucao = eTelaEmExecucao.Nenhuma;
         #endregion
 
         #region Construtor
@@ -47,8 +50,7 @@ namespace FlowCheck.Presentation
 
             tarefaAppService = Bootstrap.ServiceProvider.GetRequiredService<ITarefaAppService>();
             this.Closed += MainWindow_Closed;
-
-            CarregarPagina(typeof(TarefaPage), btnTarefa);
+            CarregarTelaTarefa();
         }
         #endregion
 
@@ -82,11 +84,11 @@ namespace FlowCheck.Presentation
         }
         private void BtnTarefas_Click(object sender, RoutedEventArgs e)
         {
-            CarregarPagina(typeof(TarefaPage), btnTarefa);
+            CarregarTelaTarefa();
         }
         private void BtnAnotacoes_Click(object sender, RoutedEventArgs e)
         {
-            CarregarPagina(typeof(AnotacaoPage), btnAnotacao);
+            CarregarTelaAnotacao();
         }
         #endregion
 
@@ -137,6 +139,56 @@ namespace FlowCheck.Presentation
 
             activeButton.Opacity = 0.6;
         }
+
+        private void CarregarTelaTarefa()
+        {
+            CarregarPagina(typeof(TarefaPage), btnTarefa);
+            telaEmExecucao = eTelaEmExecucao.Tarefa;
+        }
+        private void CarregarTelaAnotacao()
+        {
+            CarregarPagina(typeof(AnotacaoPage), btnAnotacao);
+            telaEmExecucao = eTelaEmExecucao.Anotacao;
+        }
         #endregion
+
+        private void btnAdicionar_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                switch (telaEmExecucao)
+                {
+                    case eTelaEmExecucao.Nenhuma:
+                        break;
+                    case eTelaEmExecucao.Tarefa:
+                        
+                        if (MainFrame.Content is TarefaPage tarefaPage)
+                        {
+                            if (tarefaPage != null)
+                                tarefaPage.AdicionarTarefa();
+                        }
+
+                        break;
+                    case eTelaEmExecucao.Anotacao:
+                        break;
+                    default:
+                        break;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Erro ao salvar tarefas: {ex.Message}");
+            }
+        }
+
+        private void btnArquivarTudo_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void btnExcluirTudo_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }

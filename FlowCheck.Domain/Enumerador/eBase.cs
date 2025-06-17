@@ -10,4 +10,11 @@ namespace FlowCheck.Domain.Enumerador
     {
         TituloTarefa = 1,
     }
+
+    public enum eTelaEmExecucao
+    {
+        Nenhuma = 0,
+        Tarefa = 1,
+        Anotacao = 2,
+    }
 }

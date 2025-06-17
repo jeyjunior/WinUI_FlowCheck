@@ -35,25 +35,76 @@
         <Frame x:Name="MainFrame" Grid.Row="1"/>
 
         <Border Background="{StaticResource Cinza11}" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Height="60" Grid.Row="2" >
-            <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+
+            <Grid Margin="20,0" VerticalAlignment="Center" ColumnSpacing="4">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="32"/>
+                    <ColumnDefinition Width="32"/>
+                    <ColumnDefinition Width="32"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="32"/>
+                    <ColumnDefinition Width="32"/>
+                </Grid.ColumnDefinitions>
+
+                <CheckBox x:Name="chkTodos" Grid.Column="0"/>
+
+                <Button x:Name="btnExcluirTudo" 
+                        Click="btnExcluirTudo_Click"
+                        Grid.Column="1"
+                        Padding="0"
+                        Width="32"
+                        Height="32"
+                        VerticalAlignment="Center"
+                        HorizontalAlignment="Center"
+                        Style="{StaticResource AlternateCloseButtonStyle}">
+                    <FontIcon Glyph="&#xE74D;" FontFamily="Segoe Fluent Icons" FontWeight="Normal" FontSize="18"/>
+                </Button>
+
+                <Button x:Name="btnArquivarTudo" 
+                        Click="btnArquivarTudo_Click"
+                        Grid.Column="2"
+                        Width="32"
+                        Height="32"
+                        Padding="0"
+                        VerticalAlignment="Center"
+                        HorizontalAlignment="Center"
+                        Style="{StaticResource AlternateCloseButtonStyle}">
+                    <FontIcon Glyph="&#xF158;" FontFamily="Segoe Fluent Icons" FontWeight="Normal" FontSize="18"/>
+                </Button>
+
+                <Button x:Name="btnAdicionar" 
+                        Click="btnAdicionar_Click"
+                        Grid.Column="3"
+                        Padding="0" 
+                        Width="32" 
+                        Height="32" 
+                        VerticalAlignment="Center"
+                        HorizontalAlignment="Center"
+                        Style="{StaticResource AccentButtonStyle}">
+                    <FontIcon Glyph="&#xE710;" FontFamily="Segoe Fluent Icons" FontSize="18"/>
+                </Button>
 
                 <Button x:Name="btnTarefa" 
+                        Grid.Column="4"
                         Click="BtnTarefas_Click" 
                         HorizontalAlignment="Center" 
                         Style="{StaticResource AlternateCloseButtonStyle}">
-
                     <Image Source="Assets/Tarefa-icone-48.png"  Width="32" Height="32"/>
                 </Button>
 
                 <Button x:Name="btnAnotacao" 
+                        Grid.Column="5"
                         Click="BtnAnotacoes_Click" 
                         HorizontalAlignment="Center" 
                         Style="{StaticResource AlternateCloseButtonStyle}">
-
                     <Image Source="Assets/Anotacao-icone-48.png" Width="32" Height="32"/>
                 </Button>
+            </Grid>
+            <!--<StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
 
-            </StackPanel>
+                
+
+            </StackPanel>-->
         </Border>
     </Grid>
 </Window>
