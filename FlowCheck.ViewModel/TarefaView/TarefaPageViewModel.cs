@@ -55,7 +55,7 @@ namespace FlowCheck.ViewModel.TarefaView
         }
 
         #region Tarefa Itens
-        public ObservableCollection<TarefaViewModel> Tarefas { get; } = new();
+        public ObservableCollection<TarefaViewModel> Tarefas { get; } = new ObservableCollection<TarefaViewModel>();
         public TarefaViewModel AdicionarTarefa(Tarefa tarefa)
         {
             var tarefaViewModel = new TarefaViewModel(tarefa);
@@ -80,5 +80,28 @@ namespace FlowCheck.ViewModel.TarefaView
             return this.Tarefas.Where(i => i.IDGenerico.Equals(IDGenerico)).FirstOrDefault();
         }
         #endregion
+
+
+        public void ReordenarTarefas(int indiceOriginal, int indiceAlvo, TarefaViewModel tarefaMovida)
+        {
+            Tarefas.RemoveAt(indiceOriginal);
+
+            if (indiceAlvo >= Tarefas.Count)
+                Tarefas.Add(tarefaMovida);
+            else
+                Tarefas.Insert(indiceAlvo, tarefaMovida);
+
+            AtualizarIndicesOrdem();
+        }
+
+        private void AtualizarIndicesOrdem()
+        {
+            for (int i = 0; i < Tarefas.Count; i++)
+            {
+                Tarefas[i].IndiceOrdem = i;
+            }
+
+            OnPropertyChanged(nameof(Tarefas));
+        }
     }
 }

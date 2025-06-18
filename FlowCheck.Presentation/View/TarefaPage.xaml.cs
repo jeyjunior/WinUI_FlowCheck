@@ -1,22 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using System.Text;
-using System.Threading.Tasks;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Data;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Navigation;
-using JJ.Net.Core.Extensoes;
-using JJ.Net.Core.Validador;
 using FlowCheck.Application;
 using FlowCheck.Application.Interfaces;
 using FlowCheck.Domain.Entidades;
@@ -24,6 +5,27 @@ using FlowCheck.Domain.Enumerador;
 using FlowCheck.Domain.Interfaces;
 using FlowCheck.InfraData.Repository;
 using FlowCheck.ViewModel.TarefaView;
+using JJ.Net.Core.Extensoes;
+using JJ.Net.Core.Validador;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.UI;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Navigation;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Runtime.InteropServices.WindowsRuntime;
+using System.Text;
+using System.Threading.Tasks;
+using Windows.ApplicationModel.DataTransfer;
+using Windows.Foundation;
+using Windows.Foundation.Collections;
 
 namespace FlowCheck.Presentation.View
 {
@@ -261,5 +263,62 @@ namespace FlowCheck.Presentation.View
             FocarTarefaNovaTextBox(tarefaViewModel);
         }
         #endregion
+
+
+        private void SpTarefa_DragStarting(object sender, DragStartingEventArgs e)
+        {
+            var stackPanel = sender as StackPanel;
+            var tarefaVM = stackPanel.DataContext as TarefaViewModel;
+
+            e.Data.Properties.Add("tarefa", tarefaVM);
+            e.Data.Properties.Add("indiceOriginal", ViewModel.Tarefas.IndexOf(tarefaVM));
+
+            // Visual personalizado para o arrasto (opcional)
+            e.DragUI.SetContentFromDataPackage();
+            //e.DragUI.Caption = "Movendo tarefa";
+
+           // VisualStateManager.GoToState((Control)(sender as FrameworkElement), "Dragging", true);
+        }
+
+        private void SpTarefa_DragOver(object sender, DragEventArgs e)
+        {
+            if (e.DataView.Properties.ContainsKey("tarefa"))
+            {
+                e.AcceptedOperation = DataPackageOperation.Move;
+
+                // Feedback visual
+                var stackPanel = sender as StackPanel;
+                stackPanel.Background = new SolidColorBrush(Windows.UI.Color.FromArgb(30, 0, 120, 215));
+            }
+        }
+
+        private void SpTarefa_Drop(object sender, DragEventArgs e)
+        {
+            var targetPanel = sender as StackPanel;
+            var targetTarefa = targetPanel.DataContext as TarefaViewModel;
+
+            if (e.DataView.Properties.TryGetValue("tarefa", out object draggedItemObj) &&
+                e.DataView.Properties.TryGetValue("indiceOriginal", out object originalIndexObj))
+            {
+                var draggedTarefa = draggedItemObj as TarefaViewModel;
+                int originalIndex = (int)originalIndexObj;
+                int targetIndex = ViewModel.Tarefas.IndexOf(targetTarefa);
+
+                if (draggedTarefa != null && draggedTarefa != targetTarefa)
+                {
+                    // Reordena no ViewModel
+                    ViewModel.ReordenarTarefas(originalIndex, targetIndex, draggedTarefa);
+                }
+            }
+
+            // Resetar o background
+            targetPanel.Background = new SolidColorBrush(Colors.Transparent);
+        }
+
+        private void SpTarefa_DragLeave(object sender, DragEventArgs e)
+        {
+            var stackPanel = sender as StackPanel;
+            stackPanel.Background = new SolidColorBrush(Colors.Transparent);
+        }
     }
 }

@@ -53,7 +53,41 @@
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
 
-                        <StackPanel x:Name="spTarefa" Padding="0" Margin="0,0,0,6" Background="{StaticResource Nenhuma}">
+                        <StackPanel x:Name="spTarefa" 
+            Padding="0" 
+            Margin="0,0,0,6" 
+            Background="{StaticResource Nenhuma}"
+            CanDrag="True"
+            DragStarting="SpTarefa_DragStarting"
+            Drop="SpTarefa_Drop"
+            DragOver="SpTarefa_DragOver"
+            DragLeave="SpTarefa_DragLeave"
+            AllowDrop="True">
+
+                            <!-- Adicionar um efeito visual durante o arrasto -->
+                            <StackPanel.RenderTransform>
+                                <CompositeTransform/>
+                            </StackPanel.RenderTransform>
+
+                            <VisualStateManager.VisualStateGroups>
+                                <VisualStateGroup x:Name="DragStates">
+                                    <VisualState x:Name="Normal"/>
+                                    <VisualState x:Name="Dragging">
+                                        <Storyboard>
+                                            <DoubleAnimation Storyboard.TargetName="spTarefa"
+                                     Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.ScaleX)"
+                                     To="1.02" Duration="0:0:0.1"/>
+                                            <DoubleAnimation Storyboard.TargetName="spTarefa"
+                                     Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.ScaleY)"
+                                     To="1.02" Duration="0:0:0.1"/>
+                                            <DoubleAnimation Storyboard.TargetName="spTarefa"
+                                     Storyboard.TargetProperty="Opacity"
+                                     To="0.8" Duration="0:0:0.1"/>
+                                        </Storyboard>
+                                    </VisualState>
+                                </VisualStateGroup>
+                            </VisualStateManager.VisualStateGroups>
+                            
                             <Grid Background="{StaticResource Cinza10}" Padding="16,10" CornerRadius="6">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="20"/>

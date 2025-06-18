@@ -186,8 +186,24 @@ namespace FlowCheck.ViewModel.TarefaView
         }
         #endregion
 
-        #region TextTarefa
+        #region Indice
+        private int _indiceOrdem;
+        public int IndiceOrdem
+        {
+            get => _indiceOrdem;
+            set
+            {
+                if (_indiceOrdem != value)
+                {
+                    _indiceOrdem = value;
+                    OnPropertyChanged(nameof(IndiceOrdem));
 
+                    // Atualiza também no modelo Tarefa se necessário
+                    if (_tarefa != null)
+                        _tarefa.IndiceExibicao = value;
+                }
+            }
+        }
         #endregion
     }
 }
