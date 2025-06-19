@@ -27,7 +27,7 @@
                     </Grid.ColumnDefinitions>
 
                     <TextBlock Grid.Column="0" HorizontalAlignment="Left" Margin="0" Padding="0" Text="Tarefas" Foreground="{StaticResource Cinza3}"/>
-                    <TextBlock Grid.Column="1" HorizontalAlignment="Right"  Margin="0" Padding="0" Text="100/100" Foreground="{StaticResource Cinza3}"/>
+                    <TextBlock Grid.Column="1" HorizontalAlignment="Right"  Margin="0" Padding="0" Text="" Foreground="{StaticResource Cinza3}"/>
 
                 </Grid>
                 <Border Grid.Row="1" Height="1" VerticalAlignment="Top" HorizontalAlignment="Stretch" Background="{StaticResource Cinza8}"/>
@@ -69,6 +69,7 @@
                             Width="32"
                             Height="32"
                             Padding="0"
+                            Visibility="Collapsed"
                             IsEnabled="False"
                             VerticalAlignment="Center"
                             HorizontalAlignment="Left"

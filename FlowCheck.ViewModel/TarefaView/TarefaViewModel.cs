@@ -11,6 +11,7 @@ using JJ.Net.Core.Commands;
 using JJ.Net.Core.Extensoes;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI;
+using Windows.UI.Text;
 
 namespace FlowCheck.ViewModel.TarefaView
 {
@@ -58,6 +59,8 @@ namespace FlowCheck.ViewModel.TarefaView
             {
                 _tarefa.Concluido = value;
                 OnPropertyChanged(nameof(Concluido));
+                OnPropertyChanged(nameof(DecoracaoTexto));
+                OnPropertyChanged(nameof(CorTextoTextBlock));
             }
         }
         public string Descricao
@@ -93,6 +96,19 @@ namespace FlowCheck.ViewModel.TarefaView
             get
             {
                 return ((_editarTarefa) ? Visibility.Collapsed : Visibility.Visible);
+            }
+        }
+        public TextDecorations DecoracaoTexto
+        {
+            get => ((Concluido) ? TextDecorations.Strikethrough : TextDecorations.None);
+        }
+        public SolidColorBrush CorTextoTextBlock
+        {
+            get
+            {
+                return Concluido
+                    ? (SolidColorBrush)Microsoft.UI.Xaml.Application.Current.Resources["Cinza3"] 
+                    : (SolidColorBrush)Microsoft.UI.Xaml.Application.Current.Resources["Branco"];
             }
         }
         #endregion

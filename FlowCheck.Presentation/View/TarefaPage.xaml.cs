@@ -1,32 +1,22 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using Windows.ApplicationModel.DataTransfer;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.UI;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Navigation;
+using JJ.Net.Core.Validador;
 using FlowCheck.Application;
 using FlowCheck.Application.Interfaces;
 using FlowCheck.Domain.Entidades;
 using FlowCheck.Domain.Enumerador;
 using FlowCheck.Domain.Helpers;
 using FlowCheck.Domain.Interfaces;
-using FlowCheck.InfraData.Repository;
 using FlowCheck.ViewModel.TarefaView;
-using JJ.Net.Core.Extensoes;
-using JJ.Net.Core.Validador;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.UI;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Data;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Navigation;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using System.Text;
-using System.Threading.Tasks;
-using Windows.ApplicationModel.DataTransfer;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
 
 namespace FlowCheck.Presentation.View
 {
@@ -121,6 +111,22 @@ namespace FlowCheck.Presentation.View
                 if (sender is TextBlock txb && txb.Tag is string IDGenerico)
                 {
                     ViewModel.EditarTarefa(IDGenerico, true);
+
+                    var parent = VisualTreeHelper.GetParent(txb);
+                    while (parent != null && !(parent is StackPanel))
+                    {
+                        parent = VisualTreeHelper.GetParent(parent);
+                    }
+
+                    if (parent is StackPanel container)
+                    {
+                        var textBox = FindVisualChild<TextBox>(container, "txtTarefa");
+                        if (textBox != null)
+                        {
+                            textBox.Focus(FocusState.Programmatic);
+                            textBox.SelectAll();
+                        }
+                    }
                 }
             }
             catch (Exception ex)
@@ -246,7 +252,6 @@ namespace FlowCheck.Presentation.View
                 Mensagem.ExibirErroAsync(parametro_AppServiceRequest.ValidarResultado.ObterPrimeiroErro(), this.Content.XamlRoot);
             }
         }
-
         private void FocarTarefaNovaTextBox(TarefaViewModel tarefaViewModel)
         {
             var container = spPrincipal.ContainerFromItem(tarefaViewModel) as FrameworkElement;
@@ -325,7 +330,6 @@ namespace FlowCheck.Presentation.View
                 Mensagem.ExibirErroAsync(ex.Message, this.Content.XamlRoot);
             }
         }
-
         public void SelecionarTarefas(bool value)
         {
             this.ViewModel.TudoConcluido = value;

@@ -25,7 +25,7 @@
                      Visibility="Collapsed"  
                      TextWrapping="Wrap"
                      MaxLength="200"
-                     Padding="10,10,10,10" 
+                     Padding="10" 
                      VerticalAlignment="Center" 
                      Text="{Binding Titulo, Mode=TwoWay}" 
                      Foreground="{StaticResource Branco}" 
@@ -36,7 +36,7 @@
                        DoubleTapped="txbTituloTarefa_DoubleTapped" 
                        Visibility="Visible" 
                        TextWrapping="Wrap"
-                       Padding="10,10,10,10" 
+                       Padding="10" 
                        VerticalAlignment="Center"
                        Foreground="{StaticResource Branco}" 
                        FontWeight="Bold"/>
@@ -75,14 +75,14 @@
                                     <VisualState x:Name="Dragging">
                                         <Storyboard>
                                             <DoubleAnimation Storyboard.TargetName="spTarefa"
-                                     Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.ScaleX)"
-                                     To="1.02" Duration="0:0:0.1"/>
+                                                             Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.ScaleX)"
+                                                             To="1.02" Duration="0:0:0.1"/>
                                             <DoubleAnimation Storyboard.TargetName="spTarefa"
-                                     Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.ScaleY)"
-                                     To="1.02" Duration="0:0:0.1"/>
+                                                             Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.ScaleY)"
+                                                             To="1.02" Duration="0:0:0.1"/>
                                             <DoubleAnimation Storyboard.TargetName="spTarefa"
-                                     Storyboard.TargetProperty="Opacity"
-                                     To="0.8" Duration="0:0:0.1"/>
+                                                             Storyboard.TargetProperty="Opacity"
+                                                             To="0.8" Duration="0:0:0.1"/>
                                         </Storyboard>
                                     </VisualState>
                                 </VisualStateGroup>
@@ -111,7 +111,7 @@
                                          VerticalAlignment="Center" 
                                          Text="{Binding Descricao, Mode=TwoWay}" 
                                          Foreground="{StaticResource Branco}" 
-                                         FontWeight="Bold" />
+                                         FontWeight="Normal" />
 
                                 <TextBlock x:Name="txbTarefa" 
                                           Grid.Column="1"
@@ -120,9 +120,12 @@
                                           Visibility="{Binding ExibirTextoVisual}"  
                                           TextWrapping="Wrap"
                                           Tag="{Binding IDGenerico}"
-                                          Padding="20,0,0,0" VerticalAlignment="Center"
-                                          Foreground="{StaticResource Branco}" 
-                                          FontWeight="SemiBold"/>
+                                          Margin="12,0"
+                                          Padding="0" 
+                                          VerticalAlignment="Center"
+                                          TextDecorations="{Binding DecoracaoTexto}"
+                                          Foreground="{Binding CorTextoTextBlock}" 
+                                          FontWeight="Normal"/>
 
                                 <Button x:Name="btnExibirTarefaAnotacao" 
                                         Command="{Binding ToggleAnotacaoCommand}"

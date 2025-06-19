@@ -86,7 +86,6 @@ namespace FlowCheck.ViewModel.TarefaView
         }
         #endregion
 
-
         public void ReordenarTarefas(int indiceOriginal, int indiceAlvo, TarefaViewModel tarefaMovida)
         {
             Tarefas.RemoveAt(indiceOriginal);
