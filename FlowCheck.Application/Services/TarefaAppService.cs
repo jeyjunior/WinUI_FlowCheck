@@ -101,8 +101,45 @@ namespace FlowCheck.Application.Services
             if (tarefa.PK_Tarefa <= 0)
                 return true;
 
-            if (tarefa.ValidarResultado == null)
-                tarefa.ValidarResultado = new ValidarResultado();
+            return RemoverTarefas(new List<Tarefa>() { tarefa });
+
+            //var config = Bootstrap.ServiceProvider.GetRequiredService<IConfiguracaoBancoDados>();
+
+            //using (var uow = new UnitOfWork(config.ConexaoAtiva))
+            //{
+            //    var tarefaRepository = new TarefaRepository(uow);
+            //    var tarefaAnotacaoRepository = new TarefaAnotacaoRepository(uow);
+
+            //    try
+            //    {
+            //        uow.Begin();
+
+            //        if (tarefa.TarefaAnotacao != null)
+            //            tarefaAnotacaoRepository.Deletar(tarefa.TarefaAnotacao.PK_TarefaAnotacao);
+
+            //        tarefaRepository.Deletar(tarefa.PK_Tarefa);
+
+            //        uow.Commit();
+
+            //        return true;
+            //    }
+            //    catch (Exception ex)
+            //    {
+            //        uow.Rollback();
+            //        tarefa.ValidarResultado.Adicionar("Não foi possível deletar informações na base.\n " + ex.Message);
+            //    }
+            //}
+
+            //return false;
+        }
+
+        public bool RemoverTarefas(IEnumerable<Tarefa> tarefas)
+        {
+            if (tarefas == null)
+                return false;
+
+            if (tarefas.Count() <= 0)
+                return true;
 
             var config = Bootstrap.ServiceProvider.GetRequiredService<IConfiguracaoBancoDados>();
 
@@ -115,10 +152,16 @@ namespace FlowCheck.Application.Services
                 {
                     uow.Begin();
 
-                    if (tarefa.TarefaAnotacao != null)
-                        tarefaAnotacaoRepository.Deletar(tarefa.TarefaAnotacao.PK_TarefaAnotacao);
+                    foreach (var tarefa in tarefas)
+                    {
+                        if (tarefa.PK_Tarefa <= 0)
+                            continue;
 
-                    tarefaRepository.Deletar(tarefa.PK_Tarefa);
+                        if (tarefa.TarefaAnotacao != null)
+                            tarefaAnotacaoRepository.Deletar(tarefa.TarefaAnotacao.PK_TarefaAnotacao);
+
+                        tarefaRepository.Deletar(tarefa.PK_Tarefa);
+                    }
 
                     uow.Commit();
 
@@ -127,7 +170,6 @@ namespace FlowCheck.Application.Services
                 catch (Exception ex)
                 {
                     uow.Rollback();
-                    tarefa.ValidarResultado.Adicionar("Não foi possível deletar informações na base.\n " + ex.Message);
                 }
             }
 

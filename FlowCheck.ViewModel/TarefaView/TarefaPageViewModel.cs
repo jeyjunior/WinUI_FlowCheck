@@ -69,6 +69,11 @@ namespace FlowCheck.ViewModel.TarefaView
             if (tarefa != null)
                 this.Tarefas.Remove(tarefa);
         }
+        public void RemoverTarefas(List<TarefaViewModel> tarefas)
+        {
+            foreach (var tarefa in tarefas)
+                this.Tarefas.Remove(tarefa);
+        }
         public void EditarTarefa(string IDGenerico, bool editar)
         {
             var tarefa = this.Tarefas.Where(i => i.IDGenerico.Equals(IDGenerico)).FirstOrDefault();
@@ -93,7 +98,6 @@ namespace FlowCheck.ViewModel.TarefaView
 
             AtualizarIndicesOrdem();
         }
-
         private void AtualizarIndicesOrdem()
         {
             for (int i = 0; i < Tarefas.Count; i++)
@@ -102,6 +106,20 @@ namespace FlowCheck.ViewModel.TarefaView
             }
 
             OnPropertyChanged(nameof(Tarefas));
+        }
+        public bool TudoConcluido
+        {
+            set
+            {
+                if (Tarefas == null)
+                    return;
+
+                if (Tarefas.Count <= 0)
+                    return;
+
+                foreach (var item in Tarefas)
+                    item.Concluido = value;
+            }
         }
     }
 }

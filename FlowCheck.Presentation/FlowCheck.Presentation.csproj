@@ -60,6 +60,9 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <WebView2DispatchAdapterNamespace>FlowCheck</WebView2DispatchAdapterNamespace>
+  </PropertyGroup>
 
   <!--
     Defining the "HasPackageAndPublishMenuAddedByProject" property here allows the Solution

@@ -10,6 +10,7 @@
     Title="FlowCheck">
 
     <Grid Background="{StaticResource Cinza12}">
+        
         <Grid.RowDefinitions>
             <RowDefinition Height="45"/>
             <RowDefinition Height="*"/>
@@ -17,6 +18,7 @@
         </Grid.RowDefinitions>
 
         <Border Background="{StaticResource Cinza12}" Padding="0" Margin="0">
+            
             <StackPanel Padding="20,0" Margin="0" Spacing="8">
                 <Grid Padding="0" VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="0,10,0,0">
                     <Grid.ColumnDefinitions>
@@ -30,6 +32,7 @@
                 </Grid>
                 <Border Grid.Row="1" Height="1" VerticalAlignment="Top" HorizontalAlignment="Stretch" Background="{StaticResource Cinza8}"/>
             </StackPanel>
+            
         </Border>
 
         <Frame x:Name="MainFrame" Grid.Row="1"/>
@@ -38,43 +41,45 @@
 
             <Grid Margin="20,0" VerticalAlignment="Center" ColumnSpacing="4">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="32"/>
-                    <ColumnDefinition Width="32"/>
-                    <ColumnDefinition Width="32"/>
+                    <ColumnDefinition Width="120"/>
                     <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="32"/>
-                    <ColumnDefinition Width="32"/>
+                    <ColumnDefinition Width="120"/>
                 </Grid.ColumnDefinitions>
 
-                <CheckBox x:Name="chkTodos" Grid.Column="0"/>
+                <StackPanel  Grid.Column="0" Orientation="Horizontal" HorizontalAlignment="Left">
+                    <Border Width="24" Height="24" HorizontalAlignment="Left" VerticalAlignment="Center">
+                        <CheckBox x:Name="chkTodos" Checked="chkTodos_Checked" Unchecked="chkTodos_Checked" Grid.Column="0"/>
+                    </Border>
 
-                <Button x:Name="btnExcluirTudo" 
-                        Click="btnExcluirTudo_Click"
-                        Grid.Column="1"
-                        Padding="0"
-                        Width="32"
-                        Height="32"
-                        VerticalAlignment="Center"
-                        HorizontalAlignment="Center"
-                        Style="{StaticResource AlternateCloseButtonStyle}">
-                    <FontIcon Glyph="&#xE74D;" FontFamily="Segoe Fluent Icons" FontWeight="Normal" FontSize="18"/>
-                </Button>
+                    <Button x:Name="btnExcluirTudo" 
+                            Click="btnExcluirTudo_Click"
+                            Grid.Column="1"
+                            Padding="0"
+                            Width="32"
+                            Height="32"
+                            VerticalAlignment="Center"
+                            HorizontalAlignment="Left"
+                            Style="{StaticResource AlternateCloseButtonStyle}">
+                        <FontIcon Glyph="&#xE74D;" FontFamily="Segoe Fluent Icons" FontWeight="Normal" FontSize="18"/>
+                    </Button>
 
-                <Button x:Name="btnArquivarTudo" 
-                        Click="btnArquivarTudo_Click"
-                        Grid.Column="2"
-                        Width="32"
-                        Height="32"
-                        Padding="0"
-                        VerticalAlignment="Center"
-                        HorizontalAlignment="Center"
-                        Style="{StaticResource AlternateCloseButtonStyle}">
-                    <FontIcon Glyph="&#xF158;" FontFamily="Segoe Fluent Icons" FontWeight="Normal" FontSize="18"/>
-                </Button>
-
+                    <Button x:Name="btnArquivarTudo" 
+                            Click="btnArquivarTudo_Click"
+                            Grid.Column="2"
+                            Width="32"
+                            Height="32"
+                            Padding="0"
+                            IsEnabled="False"
+                            VerticalAlignment="Center"
+                            HorizontalAlignment="Left"
+                            Style="{StaticResource AlternateCloseButtonStyle}">
+                        <FontIcon Glyph="&#xF158;" FontFamily="Segoe Fluent Icons" FontWeight="Normal" FontSize="18"/>
+                    </Button>
+                </StackPanel>
+                
                 <Button x:Name="btnAdicionar" 
                         Click="btnAdicionar_Click"
-                        Grid.Column="3"
+                        Grid.Column="1"
                         Padding="0" 
                         Width="32" 
                         Height="32" 
@@ -84,27 +89,25 @@
                     <FontIcon Glyph="&#xE710;" FontFamily="Segoe Fluent Icons" FontSize="18"/>
                 </Button>
 
-                <Button x:Name="btnTarefa" 
+                <StackPanel Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Right">
+                    <Button x:Name="btnTarefa" 
                         Grid.Column="4"
                         Click="BtnTarefas_Click" 
-                        HorizontalAlignment="Center" 
+                        HorizontalAlignment="Right" 
                         Style="{StaticResource AlternateCloseButtonStyle}">
-                    <Image Source="Assets/Tarefa-icone-48.png"  Width="32" Height="32"/>
-                </Button>
+                        <Image Source="Assets/Tarefa-icone-48.png"  Width="32" Height="32"/>
+                    </Button>
 
-                <Button x:Name="btnAnotacao" 
+                    <Button x:Name="btnAnotacao" 
                         Grid.Column="5"
                         Click="BtnAnotacoes_Click" 
-                        HorizontalAlignment="Center" 
+                        HorizontalAlignment="Right" 
                         Style="{StaticResource AlternateCloseButtonStyle}">
-                    <Image Source="Assets/Anotacao-icone-48.png" Width="32" Height="32"/>
-                </Button>
-            </Grid>
-            <!--<StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-
+                        <Image Source="Assets/Anotacao-icone-48.png" Width="32" Height="32"/>
+                    </Button>
+                </StackPanel>
                 
-
-            </StackPanel>-->
+            </Grid>
         </Border>
     </Grid>
 </Window>

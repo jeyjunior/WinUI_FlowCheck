@@ -11,5 +11,6 @@ namespace FlowCheck.Application.Interfaces
     {
         void SalvarTarefas(Tarefa_AppServiceRequest request);
         bool RemoverTarefa(Tarefa tarefa);
+        bool RemoverTarefas(IEnumerable<Tarefa> tarefas);
     }
 }

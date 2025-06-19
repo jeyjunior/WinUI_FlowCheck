@@ -2,6 +2,7 @@ using FlowCheck.Application;
 using FlowCheck.Application.Interfaces;
 using FlowCheck.Domain.Entidades;
 using FlowCheck.Domain.Enumerador;
+using FlowCheck.Domain.Helpers;
 using FlowCheck.Domain.Interfaces;
 using FlowCheck.InfraData.Repository;
 using FlowCheck.ViewModel.TarefaView;
@@ -39,7 +40,7 @@ namespace FlowCheck.Presentation.View
         #endregion
         
         #region Propriedades Públicas
-        public TarefaPageViewModel ViewModel { get; set; }
+        private TarefaPageViewModel ViewModel { get; set; }
         #endregion
 
         #region Propriedades
@@ -49,7 +50,7 @@ namespace FlowCheck.Presentation.View
         public TarefaPage()
         {
             this.InitializeComponent();
-
+            
             ViewModel = new TarefaPageViewModel();
             this.DataContext = ViewModel;
 
@@ -61,7 +62,7 @@ namespace FlowCheck.Presentation.View
         #endregion
         
         #region Eventos
-        private void Page_Loaded(object sender, RoutedEventArgs e)
+        private async void Page_Loaded(object sender, RoutedEventArgs e)
         {
             try
             {
@@ -70,7 +71,7 @@ namespace FlowCheck.Presentation.View
             }
             catch (Exception ex)
             {
-
+                await Mensagem.ExibirErroAsync(ex.Message, this.Content.XamlRoot);
             }
         }
         protected override void OnNavigatedFrom(NavigationEventArgs e)
@@ -83,7 +84,7 @@ namespace FlowCheck.Presentation.View
             }
             catch (Exception ex)
             {
-
+                Mensagem.ExibirErroAsync(ex.Message, this.Content.XamlRoot);
             }
         }
         private void txtTituloTarefa_LostFocus(object sender, RoutedEventArgs e)
@@ -110,7 +111,7 @@ namespace FlowCheck.Presentation.View
             }
             catch (Exception ex)
             {
-
+                Mensagem.ExibirErroAsync(ex.Message, this.Content.XamlRoot);
             }
         }
         private void txbTarefa_DoubleTapped(object sender, DoubleTappedRoutedEventArgs e)
@@ -124,7 +125,7 @@ namespace FlowCheck.Presentation.View
             }
             catch (Exception ex)
             {
-
+                Mensagem.ExibirErroAsync(ex.Message, this.Content.XamlRoot);
             }
         }
         private void btnRemoverTarefa_Click(object sender, RoutedEventArgs e)
@@ -145,7 +146,7 @@ namespace FlowCheck.Presentation.View
             }
             catch (Exception ex)
             {
-
+                Mensagem.ExibirErroAsync(ex.Message, this.Content.XamlRoot);
             }
         }
         private void TxtTarefaAnotacao_PreviewKeyDown(object sender, KeyRoutedEventArgs e)
@@ -169,6 +170,49 @@ namespace FlowCheck.Presentation.View
                 tarefaAdicionada = false;
                 scroll.ChangeView(null, scroll.ScrollableHeight, null);
             }
+        }
+        private void SpTarefa_DragStarting(object sender, DragStartingEventArgs e)
+        {
+            var stackPanel = sender as StackPanel;
+            var tarefaVM = stackPanel.DataContext as TarefaViewModel;
+
+            e.Data.Properties.Add("tarefa", tarefaVM);
+            e.Data.Properties.Add("indiceOriginal", ViewModel.Tarefas.IndexOf(tarefaVM));
+
+            e.DragUI.SetContentFromDataPackage();
+        }
+        private void SpTarefa_DragOver(object sender, DragEventArgs e)
+        {
+            if (e.DataView.Properties.ContainsKey("tarefa"))
+            {
+                e.AcceptedOperation = DataPackageOperation.Move;
+
+                var stackPanel = sender as StackPanel;
+                stackPanel.Background = new SolidColorBrush(Windows.UI.Color.FromArgb(30, 0, 120, 215));
+            }
+        }
+        private void SpTarefa_Drop(object sender, DragEventArgs e)
+        {
+            var targetPanel = sender as StackPanel;
+            var targetTarefa = targetPanel.DataContext as TarefaViewModel;
+
+            if (e.DataView.Properties.TryGetValue("tarefa", out object draggedItemObj) &&
+                e.DataView.Properties.TryGetValue("indiceOriginal", out object originalIndexObj))
+            {
+                var draggedTarefa = draggedItemObj as TarefaViewModel;
+                int originalIndex = (int)originalIndexObj;
+                int targetIndex = ViewModel.Tarefas.IndexOf(targetTarefa);
+
+                if (draggedTarefa != null && draggedTarefa != targetTarefa)
+                    ViewModel.ReordenarTarefas(originalIndex, targetIndex, draggedTarefa);
+            }
+
+            targetPanel.Background = new SolidColorBrush(Colors.Transparent);
+        }
+        private void SpTarefa_DragLeave(object sender, DragEventArgs e)
+        {
+            var stackPanel = sender as StackPanel;
+            stackPanel.Background = new SolidColorBrush(Colors.Transparent);
         }
         #endregion
 
@@ -199,24 +243,10 @@ namespace FlowCheck.Presentation.View
 
             if (!parametro_AppServiceRequest.ValidarResultado.EhValido)
             {
-                // Mensagem com erros?
+                Mensagem.ExibirErroAsync(parametro_AppServiceRequest.ValidarResultado.ObterPrimeiroErro(), this.Content.XamlRoot);
             }
         }
-        private void SalvarTarefas()
-        {
-            var tarefa_AppServiceRequest = new Tarefa_AppServiceRequest
-            {
-                Tarefas = ViewModel.Tarefas.Select(i => i.Tarefa).ToList(),
-                ValidarResultado = new ValidarResultado()
-            };
 
-            tarefaAppService.SalvarTarefas(tarefa_AppServiceRequest);
-
-            if (!tarefa_AppServiceRequest.ValidarResultado.EhValido)
-            {
-                // Mensagem com erros?
-            }
-        }
         private void FocarTarefaNovaTextBox(TarefaViewModel tarefaViewModel)
         {
             var container = spPrincipal.ContainerFromItem(tarefaViewModel) as FrameworkElement;
@@ -262,63 +292,44 @@ namespace FlowCheck.Presentation.View
 
             FocarTarefaNovaTextBox(tarefaViewModel);
         }
+        public void SalvarTarefas()
+        {
+            var tarefa_AppServiceRequest = new Tarefa_AppServiceRequest
+            {
+                Tarefas = ViewModel.Tarefas.Select(i => i.Tarefa).ToList(),
+                ValidarResultado = new ValidarResultado()
+            };
+
+            tarefaAppService.SalvarTarefas(tarefa_AppServiceRequest);
+
+            if (!tarefa_AppServiceRequest.ValidarResultado.EhValido)
+            {
+                Mensagem.ExibirErroAsync(tarefa_AppServiceRequest.ValidarResultado.ObterPrimeiroErro(), this.Content.XamlRoot);
+            }
+        }
+        public bool ExisteTarefasSelecionadas()
+        {
+            return (this.ViewModel.Tarefas.Count(i => i.Concluido) > 0);
+        }
+        public void ExcluirTarefasSelecionadas()
+        {
+            try
+            {
+                List<TarefaViewModel> tarefaViewModelCollection = ViewModel.Tarefas.Where(i => i.Concluido).ToList();
+
+                if (tarefaAppService.RemoverTarefas(tarefaViewModelCollection.Select(i => i.Tarefa)))
+                    ViewModel.RemoverTarefas(tarefaViewModelCollection);
+            }
+            catch (Exception ex)
+            {
+                Mensagem.ExibirErroAsync(ex.Message, this.Content.XamlRoot);
+            }
+        }
+
+        public void SelecionarTarefas(bool value)
+        {
+            this.ViewModel.TudoConcluido = value;
+        }
         #endregion
-
-
-        private void SpTarefa_DragStarting(object sender, DragStartingEventArgs e)
-        {
-            var stackPanel = sender as StackPanel;
-            var tarefaVM = stackPanel.DataContext as TarefaViewModel;
-
-            e.Data.Properties.Add("tarefa", tarefaVM);
-            e.Data.Properties.Add("indiceOriginal", ViewModel.Tarefas.IndexOf(tarefaVM));
-
-            // Visual personalizado para o arrasto (opcional)
-            e.DragUI.SetContentFromDataPackage();
-            //e.DragUI.Caption = "Movendo tarefa";
-
-           // VisualStateManager.GoToState((Control)(sender as FrameworkElement), "Dragging", true);
-        }
-
-        private void SpTarefa_DragOver(object sender, DragEventArgs e)
-        {
-            if (e.DataView.Properties.ContainsKey("tarefa"))
-            {
-                e.AcceptedOperation = DataPackageOperation.Move;
-
-                // Feedback visual
-                var stackPanel = sender as StackPanel;
-                stackPanel.Background = new SolidColorBrush(Windows.UI.Color.FromArgb(30, 0, 120, 215));
-            }
-        }
-
-        private void SpTarefa_Drop(object sender, DragEventArgs e)
-        {
-            var targetPanel = sender as StackPanel;
-            var targetTarefa = targetPanel.DataContext as TarefaViewModel;
-
-            if (e.DataView.Properties.TryGetValue("tarefa", out object draggedItemObj) &&
-                e.DataView.Properties.TryGetValue("indiceOriginal", out object originalIndexObj))
-            {
-                var draggedTarefa = draggedItemObj as TarefaViewModel;
-                int originalIndex = (int)originalIndexObj;
-                int targetIndex = ViewModel.Tarefas.IndexOf(targetTarefa);
-
-                if (draggedTarefa != null && draggedTarefa != targetTarefa)
-                {
-                    // Reordena no ViewModel
-                    ViewModel.ReordenarTarefas(originalIndex, targetIndex, draggedTarefa);
-                }
-            }
-
-            // Resetar o background
-            targetPanel.Background = new SolidColorBrush(Colors.Transparent);
-        }
-
-        private void SpTarefa_DragLeave(object sender, DragEventArgs e)
-        {
-            var stackPanel = sender as StackPanel;
-            stackPanel.Background = new SolidColorBrush(Colors.Transparent);
-        }
     }
 }

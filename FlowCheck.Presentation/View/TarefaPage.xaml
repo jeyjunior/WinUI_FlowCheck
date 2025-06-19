@@ -54,15 +54,15 @@
                     <DataTemplate>
 
                         <StackPanel x:Name="spTarefa" 
-            Padding="0" 
-            Margin="0,0,0,6" 
-            Background="{StaticResource Nenhuma}"
-            CanDrag="True"
-            DragStarting="SpTarefa_DragStarting"
-            Drop="SpTarefa_Drop"
-            DragOver="SpTarefa_DragOver"
-            DragLeave="SpTarefa_DragLeave"
-            AllowDrop="True">
+                                    Padding="0" 
+                                    Margin="0,0,0,6" 
+                                    Background="{StaticResource Nenhuma}"
+                                    CanDrag="True"
+                                    DragStarting="SpTarefa_DragStarting"
+                                    Drop="SpTarefa_Drop"
+                                    DragOver="SpTarefa_DragOver"
+                                    DragLeave="SpTarefa_DragLeave"
+                                    AllowDrop="True">
 
                             <!-- Adicionar um efeito visual durante o arrasto -->
                             <StackPanel.RenderTransform>

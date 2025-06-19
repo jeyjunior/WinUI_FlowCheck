@@ -1,8 +1,16 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
+using FlowCheck.Application;
+using FlowCheck.Application.Interfaces;
+using FlowCheck.Application.Services;
+using FlowCheck.Domain.Entidades;
+using FlowCheck.Domain.Enumerador;
+using FlowCheck.Domain.Helpers;
+using FlowCheck.Presentation.View;
+using FlowCheck.ViewModel.TarefaView;
+using JJ.Net.Core.Extensoes;
+using JJ.Net.Core.Validador;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.UI;           
+using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -10,27 +18,21 @@ using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
+using Newtonsoft.Json.Linq;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
-using Microsoft.UI;           
-using Microsoft.UI.Windowing;
 using WinRT.Interop;
-using FlowCheck.Presentation.View;
-using FlowCheck.Application;
-using FlowCheck.Application.Services;
-using FlowCheck.Domain.Entidades;
-using JJ.Net.Core.Validador;
-using FlowCheck.Application.Interfaces;
-using Microsoft.Extensions.DependencyInjection;
-using FlowCheck.Domain.Enumerador;
 
 namespace FlowCheck.Presentation
 {
     public sealed partial class MainWindow : Window
     {
         #region Propriedades
-        private readonly ITarefaAppService tarefaAppService;
-
         private const int Largura = 600;
         private const int Altura = 600;
         private AppWindow m_AppWindow;
@@ -48,38 +50,27 @@ namespace FlowCheck.Presentation
 
             Configuracao.Iniciar();
 
-            tarefaAppService = Bootstrap.ServiceProvider.GetRequiredService<ITarefaAppService>();
             this.Closed += MainWindow_Closed;
             CarregarTelaTarefa();
         }
         #endregion
 
         #region Eventos
-        private async void MainWindow_Closed(object sender, WindowEventArgs args)
+        private void MainWindow_Closed(object sender, WindowEventArgs args)
         {
             try
             {
                 if (MainFrame.Content is TarefaPage tarefaPage)
                 {
-                    var viewModel = tarefaPage.ViewModel;
+                    if (tarefaPage == null)
+                        return;
 
-                    var request = new Tarefa_AppServiceRequest
-                    {
-                        Tarefas = viewModel.Tarefas.Select(i => i.Tarefa).ToList(),
-                        ValidarResultado = new ValidarResultado()
-                    };
-
-                    tarefaAppService.SalvarTarefas(request); 
-
-                    if (!request.ValidarResultado.EhValido)
-                    {
-                        
-                    }
+                    tarefaPage.SalvarTarefas();
                 }
             }
-            catch (Exception ex)
+            catch 
             {
-                Console.WriteLine($"Erro ao salvar tarefas: {ex.Message}");
+
             }
         }
         private void BtnTarefas_Click(object sender, RoutedEventArgs e)
@@ -89,6 +80,96 @@ namespace FlowCheck.Presentation
         private void BtnAnotacoes_Click(object sender, RoutedEventArgs e)
         {
             CarregarTelaAnotacao();
+        }
+
+        private async void btnAdicionar_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                switch (telaEmExecucao)
+                {
+                    case eTelaEmExecucao.Nenhuma:
+                        break;
+                    case eTelaEmExecucao.Tarefa:
+
+                        if (MainFrame.Content is TarefaPage tarefaPage)
+                        {
+                            if (tarefaPage != null)
+                                tarefaPage.AdicionarTarefa();
+                        }
+
+                        break;
+                    case eTelaEmExecucao.Anotacao:
+                        break;
+                    default:
+                        break;
+                }
+            }
+            catch (Exception ex)
+            {
+                await Mensagem.ExibirErroAsync($"Erro ao tentar adicionar a tarefa: \n{ex.Message}", this.Content.XamlRoot);
+            }
+        }
+        private void btnArquivarTudo_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+        private async void btnExcluirTudo_Click(object sender, RoutedEventArgs e)
+        {
+            switch (telaEmExecucao)
+            {
+                case eTelaEmExecucao.Nenhuma:
+                    break;
+                case eTelaEmExecucao.Tarefa:
+                    if (MainFrame.Content is TarefaPage tarefaPage)
+                    {
+                        if (tarefaPage == null)
+                            return;
+
+                        if (!tarefaPage.ExisteTarefasSelecionadas())
+                        {
+                            await Mensagem.ExibirInformacaoAsync("Selecione as tarefas a serem excluídas.", this.Content.XamlRoot);
+                            return;
+                        }
+
+                        var resultado = await Mensagem.ExibirConfirmacaoAsync("Tem certeza que deseja excluir as tarefas selecionadas?\nEsta ação não poderá ser desfeita.", this.Content.XamlRoot);
+                        if (resultado == eTipoMensagemResultado.Sim)
+                            tarefaPage.ExcluirTarefasSelecionadas();
+                    }
+                    break;
+                case eTelaEmExecucao.Anotacao:
+                    break;
+                default:
+                    break;
+            }
+        }
+        private async void chkTodos_Checked(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                switch (telaEmExecucao)
+                {
+                    case eTelaEmExecucao.Nenhuma:
+                        break;
+                    case eTelaEmExecucao.Tarefa:
+
+                        if (MainFrame.Content is TarefaPage tarefaPage)
+                        {
+                            if (tarefaPage != null)
+                                tarefaPage.SelecionarTarefas(chkTodos.IsChecked.ObterValorOuPadrao(false));
+                        }
+
+                        break;
+                    case eTelaEmExecucao.Anotacao:
+                        break;
+                    default:
+                        break;
+                }
+            }
+            catch (Exception ex)
+            {
+                await Mensagem.ExibirErroAsync($"Erro ao tentar marcar/desmarcar as tarefas: \n{ex.Message}", this.Content.XamlRoot);
+            }
         }
         #endregion
 
@@ -151,44 +232,5 @@ namespace FlowCheck.Presentation
             telaEmExecucao = eTelaEmExecucao.Anotacao;
         }
         #endregion
-
-        private void btnAdicionar_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                switch (telaEmExecucao)
-                {
-                    case eTelaEmExecucao.Nenhuma:
-                        break;
-                    case eTelaEmExecucao.Tarefa:
-                        
-                        if (MainFrame.Content is TarefaPage tarefaPage)
-                        {
-                            if (tarefaPage != null)
-                                tarefaPage.AdicionarTarefa();
-                        }
-
-                        break;
-                    case eTelaEmExecucao.Anotacao:
-                        break;
-                    default:
-                        break;
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Erro ao salvar tarefas: {ex.Message}");
-            }
-        }
-
-        private void btnArquivarTudo_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        private void btnExcluirTudo_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
     }
 }
