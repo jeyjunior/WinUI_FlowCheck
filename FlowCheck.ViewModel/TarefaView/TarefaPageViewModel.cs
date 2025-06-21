@@ -9,6 +9,7 @@ using FlowCheck.Domain.Entidades;
 using Microsoft.UI.Xaml.Controls;
 using JJ.Net.Core.Commands;
 using JJ.Net.Core.Extensoes;
+using FlowCheck.Domain.DTO;
 
 namespace FlowCheck.ViewModel.TarefaView
 {
@@ -61,6 +62,7 @@ namespace FlowCheck.ViewModel.TarefaView
             var tarefaViewModel = new TarefaViewModel(tarefa);
             Tarefas.Add(tarefaViewModel);
 
+            AtualizarStatus();
             return tarefaViewModel;
         }
         public void RemoverTarefa(string IDGenerico)
@@ -68,11 +70,15 @@ namespace FlowCheck.ViewModel.TarefaView
             var tarefa = this.Tarefas.Where(i => i.IDGenerico.Equals(IDGenerico)).FirstOrDefault();
             if (tarefa != null)
                 this.Tarefas.Remove(tarefa);
+
+            AtualizarStatus();
         }
         public void RemoverTarefas(List<TarefaViewModel> tarefas)
         {
             foreach (var tarefa in tarefas)
                 this.Tarefas.Remove(tarefa);
+
+            AtualizarStatus();
         }
         public void EditarTarefa(string IDGenerico, bool editar)
         {
@@ -94,8 +100,6 @@ namespace FlowCheck.ViewModel.TarefaView
                 Tarefas.Add(tarefaMovida);
             else
                 Tarefas.Insert(indiceAlvo, tarefaMovida);
-
-            AtualizarIndicesOrdem();
         }
         private void AtualizarIndicesOrdem()
         {
@@ -118,7 +122,26 @@ namespace FlowCheck.ViewModel.TarefaView
 
                 foreach (var item in Tarefas)
                     item.Concluido = value;
+
+                OnPropertyChanged(nameof(TarefaStatus));
             }
+        }
+        public string TarefaStatus
+        {
+            get
+            {
+                string ret = "";
+
+                if (Tarefas.Count > 0)
+                    ret = $"{Tarefas.Count(i => i.Concluido)}/{Tarefas.Count}";
+
+                return ret;
+            }
+        }
+
+        public void AtualizarStatus()
+        {
+            OnPropertyChanged(nameof(TarefaStatus));
         }
     }
 }

@@ -1,7 +1,12 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using Windows.ApplicationModel.DataTransfer;
+using FlowCheck.Application;
+using FlowCheck.Application.Interfaces;
+using FlowCheck.Domain.DTO;
+using FlowCheck.Domain.Entidades;
+using FlowCheck.Domain.Enumerador;
+using FlowCheck.Domain.Helpers;
+using FlowCheck.Domain.Interfaces;
+using FlowCheck.ViewModel.TarefaView;
+using JJ.Net.Core.Validador;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI;
 using Microsoft.UI.Xaml;
@@ -9,14 +14,10 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
-using JJ.Net.Core.Validador;
-using FlowCheck.Application;
-using FlowCheck.Application.Interfaces;
-using FlowCheck.Domain.Entidades;
-using FlowCheck.Domain.Enumerador;
-using FlowCheck.Domain.Helpers;
-using FlowCheck.Domain.Interfaces;
-using FlowCheck.ViewModel.TarefaView;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using Windows.ApplicationModel.DataTransfer;
 
 namespace FlowCheck.Presentation.View
 {
@@ -28,12 +29,9 @@ namespace FlowCheck.Presentation.View
         private readonly ITarefaAppService tarefaAppService;
         private readonly IParametroAppService parametroAppService;
         #endregion
-        
-        #region Propriedades Públicas
-        private TarefaPageViewModel ViewModel { get; set; }
-        #endregion
 
         #region Propriedades
+        private TarefaPageViewModel ViewModel { get; set; }
         private bool tarefaAdicionada = false;
         #endregion
         #region Construtor
@@ -148,7 +146,8 @@ namespace FlowCheck.Presentation.View
                     {
                         ViewModel.RemoverTarefa(IDGenerico);
                     }
-                }
+                } 
+
             }
             catch (Exception ex)
             {
@@ -219,6 +218,10 @@ namespace FlowCheck.Presentation.View
         {
             var stackPanel = sender as StackPanel;
             stackPanel.Background = new SolidColorBrush(Colors.Transparent);
+        }
+        private void chkConcluido_CheckedStatus(object sender, RoutedEventArgs e)
+        {
+            this.ViewModel.AtualizarStatus();
         }
         #endregion
 

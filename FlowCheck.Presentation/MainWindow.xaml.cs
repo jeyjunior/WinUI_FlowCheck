@@ -9,6 +9,7 @@ using FlowCheck.Application;
 using FlowCheck.Domain.Enumerador;
 using FlowCheck.Domain.Helpers;
 using FlowCheck.Presentation.View;
+using FlowCheck.Domain.DTO;
 
 namespace FlowCheck.Presentation
 {
@@ -202,7 +203,6 @@ namespace FlowCheck.Presentation
 
             activeButton.Opacity = 0.6;
         }
-
         private void CarregarTelaTarefa()
         {
             CarregarPagina(typeof(TarefaPage), btnTarefa);
