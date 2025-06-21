@@ -21,7 +21,7 @@ using Windows.ApplicationModel.DataTransfer;
 
 namespace FlowCheck.Presentation.View
 {
-    public sealed partial class TarefaPage : Page
+    public sealed partial class TarefaPage : Page, IPageComandos
     {
         #region Interfaces
         private readonly IParametroRepository parametroRepository;
@@ -68,7 +68,7 @@ namespace FlowCheck.Presentation.View
             {
                 base.OnNavigatedFrom(e);
                 SalvarParametros();
-                SalvarTarefas();
+                Salvar();
             }
             catch (Exception ex)
             {
@@ -287,7 +287,7 @@ namespace FlowCheck.Presentation.View
         #endregion
 
         #region Métodos Público
-        public void AdicionarTarefa()
+        public void Adicionar()
         {
             var novaTarefa = new Tarefa
             {
@@ -300,7 +300,7 @@ namespace FlowCheck.Presentation.View
 
             FocarTarefaNovaTextBox(tarefaViewModel);
         }
-        public void SalvarTarefas()
+        public void Salvar()
         {
             var tarefa_AppServiceRequest = new Tarefa_AppServiceRequest
             {
@@ -315,11 +315,11 @@ namespace FlowCheck.Presentation.View
                 Mensagem.ExibirErroAsync(tarefa_AppServiceRequest.ValidarResultado.ObterPrimeiroErro(), this.Content.XamlRoot);
             }
         }
-        public bool ExisteTarefasSelecionadas()
+        public bool ExisteItensSelecionados()
         {
             return (this.ViewModel.Tarefas.Count(i => i.Concluido) > 0);
         }
-        public void ExcluirTarefasSelecionadas()
+        public void ExcluirItensSelecionados()
         {
             try
             {
@@ -333,7 +333,7 @@ namespace FlowCheck.Presentation.View
                 Mensagem.ExibirErroAsync(ex.Message, this.Content.XamlRoot);
             }
         }
-        public void SelecionarTarefas(bool value)
+        public void SelecionarTudo(bool value)
         {
             this.ViewModel.TudoConcluido = value;
         }

@@ -1,15 +1,15 @@
 using System;
-using WinRT.Interop;
 using Microsoft.UI;           
-using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml.Controls;
+using WinRT.Interop;
 using JJ.Net.Core.Extensoes;
 using FlowCheck.Application;
 using FlowCheck.Domain.Enumerador;
 using FlowCheck.Domain.Helpers;
+using FlowCheck.Domain.Interfaces;
 using FlowCheck.Presentation.View;
-using FlowCheck.Domain.DTO;
 
 namespace FlowCheck.Presentation
 {
@@ -20,8 +20,6 @@ namespace FlowCheck.Presentation
         private const int Altura = 600;
         private AppWindow m_AppWindow;
         private Type paginaAtiva;
-
-        private eTelaEmExecucao telaEmExecucao = eTelaEmExecucao.Nenhuma;
         #endregion
 
         #region Construtor
@@ -43,13 +41,8 @@ namespace FlowCheck.Presentation
         {
             try
             {
-                if (MainFrame.Content is TarefaPage tarefaPage)
-                {
-                    if (tarefaPage == null)
-                        return;
-
-                    tarefaPage.SalvarTarefas();
-                }
+                if (MainFrame.Content is IPageComandos pagina)
+                    pagina.Salvar();
             }
             catch 
             {
@@ -64,29 +57,12 @@ namespace FlowCheck.Presentation
         {
             CarregarTelaAnotacao();
         }
-
         private async void btnAdicionar_Click(object sender, RoutedEventArgs e)
         {
             try
             {
-                switch (telaEmExecucao)
-                {
-                    case eTelaEmExecucao.Nenhuma:
-                        break;
-                    case eTelaEmExecucao.Tarefa:
-
-                        if (MainFrame.Content is TarefaPage tarefaPage)
-                        {
-                            if (tarefaPage != null)
-                                tarefaPage.AdicionarTarefa();
-                        }
-
-                        break;
-                    case eTelaEmExecucao.Anotacao:
-                        break;
-                    default:
-                        break;
-                }
+                if (MainFrame.Content is IPageComandos pagina)
+                    pagina.Adicionar();
             }
             catch (Exception ex)
             {
@@ -99,59 +75,30 @@ namespace FlowCheck.Presentation
         }
         private async void btnExcluirTudo_Click(object sender, RoutedEventArgs e)
         {
-            switch (telaEmExecucao)
+            if (MainFrame.Content is IPageComandos pagina)
             {
-                case eTelaEmExecucao.Nenhuma:
-                    break;
-                case eTelaEmExecucao.Tarefa:
-                    if (MainFrame.Content is TarefaPage tarefaPage)
-                    {
-                        if (tarefaPage == null)
-                            return;
+                if (!pagina.ExisteItensSelecionados())
+                {
+                    await Mensagem.ExibirInformacaoAsync("Nenhum item selecionado.", this.Content.XamlRoot);
+                    return;
+                }
 
-                        if (!tarefaPage.ExisteTarefasSelecionadas())
-                        {
-                            await Mensagem.ExibirInformacaoAsync("Selecione as tarefas a serem excluídas.", this.Content.XamlRoot);
-                            return;
-                        }
-
-                        var resultado = await Mensagem.ExibirConfirmacaoAsync("Tem certeza que deseja excluir as tarefas selecionadas?\nEsta ação não poderá ser desfeita.", this.Content.XamlRoot);
-                        if (resultado == eTipoMensagemResultado.Sim)
-                            tarefaPage.ExcluirTarefasSelecionadas();
-                    }
-                    break;
-                case eTelaEmExecucao.Anotacao:
-                    break;
-                default:
-                    break;
+                var resultado = await Mensagem.ExibirConfirmacaoAsync("Tem certeza que deseja excluir as tarefas selecionadas?\nEsta ação não poderá ser desfeita.", this.Content.XamlRoot);
+                
+                if (resultado == eTipoMensagemResultado.Sim)
+                    pagina.ExcluirItensSelecionados();
             }
         }
         private async void chkTodos_Checked(object sender, RoutedEventArgs e)
         {
             try
             {
-                switch (telaEmExecucao)
-                {
-                    case eTelaEmExecucao.Nenhuma:
-                        break;
-                    case eTelaEmExecucao.Tarefa:
-
-                        if (MainFrame.Content is TarefaPage tarefaPage)
-                        {
-                            if (tarefaPage != null)
-                                tarefaPage.SelecionarTarefas(chkTodos.IsChecked.ObterValorOuPadrao(false));
-                        }
-
-                        break;
-                    case eTelaEmExecucao.Anotacao:
-                        break;
-                    default:
-                        break;
-                }
+                if (MainFrame.Content is IPageComandos pagina)
+                    pagina.SelecionarTudo(chkTodos.IsChecked.ObterValorOuPadrao(false));
             }
             catch (Exception ex)
             {
-                await Mensagem.ExibirErroAsync($"Erro ao tentar marcar/desmarcar as tarefas: \n{ex.Message}", this.Content.XamlRoot);
+                await Mensagem.ExibirErroAsync($"Erro ao tentar marcar/desmarcar os itens: \n{ex.Message}", this.Content.XamlRoot);
             }
         }
         #endregion
@@ -206,12 +153,10 @@ namespace FlowCheck.Presentation
         private void CarregarTelaTarefa()
         {
             CarregarPagina(typeof(TarefaPage), btnTarefa);
-            telaEmExecucao = eTelaEmExecucao.Tarefa;
         }
         private void CarregarTelaAnotacao()
         {
             CarregarPagina(typeof(AnotacaoPage), btnAnotacao);
-            telaEmExecucao = eTelaEmExecucao.Anotacao;
         }
         #endregion
     }
