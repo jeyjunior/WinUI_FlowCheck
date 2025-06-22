@@ -11,7 +11,7 @@ using JJ.Net.Core.Commands;
 using JJ.Net.Core.Extensoes;
 using FlowCheck.Domain.DTO;
 
-namespace FlowCheck.ViewModel.TarefaView
+namespace FlowCheck.ViewModel.TarefaViewModel
 {
     public class TarefaPageViewModel : INotifyPropertyChanged
     {
@@ -138,7 +138,6 @@ namespace FlowCheck.ViewModel.TarefaView
                 return ret;
             }
         }
-
         public void AtualizarStatus()
         {
             OnPropertyChanged(nameof(TarefaStatus));

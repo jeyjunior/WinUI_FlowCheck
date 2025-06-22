@@ -21,6 +21,10 @@ namespace FlowCheck.Domain.Entidades
         [Relacionamento("Cor", "PK_Cor")]
         public int FK_Cor { get; set; }
 
+        /* Relacionamento */
+        [Editavel(false)]
+        public Cor Cor { get; set; }
+
         [Editavel(false)]
         public ValidarResultado ValidarResultado { get; set; } = new ValidarResultado();
 
@@ -41,5 +45,11 @@ namespace FlowCheck.Domain.Entidades
 
             return true;
         }
+    }
+
+    public class Categoria_Request
+    {
+        public string Nome { get; set; }
+        public ValidarResultado ValidarResultado { get; set; } = new ValidarResultado();
     }
 }

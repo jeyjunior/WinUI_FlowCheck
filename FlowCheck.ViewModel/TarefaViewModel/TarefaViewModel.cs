@@ -6,14 +6,14 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using FlowCheck.Domain.Entidades;
-using JJ.Net.Core.Commands;
-using JJ.Net.Core.Extensoes;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI;
 using Windows.UI.Text;
+using JJ.Net.Core.Commands;
+using JJ.Net.Core.Extensoes;
+using FlowCheck.Domain.Entidades;
 
-namespace FlowCheck.ViewModel.TarefaView
+namespace FlowCheck.ViewModel.TarefaViewModel
 {
     public class TarefaViewModel : INotifyPropertyChanged
     {
@@ -49,7 +49,7 @@ namespace FlowCheck.ViewModel.TarefaView
         #region Tarefa
         private Guid _idGenerico;
         public string IDGenerico => _idGenerico.ToString();
-
+        
         private readonly Tarefa _tarefa;
         public Tarefa Tarefa { get => _tarefa; }
         public bool Concluido
@@ -128,7 +128,6 @@ namespace FlowCheck.ViewModel.TarefaView
                 }
             }
         }
-
         private string _iconeBotaoExibirTarefaAnotacao;
         public string IconeBotaoExibirTarefaAnotacao
         {
@@ -181,8 +180,6 @@ namespace FlowCheck.ViewModel.TarefaView
                 OnPropertyChanged(nameof(ExisteAnotacao));
             }
         }
-
-
         private SolidColorBrush _existeAnotacao = (SolidColorBrush)Microsoft.UI.Xaml.Application.Current.Resources["Nenhuma"];
         public SolidColorBrush ExisteAnotacao
         {

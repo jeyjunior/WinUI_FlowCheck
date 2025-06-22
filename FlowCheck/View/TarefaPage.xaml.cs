@@ -18,12 +18,12 @@ using FlowCheck.Domain.Entidades;
 using FlowCheck.Domain.Enumerador;
 using FlowCheck.Domain.Helpers;
 using FlowCheck.Domain.Interfaces;
-using FlowCheck.ViewModel.TarefaView;
+using FlowCheck.ViewModel.TarefaViewModel;
 
 
 namespace FlowCheck.View
 {
-    public sealed partial class TarefaPage : Page, IPageComandos
+    public sealed partial class TarefaPage : Page, IPageComandos, IPageItensComandos
     {
         #region Interfaces
         private readonly ITarefaAppService tarefaAppService;

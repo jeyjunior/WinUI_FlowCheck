@@ -79,7 +79,7 @@ namespace FlowCheck
         }
         private async void btnExcluirTudo_Click(object sender, RoutedEventArgs e)
         {
-            if (MainFrame.Content is IPageComandos pagina)
+            if (MainFrame.Content is IPageItensComandos pagina)
             {
                 if (!pagina.ExisteItensSelecionados())
                 {
@@ -97,7 +97,7 @@ namespace FlowCheck
         {
             try
             {
-                if (MainFrame.Content is IPageComandos pagina)
+                if (MainFrame.Content is IPageItensComandos pagina)
                     pagina.SelecionarTudo(chkTodos.IsChecked.ObterValorOuPadrao(false));
             }
             catch (Exception ex)

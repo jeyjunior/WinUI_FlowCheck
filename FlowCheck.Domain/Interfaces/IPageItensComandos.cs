@@ -6,9 +6,10 @@ using System.Threading.Tasks;
 
 namespace FlowCheck.Domain.Interfaces
 {
-    public interface IPageComandos
+    public interface IPageItensComandos
     {
-        void Adicionar();
-        void Salvar();
+        void SelecionarTudo(bool selecionar);
+        void ExcluirItensSelecionados();
+        bool ExisteItensSelecionados();
     }
 }

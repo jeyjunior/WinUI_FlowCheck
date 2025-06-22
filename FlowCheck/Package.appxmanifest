@@ -8,15 +8,15 @@
   IgnorableNamespaces="uap rescap">
 
   <Identity
-    Name="89eb803e-5dcd-4c9c-a3ff-5a726849b720"
-    Publisher="CN=jeyjr"
+    Name="JeyJr.FlowCheck"
+    Publisher="CN=53663670-79F2-45CB-8E00-C8EA1BF62707"
     Version="1.0.0.0" />
 
-  <mp:PhoneIdentity PhoneProductId="89eb803e-5dcd-4c9c-a3ff-5a726849b720" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
+  <mp:PhoneIdentity PhoneProductId="cea59804-3c85-412b-bf90-385296a4c335" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
 
   <Properties>
     <DisplayName>FlowCheck</DisplayName>
-    <PublisherDisplayName>jeyjr</PublisherDisplayName>
+    <PublisherDisplayName>JeyJr</PublisherDisplayName>
     <Logo>Assets\StoreLogo.png</Logo>
   </Properties>
 

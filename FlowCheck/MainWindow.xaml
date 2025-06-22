@@ -74,23 +74,23 @@
 
                 <StackPanel Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Right">
                     <Button x:Name="btnTarefa" 
-                        Click="BtnTarefas_Click" 
-                        HorizontalAlignment="Right" 
-                        Style="{StaticResource AlternateCloseButtonStyle}">
+                            Click="BtnTarefas_Click" 
+                            HorizontalAlignment="Right" 
+                            Style="{StaticResource AlternateCloseButtonStyle}">
                         <Image Source="Assets/Tarefa-icone-48.png"  Width="32" Height="32"/>
                     </Button>
 
                     <Button x:Name="btnAnotacao" 
-                        Click="BtnAnotacoes_Click" 
-                        HorizontalAlignment="Right" 
-                        Style="{StaticResource AlternateCloseButtonStyle}">
+                            Click="BtnAnotacoes_Click" 
+                            HorizontalAlignment="Right" 
+                            Style="{StaticResource AlternateCloseButtonStyle}">
                         <Image Source="Assets/Anotacao-icone-48.png" Width="32" Height="32"/>
                     </Button>
 
                     <Button x:Name="btnCategoria" 
-                        Click="btnCategoria_Click" 
-                        HorizontalAlignment="Right" 
-                        Style="{StaticResource AlternateCloseButtonStyle}">
+                            Click="btnCategoria_Click" 
+                            HorizontalAlignment="Right" 
+                            Style="{StaticResource AlternateCloseButtonStyle}">
                         <Image Source="Assets/Categoria-icone-48.png" Width="32" Height="32"/>
                     </Button>
                 </StackPanel>
