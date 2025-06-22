@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Windows.ApplicationModel.DataTransfer;
+using System.Reflection.Metadata;
 using Microsoft.UI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -9,6 +9,7 @@ using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
 using Microsoft.Extensions.DependencyInjection;
+using Windows.ApplicationModel.DataTransfer;
 using JJ.Net.Core.Validador;
 using FlowCheck.Application;
 using FlowCheck.Application.Interfaces;
@@ -19,7 +20,8 @@ using FlowCheck.Domain.Helpers;
 using FlowCheck.Domain.Interfaces;
 using FlowCheck.ViewModel.TarefaView;
 
-namespace FlowCheck.Presentation.View
+
+namespace FlowCheck.View
 {
     public sealed partial class TarefaPage : Page, IPageComandos
     {
@@ -32,12 +34,12 @@ namespace FlowCheck.Presentation.View
         private TarefaPageViewModel ViewModel { get; set; }
         private bool tarefaAdicionada = false;
         #endregion
-        
+
         #region Construtor
         public TarefaPage()
         {
             this.InitializeComponent();
-            
+
             ViewModel = new TarefaPageViewModel();
             this.DataContext = ViewModel;
 
@@ -45,7 +47,7 @@ namespace FlowCheck.Presentation.View
             parametroAppService = Bootstrap.ServiceProvider.GetRequiredService<IParametroAppService>();
         }
         #endregion
-        
+
         #region Eventos
         private async void Page_Loaded(object sender, RoutedEventArgs e)
         {
@@ -82,7 +84,7 @@ namespace FlowCheck.Presentation.View
         {
             txbTituloTarefa.Visibility = Visibility.Collapsed;
             txtTituloTarefa.Visibility = Visibility.Visible;
-            txtTituloTarefa.Focus( FocusState.Keyboard);
+            txtTituloTarefa.Focus(FocusState.Keyboard);
             txtTituloTarefa.SelectAll();
         }
         private void txtTarefa_LostFocus(object sender, RoutedEventArgs e)
@@ -143,7 +145,7 @@ namespace FlowCheck.Presentation.View
                     {
                         ViewModel.RemoverTarefa(IDGenerico);
                     }
-                } 
+                }
 
             }
             catch (Exception ex)

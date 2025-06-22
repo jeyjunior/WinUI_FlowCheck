@@ -3,15 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using JJ.Net.Core.Validador;
+using JJ.Net.CrossData_WinUI_3.Interfaces;
+using JJ.Net.Data;
+using JJ.Net.Data.Interfaces;
 using FlowCheck.Application.Interfaces;
 using FlowCheck.Domain.Entidades;
 using FlowCheck.Domain.Interfaces;
 using FlowCheck.InfraData.Repository;
 using Microsoft.Extensions.DependencyInjection;
-using JJ.Net.Core.Validador;
-using JJ.Net.CrossData_WinUI_3.Interfaces;
-using JJ.Net.Data;
-using JJ.Net.Data.Interfaces;
 
 namespace FlowCheck.Application.Services
 {
@@ -33,6 +33,12 @@ namespace FlowCheck.Application.Services
         #endregion
 
         #region Metodos
+        public void Dispose()
+        {
+            _uow.Dispose();
+            _tarefaRepository.Dispose();
+            _tarefaAnotacaoRepository.Dispose();
+        }
         public void SalvarTarefas(Tarefa_AppServiceRequest request)
         {
             if (request == null)
@@ -175,11 +181,19 @@ namespace FlowCheck.Application.Services
 
             return false;
         }
-        public void Dispose()
+        public IEnumerable<Tarefa> Pesquisar(Tarefa_Request request)
         {
-            _uow.Dispose();
-            _tarefaRepository.Dispose();
-            _tarefaAnotacaoRepository.Dispose();
+            string condicao = "";
+
+            if (request.Arquivado)
+                condicao += "Arquivado = @Arquivado\n ";
+
+            var parametros = new
+            {
+                Arquivado = request.Arquivado
+            };
+
+            return _tarefaRepository.ObterLista(condicao, parametros);
         }
         #endregion
     }

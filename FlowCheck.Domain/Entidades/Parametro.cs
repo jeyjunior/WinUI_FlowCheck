@@ -37,6 +37,12 @@ namespace FlowCheck.Domain.Entidades
         }
     }
 
+    public class Parametro_Request
+    {
+        public string Nome { get; set; }
+        public ValidarResultado ValidarResultado { get; set; } = new ValidarResultado();
+    }
+
     public class Parametro_AppServiceRequest
     {
         public List<Parametro> Parametros { get; set; }

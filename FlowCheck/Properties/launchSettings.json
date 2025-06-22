@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "FlowCheck (Package)": {
+      "commandName": "MsixPackage"
+    },
+    "FlowCheck (Unpackaged)": {
+      "commandName": "Project"
+    }
+  }
+}

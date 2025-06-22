@@ -1,5 +1,5 @@
 using System;
-using Microsoft.UI;           
+using Microsoft.UI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml.Controls;
@@ -9,9 +9,9 @@ using FlowCheck.Application;
 using FlowCheck.Domain.Enumerador;
 using FlowCheck.Domain.Helpers;
 using FlowCheck.Domain.Interfaces;
-using FlowCheck.Presentation.View;
+using FlowCheck.View;
 
-namespace FlowCheck.Presentation
+namespace FlowCheck
 {
     public sealed partial class MainWindow : Window
     {
@@ -44,7 +44,7 @@ namespace FlowCheck.Presentation
                 if (MainFrame.Content is IPageComandos pagina)
                     pagina.Salvar();
             }
-            catch 
+            catch
             {
 
             }
@@ -88,7 +88,7 @@ namespace FlowCheck.Presentation
                 }
 
                 var resultado = await Mensagem.ExibirConfirmacaoAsync("Tem certeza que deseja excluir as tarefas selecionadas?\nEsta ação não poderá ser desfeita.", this.Content.XamlRoot);
-                
+
                 if (resultado == eTipoMensagemResultado.Sim)
                     pagina.ExcluirItensSelecionados();
             }

@@ -1,31 +1,39 @@
-﻿using FlowCheck.Application.Interfaces;
-using FlowCheck.Domain.Entidades;
-using FlowCheck.Domain.Interfaces;
-using FlowCheck.InfraData.Repository;
-using JJ.Net.Core.Validador;
-using JJ.Net.CrossData_WinUI_3.Interfaces;
-using JJ.Net.Data;
-using JJ.Net.Data.Interfaces;
-using Microsoft.Extensions.DependencyInjection;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Extensions.DependencyInjection;
+using JJ.Net.Core.Extensoes;
+using JJ.Net.Core.Validador;
+using JJ.Net.CrossData_WinUI_3.Interfaces;
+using JJ.Net.Data;
+using JJ.Net.Data.Interfaces;
+using FlowCheck.Application.Interfaces;
+using FlowCheck.Domain.Entidades;
+using FlowCheck.Domain.Interfaces;
+using FlowCheck.InfraData.Repository;
 
 namespace FlowCheck.Application.Services
 {
     public class ParametroAppService : IParametroAppService
     {
+        #region Interfaces
         private readonly IUnitOfWork _uow;
         private readonly IParametroRepository _parametroRepository;
+        #endregion
 
+        #region Metodos
+        public void Dispose()
+        {
+            _uow.Dispose();
+            _parametroRepository.Dispose();
+        }
         public ParametroAppService(IUnitOfWork uow, IParametroRepository parametroRepository)
         {
             this._uow = uow;
             this._parametroRepository = parametroRepository;
         }
-
         public void SalvarParametros(Parametro_AppServiceRequest request)
         {
             if (request == null)
@@ -68,11 +76,20 @@ namespace FlowCheck.Application.Services
                 }
             }
         }
-
-        public void Dispose()
+        public IEnumerable<Parametro> Pesquisar(Parametro_Request request)
         {
-            _uow.Dispose();
-            _parametroRepository.Dispose();
+            string condicao = "";
+
+            if (request.Nome.ObterValorOuPadrao("").Trim() != "")
+                condicao += "Nome = @Nome\n";
+
+            var parametros = new
+            {
+                Nome = request.Nome
+            };
+
+            return _parametroRepository.ObterLista(condicao, parametros);
         }
+        #endregion
     }
 }

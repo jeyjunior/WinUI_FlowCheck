@@ -48,6 +48,12 @@ namespace FlowCheck.Domain.Entidades
         }
     }
 
+    public class Tarefa_Request
+    {
+        public bool Arquivado { get; set; }
+        public ValidarResultado ValidarResultado { get; set; } = new ValidarResultado();
+    }
+
     public class Tarefa_AppServiceRequest
     {
         public List<Tarefa> Tarefas { get; set; }
