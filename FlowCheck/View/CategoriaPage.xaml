@@ -8,9 +8,13 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
     Loaded="Page_Loaded"
+    MinWidth="600"
+    MinHeight="700"
     Background="{StaticResource Cinza12}">
 
     <Grid RowSpacing="8">
+
+       
         <Grid.RowDefinitions>
             <RowDefinition Height="38"/>
             <RowDefinition Height="Auto"/>
@@ -109,5 +113,54 @@
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
         </ScrollViewer>
+
+        <ContentDialog x:Name="AddCategoryDialog"
+                       Opacity="0"
+                       Title="Adicionar Categoria"
+                       PrimaryButtonText="Salvar"
+                       CloseButtonText="Cancelar"
+                       DefaultButton="Primary"
+                       Margin="0"
+                       Padding="0"
+                       Background="{StaticResource Cinza13}"
+                       IsHitTestVisible="False">
+            
+            <StackPanel Background="{StaticResource Nenhuma}" 
+                        CornerRadius="0" 
+                        Padding="0">
+
+                <TextBox x:Name="CategoryTextBox" 
+                         PlaceholderText="Categoria"
+                         TextWrapping="Wrap"
+                         MaxLength="300"
+                         MaxWidth="400"/>
+
+                <StackPanel Background="{StaticResource Cinza11}" 
+                            Margin="0,12,0,0" 
+                            Orientation="Horizontal" 
+                            HorizontalAlignment="Right" 
+                            Spacing="8">
+                    
+                    <TextBox x:Name="ColorTextBox"
+                             PlaceholderText="#FFFFFFFF"
+                             TextAlignment="Center"
+                             Width="150"
+                             MaxLength="9"
+                             TextWrapping="NoWrap"
+                             HorizontalAlignment="Right"/>
+
+                    <Button x:Name="btnCor"
+                            Width="36" 
+                            Height="36" 
+                            Padding="0"
+                            Background="{StaticResource Roxo}">
+
+                        <FontIcon Glyph="&#xE790;"                         
+                                  FontFamily="Segoe Fluent Icons" 
+                                  FontSize="18"/>
+                    </Button>
+                </StackPanel>
+            </StackPanel>
+        </ContentDialog>
     </Grid>
 </Page>

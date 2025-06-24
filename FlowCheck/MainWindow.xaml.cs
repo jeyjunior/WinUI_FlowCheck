@@ -17,7 +17,7 @@ namespace FlowCheck
     {
         #region Propriedades
         private const int Largura = 600;
-        private const int Altura = 600;
+        private const int Altura = 700;
         private AppWindow m_AppWindow;
         private Type paginaAtiva;
         #endregion

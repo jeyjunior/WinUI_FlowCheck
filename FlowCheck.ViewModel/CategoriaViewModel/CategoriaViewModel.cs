@@ -32,6 +32,7 @@ namespace FlowCheck.ViewModel.CategoriaViewModel
         }
         #endregion
 
+
         #region Categoria
         private readonly Categoria _categoria;
         public Categoria Categoria { get => _categoria; }

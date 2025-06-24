@@ -37,6 +37,63 @@ namespace FlowCheck.Application.Services
             _uow.Dispose();
             _categoriaRepository.Dispose();
         }
+        public void SalvarCategoria(Categoria categoria)
+        {
+            if (categoria == null)
+                return;
+
+            if (categoria.ValidarResultado == null)
+                categoria.ValidarResultado = new ValidarResultado();
+
+            if (categoria.Cor == null || !categoria.Cor.Validar())
+                return;
+
+            var config = Bootstrap.ServiceProvider.GetRequiredService<IConfiguracaoBancoDados>();
+
+            using (var uow = new UnitOfWork(config.ConexaoAtiva))
+            {
+                var categoriaRepository = new CategoriaRepository(uow);
+                var corRepository = new CorRepository(uow);
+
+                try
+                {
+                    uow.Begin();
+
+                    int FK_Cor = 0;
+
+                    if (categoria.Cor.PK_Cor > 0)
+                    {
+                        corRepository.Atualizar(categoria.Cor);
+                        FK_Cor = categoria.Cor.PK_Cor;
+                    }
+                    else
+                    {
+                        FK_Cor = corRepository.Adicionar(categoria.Cor);
+                    }
+
+                    if (FK_Cor <= 0)
+                        throw new Exception("Não foi possível registrar a cor da categoria.");
+
+                    categoria.FK_Cor = FK_Cor;
+
+                    if (categoria.PK_Categoria > 0)
+                    {
+                        categoriaRepository.Atualizar(categoria);
+                    }
+                    else
+                    {
+                        categoria.PK_Categoria = categoriaRepository.Adicionar(categoria);
+                    }
+
+                    uow.Commit();
+                }
+                catch (Exception ex)
+                {
+                    uow.Rollback();
+                    categoria.ValidarResultado.Adicionar("Não foi possível adicionar informações na base.\n " + ex.Message);
+                }
+            }
+        }
         public IEnumerable<Categoria> Pesquisar(Categoria_Request request)
         {
             string condicao = "";
