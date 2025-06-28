@@ -108,35 +108,6 @@ namespace FlowCheck.Application.Services
                 return true;
 
             return RemoverTarefas(new List<Tarefa>() { tarefa });
-
-            //var config = Bootstrap.ServiceProvider.GetRequiredService<IConfiguracaoBancoDados>();
-
-            //using (var uow = new UnitOfWork(config.ConexaoAtiva))
-            //{
-            //    var tarefaRepository = new TarefaRepository(uow);
-            //    var tarefaAnotacaoRepository = new TarefaAnotacaoRepository(uow);
-
-            //    try
-            //    {
-            //        uow.Begin();
-
-            //        if (tarefa.TarefaAnotacao != null)
-            //            tarefaAnotacaoRepository.Deletar(tarefa.TarefaAnotacao.PK_TarefaAnotacao);
-
-            //        tarefaRepository.Deletar(tarefa.PK_Tarefa);
-
-            //        uow.Commit();
-
-            //        return true;
-            //    }
-            //    catch (Exception ex)
-            //    {
-            //        uow.Rollback();
-            //        tarefa.ValidarResultado.Adicionar("Não foi possível deletar informações na base.\n " + ex.Message);
-            //    }
-            //}
-
-            //return false;
         }
 
         public bool RemoverTarefas(IEnumerable<Tarefa> tarefas)

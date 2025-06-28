@@ -109,6 +109,58 @@ namespace FlowCheck.Application.Services
             
             return false;
         }
+        public bool RemoverCategoria(Categoria categoria)
+        {
+            if (categoria == null)
+                return false;
+
+            if (categoria.PK_Categoria <= 0)
+                return true;
+
+            return RemoverCategorias(new List<Categoria>() { categoria });
+        }
+        public bool RemoverCategorias(IEnumerable<Categoria> categorias)
+        {
+            if (categorias == null)
+                return false;
+
+            if (categorias.Count() <= 0)
+                return true;
+
+            var config = Bootstrap.ServiceProvider.GetRequiredService<IConfiguracaoBancoDados>();
+
+            using (var uow = new UnitOfWork(config.ConexaoAtiva))
+            {
+                var categoriaRepository = new CategoriaRepository(uow);
+                var corRepository = new CorRepository(uow);
+
+                try
+                {
+                    uow.Begin();
+
+                    foreach (var categoria in categorias)
+                    {
+                        if (categoria.PK_Categoria <= 0)
+                            continue;
+
+                        if (categoria.Cor != null)
+                            corRepository.Deletar(categoria.Cor.PK_Cor);
+
+                        categoriaRepository.Deletar(categoria.PK_Categoria);
+                    }
+
+                    uow.Commit();
+
+                    return true;
+                }
+                catch (Exception ex)
+                {
+                    uow.Rollback();
+                }
+            }
+
+            return false;
+        }
         public IEnumerable<Categoria> Pesquisar(Categoria_Request request)
         {
             string condicao = "";

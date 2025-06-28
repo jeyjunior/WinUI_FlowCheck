@@ -32,7 +32,6 @@ namespace FlowCheck.ViewModel.CategoriaViewModel
         }
         #endregion
 
-
         #region Categoria
         private readonly Categoria _categoria;
         public Categoria Categoria { get => _categoria; }
@@ -40,7 +39,10 @@ namespace FlowCheck.ViewModel.CategoriaViewModel
         {
             get => _categoria.Nome;
         }
-
+        public int PK_Categoria
+        {
+            get => _categoria.PK_Categoria;
+        }
         public SolidColorBrush Cor
         {
             get
@@ -48,7 +50,6 @@ namespace FlowCheck.ViewModel.CategoriaViewModel
                 return HexadecimalToSolidColorBrush(_categoria.Cor.Hexadecimal);
             }
         }
-
         private SolidColorBrush HexadecimalToSolidColorBrush(string hexColor)
         {
             hexColor = hexColor.Replace("#", "");
@@ -63,20 +64,6 @@ namespace FlowCheck.ViewModel.CategoriaViewModel
             Color color = Color.FromArgb(a, r, g, b);
             return new SolidColorBrush(color);
         }
-
         #endregion
     }
 }
-
-
-    //get
-    //{
-    //    return Concluido
-    //        ? (SolidColorBrush)Microsoft.UI.Xaml.Application.Current.Resources["Cinza3"] 
-    //        : (SolidColorBrush)Microsoft.UI.Xaml.Application.Current.Resources["Branco"];
-    //}            get
-    //{
-    //    return Concluido
-    //        ? (SolidColorBrush)Microsoft.UI.Xaml.Application.Current.Resources["Cinza3"] 
-    //        : (SolidColorBrush)Microsoft.UI.Xaml.Application.Current.Resources["Branco"];
-    //}

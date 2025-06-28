@@ -1,5 +1,6 @@
 using FlowCheck.Application;
 using FlowCheck.Application.Interfaces;
+using FlowCheck.Application.Services;
 using FlowCheck.Domain.Entidades;
 using FlowCheck.Domain.Helpers;
 using FlowCheck.Domain.Interfaces;
@@ -65,9 +66,26 @@ namespace FlowCheck.View
         {
 
         }
-        private void btnRemoverCategoria_Click(object sender, RoutedEventArgs e)
+        private async void btnRemoverCategoria_Click(object sender, RoutedEventArgs e)
         {
+            try
+            {
+                if (sender is MenuFlyoutItem btn && btn.Tag is int PK_Categoria)
+                {
+                    var categoria = ViewModel.ObterCategoria(PK_Categoria);
+                    if (categoria == null)
+                        return;
 
+                    if (categoriaAppService.RemoverCategoria(categoria.Categoria))
+                    {
+                        ViewModel.RemoverCategoria(PK_Categoria);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                await Mensagem.ExibirErroAsync(ex.Message, this.Content.XamlRoot);
+            }
         }
         private void MenuFlyoutItem_Click(object sender, RoutedEventArgs e)
         {
