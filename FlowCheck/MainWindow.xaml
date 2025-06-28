@@ -9,7 +9,7 @@
     mc:Ignorable="d"
     Title="FlowCheck">
 
-    <Grid Background="{StaticResource Cinza12}">
+    <Grid Background="{StaticResource Cinza12}" x:Name="RootGrid">
 
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
@@ -28,7 +28,7 @@
                 </Grid.ColumnDefinitions>
 
                 <StackPanel  Grid.Column="0" Orientation="Horizontal" HorizontalAlignment="Left">
-                    <Border Width="24" Height="24" HorizontalAlignment="Left" VerticalAlignment="Center">
+                    <Border Width="24" Height="24" HorizontalAlignment="Left" VerticalAlignment="Center" Visibility="{Binding ExibirBotoesAcao}">
                         <CheckBox x:Name="chkTodos" Checked="chkTodos_Checked" Unchecked="chkTodos_Checked" Grid.Column="0"/>
                     </Border>
 
@@ -38,6 +38,7 @@
                             Padding="0"
                             Width="32"
                             Height="32"
+                            Visibility="{Binding ExibirBotoesAcao}"
                             VerticalAlignment="Center"
                             HorizontalAlignment="Left"
                             Style="{StaticResource AlternateCloseButtonStyle}">

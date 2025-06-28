@@ -37,11 +37,6 @@ namespace FlowCheck.Domain.Entidades
                 ValidarResultado.Adicionar("Nome da categoria é obrigatório.");
                 return false;
             }
-            else if (FK_Cor <= 0)
-            {
-                ValidarResultado.Adicionar("Propriedade Cor é obrigatória.");
-                return false;
-            }
 
             return true;
         }

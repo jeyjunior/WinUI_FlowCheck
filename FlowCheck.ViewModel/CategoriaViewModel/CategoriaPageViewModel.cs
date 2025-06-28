@@ -6,6 +6,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Collections.ObjectModel;
+using Microsoft.UI.Xaml;
+using JJ.Net.Core.Extensoes;
 
 namespace FlowCheck.ViewModel.CategoriaViewModel
 {
@@ -75,6 +77,25 @@ namespace FlowCheck.ViewModel.CategoriaViewModel
         public void AtualizarStatus()
         {
             OnPropertyChanged(nameof(CategoriaStatus));
+        }
+        #endregion
+
+        #region Aviso
+        private string _mensagemAviso { get; set; }
+        public Visibility ExibirAviso
+        {
+            get => (_mensagemAviso.ObterValorOuPadrao("").Trim() == "" ? Visibility.Collapsed : Visibility.Visible);
+        }
+
+        public string MensagemAviso
+        {
+            get => _mensagemAviso;
+            set
+            {
+                _mensagemAviso = value;
+                OnPropertyChanged(nameof(MensagemAviso));
+                OnPropertyChanged(nameof(ExibirAviso));
+            }
         }
         #endregion
     }

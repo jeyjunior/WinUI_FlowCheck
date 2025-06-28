@@ -1,35 +1,23 @@
 using FlowCheck.Application;
 using FlowCheck.Application.Interfaces;
-using FlowCheck.Application.Services;
 using FlowCheck.Domain.Entidades;
-using FlowCheck.Domain.Enumerador;
 using FlowCheck.Domain.Helpers;
 using FlowCheck.Domain.Interfaces;
 using FlowCheck.ViewModel.CategoriaViewModel;
-using FlowCheck.ViewModel.TarefaViewModel;
 using JJ.Net.Core.Extensoes;
-using JJ.Net.Core.Validador;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Navigation;
 using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
 using Windows.UI;
 
 namespace FlowCheck.View
 {
-    public sealed partial class CategoriaPage : Page, IPageComandos
+    public sealed partial class CategoriaPage : Page, IPageComandos, IDialogComandos
     {
         #region Interfaces
         private readonly ICategoriaAppService categoriaAppService;
@@ -37,6 +25,8 @@ namespace FlowCheck.View
 
         #region Propriedades
         private CategoriaPageViewModel ViewModel { get; set; }
+        private Categoria categoria;
+        private bool fecharDialog = true;
         #endregion
 
         #region Construtor
@@ -87,69 +77,126 @@ namespace FlowCheck.View
         {
 
         }
+        private void Slider_ValueChanged(object sender, RangeBaseValueChangedEventArgs e)
+        {
+            byte r = (byte)rSlider.Value;
+            byte g = (byte)gSlider.Value;
+            byte b = (byte)bSlider.Value;
+            frameColorPreview.Background = new SolidColorBrush(Color.FromArgb(255, r, g, b));
+        }
+        private void txtCategoria_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (ViewModel.MensagemAviso.ObterValorOuPadrao("").Trim() == "")
+                return;
+
+            ViewModel.MensagemAviso = "";
+        }
+        private void dialogCategoria_Closing(ContentDialog sender, ContentDialogClosingEventArgs args)
+        {
+            if (!fecharDialog)
+                args.Cancel = true;
+        }
+        private void dialogCategoria_PrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
+        {
+            try
+            {
+                byte r = (byte)rSlider.Value;
+                byte g = (byte)gSlider.Value;
+                byte b = (byte)bSlider.Value;
+
+                var cor = new Cor
+                {
+                    Hexadecimal = RgbToHex(r, g, b),
+                    Nome = "CorGenerica",
+                    RGB = $"{r},{g},{b}",
+                    PK_Cor = 0,
+                    ValidarResultado = new JJ.Net.Core.Validador.ValidarResultado()
+                };
+
+                categoria = new Categoria
+                {
+                    Nome = txtCategoria.Text.Trim(),
+                    Cor = cor,
+                    PK_Categoria = 0,
+                    FK_Cor = 0,
+                    ValidarResultado = new JJ.Net.Core.Validador.ValidarResultado()
+                };
+
+                if (!categoria.Validar())
+                {
+                    fecharDialog = false;
+                    ViewModel.MensagemAviso = categoria.ValidarResultado.ObterPrimeiroErro();
+                    return;
+                }
+
+                var ret = categoriaAppService.SalvarCategoria(categoria);
+
+                if (!categoria.ValidarResultado.EhValido)
+                {
+                    fecharDialog = false;
+                    ViewModel.MensagemAviso = categoria.ValidarResultado.ObterPrimeiroErro();
+                    return;
+                }
+
+                ViewModel.AdicionarCategoria(categoria);
+                fecharDialog = true;
+            }
+            catch (Exception ex)
+            {
+                ViewModel.MensagemAviso = ex.Message;
+            }
+        }
+        private void dialogCategoria_CloseButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
+        {
+            fecharDialog = true;
+        }
+        private void Page_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            Fechar();
+        }
         #endregion
 
         #region Métodos
         private void CarregarCategorias()
         {
             var ret = categoriaAppService.Pesquisar(new Categoria_Request { Nome = "" });
-
             foreach (var item in ret)
                 ViewModel.AdicionarCategoria(item);
         }
+        private void Limpar()
+        {
+            this.txtCategoria.Text = "";
+            this.rSlider.Value = 0;
+            this.gSlider.Value = 0;
+            this.bSlider.Value = 0;
+
+            this.ViewModel.MensagemAviso = "";
+        }
+        private string RgbToHex(byte r, byte g, byte b)
+        {
+            return $"#{r:X2}{g:X2}{b:X2}";
+        }
         #endregion
 
-        #region Métodos Público
+        #region Métodos Públicos
         public void Salvar()
         {
-            
+            // Implementação existente
         }
-
         public async void Adicionar()
         {
-            var _categoria = new Categoria();
+            Limpar();
 
-            ColorTextBox.Text = "#FF874CFC";
-            btnCor.Background = (SolidColorBrush)Microsoft.UI.Xaml.Application.Current.Resources["Roxo"];
+            dialogCategoria.XamlRoot = this.Content.XamlRoot; 
+            dialogCategoria.HorizontalAlignment = HorizontalAlignment.Center;
+            dialogCategoria.VerticalAlignment = VerticalAlignment.Center;
 
-            var result = await AddCategoryDialog.ShowAsync();
-
-            if (result != ContentDialogResult.Primary)
-                return;
-
-            _categoria.Nome = CategoryTextBox.Text.ObterValorOuPadrao("").Trim();
-            string cor = ColorTextBox.Text;
-
-            var _cor = new Cor()
-            {
-                Nome = "Cor",
-                Hexadecimal = cor,
-                RGB = ColorFromHex(cor).ToString()
-            };
-
-            _categoria.Cor = _cor;
-
-            categoriaAppService.SalvarCategoria(_categoria);
-
-            if (!_categoria.ValidarResultado.EhValido)
-                return;
-
-            this.ViewModel.AdicionarCategoria(_categoria);
+            await dialogCategoria.ShowAsync();
         }
-
-        private Windows.UI.Color ColorFromHex(string hex)
+        public void Fechar()
         {
-            hex = hex.Replace("#", "");
-
-            if (hex.Length == 6)
-                hex = "FF" + hex; // Adiciona alpha se não existir
-
-            var a = (byte)Convert.ToUInt32(hex.Substring(0, 2), 16);
-            var r = (byte)Convert.ToUInt32(hex.Substring(2, 2), 16);
-            var g = (byte)Convert.ToUInt32(hex.Substring(4, 2), 16);
-            var b = (byte)Convert.ToUInt32(hex.Substring(6, 2), 16);
-
-            return Windows.UI.Color.FromArgb(a, r, g, b);
+            fecharDialog = true;
+            dialogCategoria.Hide();
         }
         #endregion
     }

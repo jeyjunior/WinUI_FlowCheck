@@ -37,16 +37,13 @@ namespace FlowCheck.Application.Services
             _uow.Dispose();
             _categoriaRepository.Dispose();
         }
-        public void SalvarCategoria(Categoria categoria)
+        public bool SalvarCategoria(Categoria categoria)
         {
             if (categoria == null)
-                return;
+                return false;
 
             if (categoria.ValidarResultado == null)
                 categoria.ValidarResultado = new ValidarResultado();
-
-            if (categoria.Cor == null || !categoria.Cor.Validar())
-                return;
 
             var config = Bootstrap.ServiceProvider.GetRequiredService<IConfiguracaoBancoDados>();
 
@@ -54,6 +51,17 @@ namespace FlowCheck.Application.Services
             {
                 var categoriaRepository = new CategoriaRepository(uow);
                 var corRepository = new CorRepository(uow);
+
+                var categoriaExistente = categoriaRepository.ObterLista("Categoria.Nome = @Nome", new { Nome = categoria.Nome }).FirstOrDefault();
+
+                if (categoriaExistente != null)
+                {
+                    categoria.ValidarResultado.Adicionar("Esse nome de categoria já existe.");
+                    return false;
+                }
+
+                if (categoria.Cor == null)
+                    categoria.Cor = corRepository.GerarCorAleatoria();
 
                 try
                 {
@@ -72,9 +80,13 @@ namespace FlowCheck.Application.Services
                     }
 
                     if (FK_Cor <= 0)
-                        throw new Exception("Não foi possível registrar a cor da categoria.");
+                    {
+                        categoria.ValidarResultado.Adicionar("Não foi possível registrar a cor da categoria.");
+                        return false;
+                    }
 
                     categoria.FK_Cor = FK_Cor;
+                    categoria.Cor.PK_Cor = FK_Cor;
 
                     if (categoria.PK_Categoria > 0)
                     {
@@ -86,13 +98,16 @@ namespace FlowCheck.Application.Services
                     }
 
                     uow.Commit();
+                    return true;
                 }
                 catch (Exception ex)
                 {
                     uow.Rollback();
-                    categoria.ValidarResultado.Adicionar("Não foi possível adicionar informações na base.\n " + ex.Message);
+                    
                 }
             }
+            
+            return false;
         }
         public IEnumerable<Categoria> Pesquisar(Categoria_Request request)
         {

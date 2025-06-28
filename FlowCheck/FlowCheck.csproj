@@ -13,10 +13,17 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="View\CategoriaDialog.xaml.cs" />
+  </ItemGroup>
+  <ItemGroup>
     <None Remove="Themes\Colors.xaml" />
     <None Remove="View\AnotacaoPage.xaml" />
+    <None Remove="View\CategoriaDialog.xaml" />
     <None Remove="View\CategoriaPage.xaml" />
     <None Remove="View\TarefaPage.xaml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Remove="View\CategoriaDialog.xaml" />
   </ItemGroup>
 
   <ItemGroup>
@@ -69,6 +76,9 @@
     <Page Update="Themes\Colors.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Componentes\" />
   </ItemGroup>
 
   <!--

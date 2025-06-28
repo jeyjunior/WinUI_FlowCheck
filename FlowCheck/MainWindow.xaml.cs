@@ -1,15 +1,17 @@
-using System;
-using Microsoft.UI;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Windowing;
-using Microsoft.UI.Xaml.Controls;
-using WinRT.Interop;
-using JJ.Net.Core.Extensoes;
 using FlowCheck.Application;
 using FlowCheck.Domain.Enumerador;
 using FlowCheck.Domain.Helpers;
 using FlowCheck.Domain.Interfaces;
 using FlowCheck.View;
+using FlowCheck.ViewModel.CategoriaViewModel;
+using FlowCheck.ViewModel.MainViewModel;
+using JJ.Net.Core.Extensoes;
+using Microsoft.UI;
+using Microsoft.UI.Windowing;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using System;
+using WinRT.Interop;
 
 namespace FlowCheck
 {
@@ -20,6 +22,7 @@ namespace FlowCheck
         private const int Altura = 700;
         private AppWindow m_AppWindow;
         private Type paginaAtiva;
+        private MainViewModel ViewModel;
         #endregion
 
         #region Construtor
@@ -28,7 +31,10 @@ namespace FlowCheck
             this.InitializeComponent();
 
             DefinirPadraoUI();
-
+            
+            ViewModel = new MainViewModel();
+            this.RootGrid.DataContext = ViewModel;
+            
             Configuracao.Iniciar();
 
             this.Closed += MainWindow_Closed;
@@ -156,14 +162,17 @@ namespace FlowCheck
         }
         private void CarregarTelaTarefa()
         {
+            this.ViewModel.ExibirBotoesAcao = Visibility.Visible;
             CarregarPagina(typeof(TarefaPage), btnTarefa);
         }
         private void CarregarTelaAnotacao()
         {
+            this.ViewModel.ExibirBotoesAcao = Visibility.Collapsed;
             CarregarPagina(typeof(AnotacaoPage), btnAnotacao);
         }
         private void CarregarTelaCategoria()
         {
+            this.ViewModel.ExibirBotoesAcao = Visibility.Collapsed;
             CarregarPagina(typeof(CategoriaPage), btnCategoria);
         }
         #endregion

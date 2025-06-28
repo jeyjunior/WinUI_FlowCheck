@@ -9,7 +9,7 @@ namespace FlowCheck.Application.Interfaces
 {
     public interface ICategoriaAppService
     {
-        void SalvarCategoria(Categoria categoria);
+        bool SalvarCategoria(Categoria categoria);
         IEnumerable<Categoria> Pesquisar(Categoria_Request request);
     }
 }

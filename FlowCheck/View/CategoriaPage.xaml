@@ -8,13 +8,10 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
     Loaded="Page_Loaded"
-    MinWidth="600"
-    MinHeight="700"
+    SizeChanged="Page_SizeChanged"
     Background="{StaticResource Cinza12}">
 
     <Grid RowSpacing="8">
-
-       
         <Grid.RowDefinitions>
             <RowDefinition Height="38"/>
             <RowDefinition Height="Auto"/>
@@ -114,52 +111,50 @@
             </ItemsControl>
         </ScrollViewer>
 
-        <ContentDialog x:Name="AddCategoryDialog"
-                       Opacity="0"
-                       Title="Adicionar Categoria"
-                       PrimaryButtonText="Salvar"
-                       CloseButtonText="Cancelar"
-                       DefaultButton="Primary"
-                       Margin="0"
-                       Padding="0"
-                       Background="{StaticResource Cinza13}"
-                       IsHitTestVisible="False">
-            
-            <StackPanel Background="{StaticResource Nenhuma}" 
-                        CornerRadius="0" 
-                        Padding="0">
+        <ContentDialog  x:Name="dialogCategoria"
+                        Title="Adicionar Categoria"
+                        PrimaryButtonText="Salvar"
+                        CloseButtonText="Cancelar"
+                        DefaultButton="Primary"
+                        PrimaryButtonClick="dialogCategoria_PrimaryButtonClick"
+                        CloseButtonClick="dialogCategoria_CloseButtonClick"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Style="{StaticResource DefaultContentDialogStyle}"
+                        Margin="0"
+                        MaxWidth="400"
+                        Closing="dialogCategoria_Closing"
+                        Background="{StaticResource Cinza13}">
+            <StackPanel Spacing="12" Padding="0" Margin="0">
+                <TextBox x:Name="txtCategoria" PlaceholderText="Categoria" Width="400" MaxWidth="400" MaxLength="300" TextChanged="txtCategoria_TextChanged"/>
 
-                <TextBox x:Name="CategoryTextBox" 
-                         PlaceholderText="Categoria"
-                         TextWrapping="Wrap"
-                         MaxLength="300"
-                         MaxWidth="400"/>
+                <Grid Background="{StaticResource Nenhuma}" Width="400" Height="100">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="200"/>
+                        <ColumnDefinition Width="200"/>
+                    </Grid.ColumnDefinitions>
 
-                <StackPanel Background="{StaticResource Cinza11}" 
-                            Margin="0,12,0,0" 
-                            Orientation="Horizontal" 
-                            HorizontalAlignment="Right" 
-                            Spacing="8">
-                    
-                    <TextBox x:Name="ColorTextBox"
-                             PlaceholderText="#FFFFFFFF"
-                             TextAlignment="Center"
-                             Width="150"
-                             MaxLength="9"
-                             TextWrapping="NoWrap"
-                             HorizontalAlignment="Right"/>
+                    <StackPanel x:Name="myStackPanel" Margin="10,0,0,0">
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                            <TextBlock Text="R:" Width="24" VerticalAlignment="Center"/>
+                            <Slider x:Name="rSlider" Minimum="0" Maximum="255" HorizontalAlignment="Stretch" Width="158" ValueChanged="Slider_ValueChanged"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal"  VerticalAlignment="Center">
+                            <TextBlock Text="G:" Width="24" VerticalAlignment="Center"/>
+                            <Slider x:Name="gSlider" Minimum="0" Maximum="255" HorizontalAlignment="Stretch" Width="158" ValueChanged="Slider_ValueChanged"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                            <TextBlock Text="B:" Width="24" VerticalAlignment="Center"/>
+                            <Slider x:Name="bSlider" Minimum="0" Maximum="255" HorizontalAlignment="Stretch" Width="158" ValueChanged="Slider_ValueChanged"/>
+                        </StackPanel>
+                    </StackPanel>
 
-                    <Button x:Name="btnCor"
-                            Width="36" 
-                            Height="36" 
-                            Padding="0"
-                            Background="{StaticResource Roxo}">
+                    <Frame Grid.Column="1" x:Name="frameColorPreview" CornerRadius="10" Background="Black" Margin="10"/>
+                </Grid>
 
-                        <FontIcon Glyph="&#xE790;"                         
-                                  FontFamily="Segoe Fluent Icons" 
-                                  FontSize="18"/>
-                    </Button>
-                </StackPanel>
+                <Border x:Name="bAviso" Background="{StaticResource Vermelho3}" MaxWidth="400" CornerRadius="5" Visibility="{Binding ExibirAviso}">
+                    <TextBlock x:Name="txtAviso" TextWrapping="Wrap" Padding="10" Text="{Binding MensagemAviso}"/>
+                </Border>
             </StackPanel>
         </ContentDialog>
     </Grid>
