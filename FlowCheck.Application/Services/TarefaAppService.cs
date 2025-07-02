@@ -109,7 +109,6 @@ namespace FlowCheck.Application.Services
 
             return RemoverTarefas(new List<Tarefa>() { tarefa });
         }
-
         public bool RemoverTarefas(IEnumerable<Tarefa> tarefas)
         {
             if (tarefas == null)

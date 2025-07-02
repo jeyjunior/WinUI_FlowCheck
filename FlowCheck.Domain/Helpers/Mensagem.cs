@@ -59,21 +59,21 @@ namespace FlowCheck.Domain.Helpers
             };
         }
 
-        public static async Task<eTipoMensagemResultado> ExibirConfirmacaoAsync(string mensagem, XamlRoot xamlRoot)
+        public static async Task<eTipoMensagemResultado> ExibirConfirmacaoAsync(XamlRoot xamlRoot, string mensagem, string titulo = "Confirmação")
         {
-            return await ExibirAsync(new MensagemRequest { Titulo = "Confirmação", Mensagem = mensagem, XamlRoot = xamlRoot, TipoMensagem = eTipoMensagem.Confirmacao });
+            return await ExibirAsync(new MensagemRequest { Titulo = titulo, Mensagem = mensagem, XamlRoot = xamlRoot, TipoMensagem = eTipoMensagem.Confirmacao });
         }
-        public static async Task<eTipoMensagemResultado> ExibirErroAsync(string mensagem, XamlRoot xamlRoot)
+        public static async Task<eTipoMensagemResultado> ExibirErroAsync(XamlRoot xamlRoot, string mensagem, string titulo = "Erro")
         {
-            return await ExibirAsync(new MensagemRequest { Titulo = "Erro", Mensagem = mensagem, XamlRoot = xamlRoot, TipoMensagem = eTipoMensagem.Erro });
+            return await ExibirAsync(new MensagemRequest { Titulo = titulo, Mensagem = mensagem, XamlRoot = xamlRoot, TipoMensagem = eTipoMensagem.Erro });
         }
-        public static async Task<eTipoMensagemResultado> ExibirAvisoAsync(string mensagem, XamlRoot xamlRoot)
+        public static async Task<eTipoMensagemResultado> ExibirAvisoAsync(XamlRoot xamlRoot, string mensagem, string titulo = "Aviso")
         {
-            return await ExibirAsync(new MensagemRequest { Titulo = "Aviso", Mensagem = mensagem, XamlRoot = xamlRoot, TipoMensagem = eTipoMensagem.Aviso });
+            return await ExibirAsync(new MensagemRequest { Titulo = titulo, Mensagem = mensagem, XamlRoot = xamlRoot, TipoMensagem = eTipoMensagem.Aviso });
         }
-        public static async Task<eTipoMensagemResultado> ExibirInformacaoAsync(string mensagem, XamlRoot xamlRoot)
+        public static async Task<eTipoMensagemResultado> ExibirInformacaoAsync(XamlRoot xamlRoot, string mensagem, string titulo = "Informação")
         {
-            return await ExibirAsync(new MensagemRequest { Titulo = "Informação", Mensagem = mensagem, XamlRoot = xamlRoot, TipoMensagem = eTipoMensagem.Informacao });
+            return await ExibirAsync(new MensagemRequest { Titulo = titulo, Mensagem = mensagem, XamlRoot = xamlRoot, TipoMensagem = eTipoMensagem.Informacao });
         }
     }
 

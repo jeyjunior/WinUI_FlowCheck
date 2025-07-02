@@ -58,7 +58,7 @@ namespace FlowCheck.View
             }
             catch (Exception ex)
             {
-                await Mensagem.ExibirErroAsync(ex.Message, this.Content.XamlRoot);
+                await Mensagem.ExibirErroAsync(this.Content.XamlRoot, ex.Message);
             }
         }
         protected override void OnNavigatedFrom(NavigationEventArgs e)
@@ -71,7 +71,7 @@ namespace FlowCheck.View
             }
             catch (Exception ex)
             {
-                Mensagem.ExibirErroAsync(ex.Message, this.Content.XamlRoot);
+                Mensagem.ExibirErroAsync(this.Content.XamlRoot, ex.Message);
             }
         }
         private void txtTituloTarefa_LostFocus(object sender, RoutedEventArgs e)
@@ -98,10 +98,10 @@ namespace FlowCheck.View
             }
             catch (Exception ex)
             {
-                Mensagem.ExibirErroAsync(ex.Message, this.Content.XamlRoot);
+                Mensagem.ExibirErroAsync(this.Content.XamlRoot, ex.Message);
             }
         }
-        private void txbTarefa_DoubleTapped(object sender, DoubleTappedRoutedEventArgs e)
+        private async void txbTarefa_DoubleTapped(object sender, DoubleTappedRoutedEventArgs e)
         {
             try
             {
@@ -128,10 +128,10 @@ namespace FlowCheck.View
             }
             catch (Exception ex)
             {
-                Mensagem.ExibirErroAsync(ex.Message, this.Content.XamlRoot);
+                await Mensagem.ExibirErroAsync(this.Content.XamlRoot, ex.Message);
             }
         }
-        private void btnRemoverTarefa_Click(object sender, RoutedEventArgs e)
+        private async void btnRemoverTarefa_Click(object sender, RoutedEventArgs e)
         {
             try
             {
@@ -150,7 +150,7 @@ namespace FlowCheck.View
             }
             catch (Exception ex)
             {
-                Mensagem.ExibirErroAsync(ex.Message, this.Content.XamlRoot);
+                await Mensagem.ExibirErroAsync(this.Content.XamlRoot, ex.Message);
             }
         }
         private void TxtTarefaAnotacao_PreviewKeyDown(object sender, KeyRoutedEventArgs e)
@@ -238,7 +238,7 @@ namespace FlowCheck.View
             if (parametro != null)
                 ViewModel.Parametro = parametro.FirstOrDefault();
         }
-        private void SalvarParametros()
+        private async void SalvarParametros()
         {
             var parametro_AppServiceRequest = new Parametro_AppServiceRequest
             {
@@ -250,7 +250,7 @@ namespace FlowCheck.View
 
             if (!parametro_AppServiceRequest.ValidarResultado.EhValido)
             {
-                Mensagem.ExibirErroAsync(parametro_AppServiceRequest.ValidarResultado.ObterPrimeiroErro(), this.Content.XamlRoot);
+                await Mensagem.ExibirErroAsync(this.Content.XamlRoot, parametro_AppServiceRequest.ValidarResultado.ObterPrimeiroErro());
             }
         }
         private void FocarTarefaNovaTextBox(TarefaViewModel tarefaViewModel)
@@ -310,14 +310,14 @@ namespace FlowCheck.View
 
             if (!tarefa_AppServiceRequest.ValidarResultado.EhValido)
             {
-                Mensagem.ExibirErroAsync(tarefa_AppServiceRequest.ValidarResultado.ObterPrimeiroErro(), this.Content.XamlRoot);
+                Mensagem.ExibirErroAsync(this.Content.XamlRoot, tarefa_AppServiceRequest.ValidarResultado.ObterPrimeiroErro());
             }
         }
         public bool ExisteItensSelecionados()
         {
             return (this.ViewModel.Tarefas.Count(i => i.Concluido) > 0);
         }
-        public void ExcluirItensSelecionados()
+        public async void ExcluirItensSelecionados()
         {
             try
             {
@@ -328,7 +328,7 @@ namespace FlowCheck.View
             }
             catch (Exception ex)
             {
-                Mensagem.ExibirErroAsync(ex.Message, this.Content.XamlRoot);
+                await Mensagem.ExibirErroAsync(this.Content.XamlRoot, ex.Message);
             }
         }
         public void SelecionarTudo(bool value)

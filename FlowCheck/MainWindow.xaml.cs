@@ -1,3 +1,10 @@
+using System;
+using WinRT.Interop;
+using Microsoft.UI;
+using Microsoft.UI.Windowing;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using JJ.Net.Core.Extensoes;
 using FlowCheck.Application;
 using FlowCheck.Domain.Enumerador;
 using FlowCheck.Domain.Helpers;
@@ -5,13 +12,6 @@ using FlowCheck.Domain.Interfaces;
 using FlowCheck.View;
 using FlowCheck.ViewModel.CategoriaViewModel;
 using FlowCheck.ViewModel.MainViewModel;
-using JJ.Net.Core.Extensoes;
-using Microsoft.UI;
-using Microsoft.UI.Windowing;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using System;
-using WinRT.Interop;
 
 namespace FlowCheck
 {
@@ -76,7 +76,7 @@ namespace FlowCheck
             }
             catch (Exception ex)
             {
-                await Mensagem.ExibirErroAsync($"Erro ao tentar adicionar a tarefa: \n{ex.Message}", this.Content.XamlRoot);
+                await Mensagem.ExibirErroAsync(this.Content.XamlRoot, $"Erro ao tentar adicionar a tarefa: \n{ex.Message}");
             }
         }
         private async void btnArquivarTudo_Click(object sender, RoutedEventArgs e)
@@ -89,11 +89,11 @@ namespace FlowCheck
             {
                 if (!pagina.ExisteItensSelecionados())
                 {
-                    await Mensagem.ExibirInformacaoAsync("Nenhum item selecionado.", this.Content.XamlRoot);
+                    await Mensagem.ExibirInformacaoAsync(this.Content.XamlRoot, "Nenhum item selecionado.");
                     return;
                 }
 
-                var resultado = await Mensagem.ExibirConfirmacaoAsync("Tem certeza que deseja excluir as tarefas selecionadas?\nEsta ação não poderá ser desfeita.", this.Content.XamlRoot);
+                var resultado = await Mensagem.ExibirConfirmacaoAsync(this.Content.XamlRoot, "Tem certeza que deseja excluir as tarefas selecionadas?\nEsta ação não poderá ser desfeita.");
 
                 if (resultado == eTipoMensagemResultado.Sim)
                     pagina.ExcluirItensSelecionados();
@@ -108,7 +108,7 @@ namespace FlowCheck
             }
             catch (Exception ex)
             {
-                await Mensagem.ExibirErroAsync($"Erro ao tentar marcar/desmarcar os itens: \n{ex.Message}", this.Content.XamlRoot);
+                await Mensagem.ExibirErroAsync(this.Content.XamlRoot, $"Erro ao tentar marcar/desmarcar os itens: \n{ex.Message}");
             }
         }
         #endregion

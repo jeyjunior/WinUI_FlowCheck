@@ -1,3 +1,14 @@
+using System;
+using System.Runtime.ConstrainedExecution;
+using Windows.UI;
+using Microsoft.UI;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
+using JJ.Net.Core.Extensoes;
+using Microsoft.Extensions.DependencyInjection;
 using FlowCheck.Application;
 using FlowCheck.Application.Interfaces;
 using FlowCheck.Application.Services;
@@ -5,16 +16,7 @@ using FlowCheck.Domain.Entidades;
 using FlowCheck.Domain.Helpers;
 using FlowCheck.Domain.Interfaces;
 using FlowCheck.ViewModel.CategoriaViewModel;
-using JJ.Net.Core.Extensoes;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.UI;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Media;
-using System;
-using Windows.UI;
+using Microsoft.Identity.Client;
 
 namespace FlowCheck.View
 {
@@ -51,18 +53,10 @@ namespace FlowCheck.View
             }
             catch (Exception ex)
             {
-                await Mensagem.ExibirErroAsync(ex.Message, this.Content.XamlRoot);
+                await Mensagem.ExibirErroAsync(this.Content.XamlRoot, ex.Message);
             }
         }
         private void scroll_LayoutUpdated(object sender, object e)
-        {
-
-        }
-        private void txtCategoria_LostFocus(object sender, RoutedEventArgs e)
-        {
-
-        }
-        private void txbCategoria_DoubleTapped(object sender, DoubleTappedRoutedEventArgs e)
         {
 
         }
@@ -70,30 +64,63 @@ namespace FlowCheck.View
         {
             try
             {
+                var ret = await Mensagem.ExibirConfirmacaoAsync(this.Content.XamlRoot, "Tem certeza que deseja remover essa categoria? A operação não poderá ser desfeita.");
+                if (ret != Domain.Enumerador.eTipoMensagemResultado.Sim)
+                    return;
+
                 if (sender is MenuFlyoutItem btn && btn.Tag is int PK_Categoria)
                 {
-                    var categoria = ViewModel.ObterCategoria(PK_Categoria);
+                    categoria = ViewModel.ObterCategoria(PK_Categoria);
                     if (categoria == null)
                         return;
 
-                    if (categoriaAppService.RemoverCategoria(categoria.Categoria))
+                    if (categoriaAppService.RemoverCategoria(categoria))
                     {
                         ViewModel.RemoverCategoria(PK_Categoria);
                     }
+
+                    categoria = null;
                 }
             }
             catch (Exception ex)
             {
-                await Mensagem.ExibirErroAsync(ex.Message, this.Content.XamlRoot);
+                await Mensagem.ExibirErroAsync(this.Content.XamlRoot, ex.Message);
             }
         }
-        private void MenuFlyoutItem_Click(object sender, RoutedEventArgs e)
+        private async void btnEditarCategoria_Click(object sender, RoutedEventArgs e)
         {
+            try
+            {
+                Limpar();
 
-        }
-        private void btnEditarCategoria_Click(object sender, RoutedEventArgs e)
-        {
+                if (sender is MenuFlyoutItem btn && btn.Tag is int PK_Categoria)
+                {
+                    categoria = ViewModel.ObterCategoria(PK_Categoria);
+                    if (categoria == null)
+                        return;
 
+                    if (categoria.Cor != null)
+                    {
+                        var rgb = categoria.Cor.RGB.Split(",");
+
+                        if (rgb.Length == 3)
+                        {
+                            rSlider.Value = Convert.ToDouble(rgb[0]);
+                            gSlider.Value = Convert.ToDouble(rgb[1]);
+                            bSlider.Value = Convert.ToDouble(rgb[2]);
+                        }
+                    }
+
+                    txtCategoria.Text = categoria.Nome;
+                    txtCategoria.SelectAll();
+
+                    await this.dialogCategoria.ShowAsync();
+                }
+            }
+            catch (Exception ex)
+            {
+                await Mensagem.ExibirErroAsync(this.Content.XamlRoot, ex.Message);
+            }
         }
         private void Slider_ValueChanged(object sender, RangeBaseValueChangedEventArgs e)
         {
@@ -116,57 +143,11 @@ namespace FlowCheck.View
         }
         private void dialogCategoria_PrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
         {
-            try
-            {
-                byte r = (byte)rSlider.Value;
-                byte g = (byte)gSlider.Value;
-                byte b = (byte)bSlider.Value;
-
-                var cor = new Cor
-                {
-                    Hexadecimal = RgbToHex(r, g, b),
-                    Nome = "CorGenerica",
-                    RGB = $"{r},{g},{b}",
-                    PK_Cor = 0,
-                    ValidarResultado = new JJ.Net.Core.Validador.ValidarResultado()
-                };
-
-                categoria = new Categoria
-                {
-                    Nome = txtCategoria.Text.Trim(),
-                    Cor = cor,
-                    PK_Categoria = 0,
-                    FK_Cor = 0,
-                    ValidarResultado = new JJ.Net.Core.Validador.ValidarResultado()
-                };
-
-                if (!categoria.Validar())
-                {
-                    fecharDialog = false;
-                    ViewModel.MensagemAviso = categoria.ValidarResultado.ObterPrimeiroErro();
-                    return;
-                }
-
-                var ret = categoriaAppService.SalvarCategoria(categoria);
-
-                if (!categoria.ValidarResultado.EhValido)
-                {
-                    fecharDialog = false;
-                    ViewModel.MensagemAviso = categoria.ValidarResultado.ObterPrimeiroErro();
-                    return;
-                }
-
-                ViewModel.AdicionarCategoria(categoria);
-                fecharDialog = true;
-            }
-            catch (Exception ex)
-            {
-                ViewModel.MensagemAviso = ex.Message;
-            }
+            Salvar();
         }
         private void dialogCategoria_CloseButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
         {
-            fecharDialog = true;
+            Fechar();
         }
         private void Page_SizeChanged(object sender, SizeChangedEventArgs e)
         {
@@ -177,12 +158,16 @@ namespace FlowCheck.View
         #region Métodos
         private void CarregarCategorias()
         {
+            ViewModel.Categorias.Clear();
+
             var ret = categoriaAppService.Pesquisar(new Categoria_Request { Nome = "" });
             foreach (var item in ret)
                 ViewModel.AdicionarCategoria(item);
         }
         private void Limpar()
         {
+            this.categoria = null;
+
             this.txtCategoria.Text = "";
             this.rSlider.Value = 0;
             this.gSlider.Value = 0;
@@ -199,7 +184,73 @@ namespace FlowCheck.View
         #region Métodos Públicos
         public void Salvar()
         {
-            // Implementação existente
+            try
+            {
+                byte r = (byte)rSlider.Value;
+                byte g = (byte)gSlider.Value;
+                byte b = (byte)bSlider.Value;
+
+                if (categoria != null && categoria.PK_Categoria > 0)
+                {
+                    categoria.Cor.Hexadecimal = RgbToHex(r, g, b);
+                    categoria.Cor.RGB = $"{r},{g},{b}";
+                    categoria.Cor.ValidarResultado = new JJ.Net.Core.Validador.ValidarResultado();
+
+                    categoria.Nome = txtCategoria.Text.Trim();
+                    categoria.ValidarResultado = new JJ.Net.Core.Validador.ValidarResultado();
+
+                    if (!categoria.Validar())
+                    {
+                        fecharDialog = false;
+                        ViewModel.MensagemAviso = categoria.ValidarResultado.ObterPrimeiroErro();
+                        return;
+                    }
+                }
+                else
+                {
+                    var cor = new Cor
+                    {
+                        Hexadecimal = RgbToHex(r, g, b),
+                        Nome = "CorGenerica",
+                        RGB = $"{r},{g},{b}",
+                        PK_Cor = 0,
+                        ValidarResultado = new JJ.Net.Core.Validador.ValidarResultado()
+                    };
+
+                    categoria = new Categoria
+                    {
+                        Nome = txtCategoria.Text.Trim(),
+                        Cor = cor,
+                        PK_Categoria = 0,
+                        FK_Cor = 0,
+                        ValidarResultado = new JJ.Net.Core.Validador.ValidarResultado()
+                    };
+
+                    if (!categoria.Validar())
+                    {
+                        fecharDialog = false;
+                        ViewModel.MensagemAviso = categoria.ValidarResultado.ObterPrimeiroErro();
+                        return;
+                    }
+                }
+
+                var ret = categoriaAppService.SalvarCategoria(categoria);
+
+                if (!categoria.ValidarResultado.EhValido)
+                {
+                    fecharDialog = false;
+                    ViewModel.MensagemAviso = categoria.ValidarResultado.ObterPrimeiroErro();
+                    return;
+                }
+
+                CarregarCategorias();
+
+                fecharDialog = true;
+            }
+            catch (Exception ex)
+            {
+                ViewModel.MensagemAviso = ex.Message;
+            }
         }
         public async void Adicionar()
         {

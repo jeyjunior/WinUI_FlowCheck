@@ -56,8 +56,16 @@ namespace FlowCheck.Application.Services
 
                 if (categoriaExistente != null)
                 {
-                    categoria.ValidarResultado.Adicionar("Esse nome de categoria já existe.");
-                    return false;
+                    if (categoria.PK_Categoria <= 0)
+                    {
+                        categoria.ValidarResultado.Adicionar("Não foi possível adicionar categoria, esse nome já existe.");
+                        return false;
+                    }
+                    else if (!categoria.PK_Categoria.Equals(categoriaExistente.PK_Categoria))
+                    {
+                        categoria.ValidarResultado.Adicionar("Não foi possível atualizar categoria, esse nome já existe.");
+                        return false;
+                    }
                 }
 
                 if (categoria.Cor == null)

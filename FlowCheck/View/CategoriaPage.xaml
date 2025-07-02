@@ -75,7 +75,6 @@
                                 <TextBlock x:Name="txbCategoria" 
                                         Grid.Column="1"
                                         Text="{Binding Nome}" 
-                                        DoubleTapped="txbCategoria_DoubleTapped" 
                                         Visibility="Visible"  
                                         TextWrapping="Wrap"
                                         Tag="{Binding PK_Categoria}"

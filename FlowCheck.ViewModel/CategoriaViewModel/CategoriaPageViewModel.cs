@@ -55,9 +55,14 @@ namespace FlowCheck.ViewModel.CategoriaViewModel
             //if (categoria != null)
             //    categoria.Editar = editar;
         }
-        public CategoriaViewModel ObterCategoria(int PK_Categoria)
+        public CategoriaViewModel ObterCategoriaViewModel(int PK_Categoria)
         {
             return this.Categorias.Where(i => i.Categoria.PK_Categoria.Equals(PK_Categoria)).FirstOrDefault();
+        }
+
+        public Categoria ObterCategoria(int PK_Categoria)
+        {
+            return this.Categorias.Where(i => i.Categoria.PK_Categoria.Equals(PK_Categoria)).FirstOrDefault().Categoria;
         }
         #endregion
 

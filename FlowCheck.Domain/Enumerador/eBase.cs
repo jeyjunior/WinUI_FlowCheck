@@ -23,7 +23,7 @@ namespace FlowCheck.Domain.Enumerador
         Informacao = 0,
         Confirmacao = 1,
         Aviso = 2,
-        Erro = 3,
+        Erro = 3
     }
 
     public enum eTipoMensagemResultado
