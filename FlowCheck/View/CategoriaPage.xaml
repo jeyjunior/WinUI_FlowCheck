@@ -40,7 +40,8 @@
                     Padding="10" 
                     PlaceholderText="Pesquisar"
                     VerticalAlignment="Center" 
-                    Text="{Binding Pesquisa, Mode=TwoWay}" 
+                    Text=""
+                     KeyUp="txtPesquisaCategoria_KeyUp"
                     Foreground="{StaticResource Branco}" 
                     FontWeight="Normal" />
         </StackPanel>

@@ -45,6 +45,7 @@ namespace FlowCheck.Domain.Entidades
     public class Categoria_Request
     {
         public string Nome { get; set; }
+        public bool PesquisaPorIgualdade { get; set; }
         public ValidarResultado ValidarResultado { get; set; } = new ValidarResultado();
     }
 }

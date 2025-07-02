@@ -173,12 +173,16 @@ namespace FlowCheck.Application.Services
         {
             string condicao = "";
 
-            if (request.Nome.ObterValorOuPadrao("").Trim() != "")
-                condicao += "Nome = @Nome\n ";
+            string nome = request.Nome.ObterValorOuPadrao("").LimparEntradaSQL().Trim();
+            
+            if (nome != "")
+            {
+                condicao += ((request.PesquisaPorIgualdade) ? "Categoria.Nome = @Nome\n" : $"Categoria.Nome LIKE '%{nome}%'");
+            }
 
             var parametros = new
             {
-                Nome = request.Nome
+                Nome = request.Nome.ObterValorOuPadrao("").LimparEntradaSQL()
             };
 
             return _categoriaRepository.ObterLista(condicao, parametros);

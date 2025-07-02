@@ -1,13 +1,14 @@
 ﻿using FlowCheck.Domain.Entidades;
+using JJ.Net.Core.Extensoes;
+using Microsoft.UI.Xaml;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
-using System.Collections.ObjectModel;
-using Microsoft.UI.Xaml;
-using JJ.Net.Core.Extensoes;
 
 namespace FlowCheck.ViewModel.CategoriaViewModel
 {
@@ -42,27 +43,15 @@ namespace FlowCheck.ViewModel.CategoriaViewModel
 
             AtualizarStatus();
         }
-        public void RemoverCategorias(List<CategoriaViewModel> categorias)
-        {
-            foreach (var categoria in categorias)
-                this.Categorias.Remove(categoria);
-
-            AtualizarStatus();
-        }
-        public void EditarCategoria(string IDGenerico, bool editar)
-        {
-            //var categoria = this.Categorias.Where(i => i.IDGenerico.Equals(IDGenerico)).FirstOrDefault();
-            //if (categoria != null)
-            //    categoria.Editar = editar;
-        }
-        public CategoriaViewModel ObterCategoriaViewModel(int PK_Categoria)
-        {
-            return this.Categorias.Where(i => i.Categoria.PK_Categoria.Equals(PK_Categoria)).FirstOrDefault();
-        }
-
         public Categoria ObterCategoria(int PK_Categoria)
         {
             return this.Categorias.Where(i => i.Categoria.PK_Categoria.Equals(PK_Categoria)).FirstOrDefault().Categoria;
+        }
+
+        public void LimparCategorias()
+        {
+            Categorias.Clear();
+            AtualizarStatus();
         }
         #endregion
 

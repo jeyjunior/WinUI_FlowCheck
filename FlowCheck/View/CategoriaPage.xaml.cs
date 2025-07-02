@@ -1,14 +1,3 @@
-using System;
-using System.Runtime.ConstrainedExecution;
-using Windows.UI;
-using Microsoft.UI;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Media;
-using JJ.Net.Core.Extensoes;
-using Microsoft.Extensions.DependencyInjection;
 using FlowCheck.Application;
 using FlowCheck.Application.Interfaces;
 using FlowCheck.Application.Services;
@@ -16,7 +5,20 @@ using FlowCheck.Domain.Entidades;
 using FlowCheck.Domain.Helpers;
 using FlowCheck.Domain.Interfaces;
 using FlowCheck.ViewModel.CategoriaViewModel;
+using JJ.Net.Core.Extensoes;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Identity.Client;
+using Microsoft.UI;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
+using System;
+using System.Runtime.ConstrainedExecution;
+using System.Threading;
+using System.Threading.Tasks;
+using Windows.UI;
 
 namespace FlowCheck.View
 {
@@ -30,6 +32,8 @@ namespace FlowCheck.View
         private CategoriaPageViewModel ViewModel { get; set; }
         private Categoria categoria;
         private bool fecharDialog = true;
+        private CancellationTokenSource _cancellationTokenSource;
+        private readonly int _delayPesquisa = 500;
         #endregion
 
         #region Construtor
@@ -153,6 +157,35 @@ namespace FlowCheck.View
         {
             Fechar();
         }
+        private async void txtPesquisaCategoria_KeyUp(object sender, KeyRoutedEventArgs e)
+        {
+            try
+            {
+                _cancellationTokenSource?.Cancel();
+                _cancellationTokenSource = new CancellationTokenSource();
+
+                if (txtPesquisaCategoria.Text.ObterValorOuPadrao("").Trim() == "")
+                {
+                    CarregarCategorias();
+                    return;
+                }
+
+                await Task.Delay(_delayPesquisa, _cancellationTokenSource.Token);
+
+                if (!_cancellationTokenSource.IsCancellationRequested)
+                {
+                    ViewModel.LimparCategorias();
+
+                    var ret = categoriaAppService.Pesquisar(new Categoria_Request { Nome = txtPesquisaCategoria.Text });
+                    foreach (var item in ret)
+                        ViewModel.AdicionarCategoria(item);
+                }
+            }
+            catch (TaskCanceledException)
+            {
+
+            }
+        }
         #endregion
 
         #region Métodos
@@ -160,7 +193,7 @@ namespace FlowCheck.View
         {
             ViewModel.Categorias.Clear();
 
-            var ret = categoriaAppService.Pesquisar(new Categoria_Request { Nome = "" });
+            var ret = categoriaAppService.Pesquisar(new Categoria_Request { Nome = "", PesquisaPorIgualdade = true });
             foreach (var item in ret)
                 ViewModel.AdicionarCategoria(item);
         }
