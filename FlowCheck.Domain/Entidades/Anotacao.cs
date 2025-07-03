@@ -48,4 +48,10 @@ namespace FlowCheck.Domain.Entidades
             return true;
         }
     }
+
+    public class Anotacao_Request
+    {
+        public string Descricao { get; set; }
+        public ValidarResultado ValidarResultado { get; set; } = new ValidarResultado();
+    }
 }
