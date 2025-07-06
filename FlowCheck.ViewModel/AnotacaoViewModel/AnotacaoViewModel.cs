@@ -1,4 +1,5 @@
 ﻿using FlowCheck.Domain.Entidades;
+using JJ.Net.Core.Extensoes;
 using Microsoft.UI.Xaml.Media;
 using System;
 using System.Collections.Generic;
@@ -39,6 +40,47 @@ namespace FlowCheck.ViewModel.AnotacaoViewModel
         public int PK_Anotacao
         {
             get => _anotacao.PK_Anotacao;
+        }
+        #endregion
+
+        #region Categoria
+        public string CategoriaNome
+        {
+            get => (_anotacao.Categoria != null) ? _anotacao.Categoria.Nome.ObterValorOuPadrao("").Trim() : "";
+        }
+        public int PK_Categoria
+        {
+            get => (_anotacao.Categoria != null) ? _anotacao.Categoria.PK_Categoria : 0;
+        }
+        public SolidColorBrush Cor
+        {
+            get => ObterCorCategoria();
+        }
+
+        private SolidColorBrush ObterCorCategoria()
+        {
+            if (_anotacao.Categoria == null)
+                return HexadecimalToSolidColorBrush("#FF121212");
+
+            if (_anotacao.Categoria.Cor == null)
+                return HexadecimalToSolidColorBrush("#FF121212");
+
+            return HexadecimalToSolidColorBrush(_anotacao.Categoria.Cor.Hexadecimal);
+        }
+
+        private SolidColorBrush HexadecimalToSolidColorBrush(string hexColor)
+        {
+            hexColor = hexColor.Replace("#", "");
+            if (hexColor.Length == 6)
+                hexColor = "FF" + hexColor;
+
+            byte a = Convert.ToByte(hexColor.Substring(0, 2), 16);
+            byte r = Convert.ToByte(hexColor.Substring(2, 2), 16);
+            byte g = Convert.ToByte(hexColor.Substring(4, 2), 16);
+            byte b = Convert.ToByte(hexColor.Substring(6, 2), 16);
+
+            Windows.UI.Color color = Windows.UI.Color.FromArgb(a, r, g, b);
+            return new SolidColorBrush(color);
         }
         #endregion
     }

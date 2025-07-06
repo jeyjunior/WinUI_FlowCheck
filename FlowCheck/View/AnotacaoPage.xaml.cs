@@ -1,18 +1,3 @@
-using FlowCheck.Application;
-using FlowCheck.Application.Interfaces;
-using FlowCheck.Application.Services;
-using FlowCheck.Domain.Entidades;
-using FlowCheck.Domain.Helpers;
-using FlowCheck.ViewModel.AnotacaoViewModel;
-using FlowCheck.ViewModel.TarefaViewModel;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Data;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Navigation;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -21,7 +6,22 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI;
-
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Navigation;
+using Microsoft.Extensions.DependencyInjection;
+using FlowCheck.Application;
+using FlowCheck.Application.Interfaces;
+using FlowCheck.Application.Services;
+using FlowCheck.Domain.Entidades;
+using FlowCheck.Domain.Helpers;
+using FlowCheck.ViewModel.AnotacaoViewModel;
+using FlowCheck.ViewModel.TarefaViewModel;
+using JJ.Net.Core.DTO;
 
 namespace FlowCheck.View
 {
@@ -52,6 +52,7 @@ namespace FlowCheck.View
         {
             try
             {
+                CarregarDropDown();
                 CarregarAnotacoes();
             }
             catch (Exception ex)
@@ -75,6 +76,42 @@ namespace FlowCheck.View
 
             foreach (var item in ret)
                 ViewModel.AdicionarAnotacao(item);
+        }
+
+        private void CarregarDropDown()
+        {
+            CarregarTipoDePesquisa();
+            CarregarTipoDeOrdenacao();
+        }
+
+        private void CarregarTipoDePesquisa()
+        {
+            var tipoDePesqusia = new List<Item>
+            {
+                new Item { ID = "0", Valor = "Tudo"},
+                new Item { ID = "1", Valor = "Categoria"},
+                new Item { ID = "2", Valor = "Anotação"},
+            };
+
+            this.cboTipoDePesquisa.ItemsSource = tipoDePesqusia;
+            this.cboTipoDePesquisa.SelectedValuePath = "ID";
+            this.cboTipoDePesquisa.DisplayMemberPath = "Valor";
+            this.cboTipoDePesquisa.SelectedValue = "0";
+        }
+
+        private void CarregarTipoDeOrdenacao()
+        {
+            var tipoDePesqusia = new List<Item>
+            {
+                new Item { ID = "0", Valor = "Data"},
+                new Item { ID = "1", Valor = "Categoria"},
+                new Item { ID = "2", Valor = "Anotação"},
+            };
+
+            this.cboTipoDeOrdenacao.ItemsSource = tipoDePesqusia;
+            this.cboTipoDeOrdenacao.SelectedValuePath = "ID";
+            this.cboTipoDeOrdenacao.DisplayMemberPath = "Valor";
+            this.cboTipoDeOrdenacao.SelectedValue = "2";
         }
         #endregion
     }

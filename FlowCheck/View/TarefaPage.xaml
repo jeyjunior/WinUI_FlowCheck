@@ -24,7 +24,7 @@
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
-                    <TextBlock Grid.Column="0" HorizontalAlignment="Left" Margin="0" Padding="0" Text="Tarefas" Foreground="{StaticResource Cinza3}"/>
+                    <TextBlock Grid.Column="0" HorizontalAlignment="Left" Margin="0" Padding="0" Text="Tarefasção" Foreground="{StaticResource Cinza3}"/>
                     <TextBlock x:Name="txtStatus"   Grid.Column="1" HorizontalAlignment="Right"  Margin="0" Padding="0" Text="{Binding TarefaStatus}" Foreground="{StaticResource Cinza3}"/>
                 </Grid>
                 <Border Grid.Row="1" Height="1" VerticalAlignment="Top" HorizontalAlignment="Stretch" Background="{StaticResource Cinza8}"/>

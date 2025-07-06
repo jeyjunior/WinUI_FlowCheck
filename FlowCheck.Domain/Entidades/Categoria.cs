@@ -19,7 +19,7 @@ namespace FlowCheck.Domain.Entidades
         public string Nome { get; set; }
 
         [Relacionamento("Cor", "PK_Cor")]
-        public int FK_Cor { get; set; }
+        public int? FK_Cor { get; set; }
 
         /* Relacionamento */
         [Editavel(false)]

@@ -12,6 +12,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="38"/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="8"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
@@ -22,18 +23,18 @@
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
-                    <TextBlock Grid.Column="0" HorizontalAlignment="Left" Margin="0" Padding="0" Text="Anotações" Foreground="{StaticResource Cinza3}"/>
-                    <TextBlock x:Name="txtStatus"   Grid.Column="1" HorizontalAlignment="Right"  Margin="0" Padding="0" Text="{Binding AnotacaoStatus}" Foreground="{StaticResource Cinza3}"/>
+                    <TextBlock Grid.Column="0" x:Name="txtTitulo" HorizontalAlignment="Left" Margin="0" Padding="0" Text="Anotação" Foreground="{StaticResource Cinza3}"/>
+                    <TextBlock Grid.Column="1" x:Name="txtStatus" HorizontalAlignment="Right" Margin="0" Padding="0" Text="{Binding AnotacaoStatus}" Foreground="{StaticResource Cinza3}"/>
                 </Grid>
                 <Border Grid.Row="1" Height="1" VerticalAlignment="Top" HorizontalAlignment="Stretch" Background="{StaticResource Cinza8}"/>
             </StackPanel>
         </Border>
         
-        <StackPanel Grid.Row="1" Margin="20,0" Padding="0" Background="{StaticResource Cinza11Transp50}" CornerRadius="5">
-            <Grid>
+        <StackPanel Grid.Row="1" Margin="20,0" Padding="0" Background="{StaticResource Cinza12}" CornerRadius="5" Spacing="8">
+            <Grid ColumnSpacing="8">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="80*"/>
-                    <ColumnDefinition Width="20*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="120"/>
                 </Grid.ColumnDefinitions>
 
                 <TextBox x:Name="txtPesquisa"
@@ -49,13 +50,28 @@
                          FontWeight="Normal" />
 
                 <ComboBox Grid.Column="1"
+                          x:Name="cboTipoDePesquisa"
+                          VerticalAlignment="Stretch"
                           HorizontalAlignment="Stretch"/>
             </Grid>
 
-            <ComboBox HorizontalAlignment="Stretch"/>
+            <StackPanel Orientation="Horizontal" Spacing="8">
+                <ComboBox x:Name="cboTipoDeOrdenacao"
+                          VerticalAlignment="Stretch"
+                          HorizontalAlignment="Left"
+                          Width="120"/>
+
+                <Button x:Name="btnOrdenarAnotacoes" 
+                        Padding="0" 
+                        Width="32" 
+                        Height="32" 
+                        Style="{StaticResource DefaultButtonStyle}">
+                    <FontIcon Glyph="&#xE8CB;" FontFamily="Segoe Fluent Icons" FontSize="14"/>
+                </Button>
+            </StackPanel>
         </StackPanel>
 
-        <ScrollViewer Grid.Row="2" x:Name="scroll" Margin="20,0" LayoutUpdated="scroll_LayoutUpdated">
+        <ScrollViewer Grid.Row="3" x:Name="scroll" Margin="20,0" LayoutUpdated="scroll_LayoutUpdated">
             <ItemsControl x:Name="spPrincipal" ItemsSource="{Binding Anotacoes}" >
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
@@ -72,15 +88,22 @@
                                     CornerRadius="6"
                                     CanDrag="True"
                                     AllowDrop="True">
-
                             <Grid Background="{StaticResource Cinza10}" Padding="0" Margin="0" CornerRadius="6">
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="12"/>
+                                    <ColumnDefinition Width="100"/>
                                     <ColumnDefinition Width="*"/>
                                     <ColumnDefinition Width="Auto"/>
                                 </Grid.ColumnDefinitions>
 
-                                <Frame Background="{Binding Cor}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="0" Padding="0"/>
+                                <Frame Background="{Binding Cor}" 
+                                       VerticalAlignment="Stretch" 
+                                       HorizontalAlignment="Stretch" 
+                                       VerticalContentAlignment="Center" 
+                                       HorizontalContentAlignment="Center" 
+                                       Margin="0" 
+                                       Padding="8">
+                                    <TextBlock Text="{Binding CategoriaNome}" TextWrapping="Wrap" TextAlignment="Center" FontWeight="SemiBold" FontSize="12"/>
+                                </Frame>
 
                                 <TextBlock x:Name="txbAnotacao" 
                                         Grid.Column="1"
@@ -94,7 +117,6 @@
                                         FontWeight="Normal"/>
                             </Grid>
                         </StackPanel>
-
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>

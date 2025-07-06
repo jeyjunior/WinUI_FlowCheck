@@ -25,7 +25,11 @@ namespace FlowCheck.Domain.Entidades
         public bool Ativo { get; set; }
 
         [Obrigatorio, Relacionamento("Categoria", "PK_Categoria")]
-        public int FK_Categoria { get; set; }
+        public int? FK_Categoria { get; set; }
+
+        /* Relacionamento */
+        [Editavel(false)]
+        public Categoria Categoria { get; set; }
 
         [Editavel(false)]
         public ValidarResultado ValidarResultado { get; set; } = new ValidarResultado();

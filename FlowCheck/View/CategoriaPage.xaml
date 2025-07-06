@@ -126,7 +126,7 @@
                         Closing="dialogCategoria_Closing"
                         Background="{StaticResource Cinza13}">
             <StackPanel Spacing="12" Padding="0" Margin="0">
-                <TextBox x:Name="txtCategoria" PlaceholderText="Categoria" Width="400" MaxWidth="400" MaxLength="300" TextChanged="txtCategoria_TextChanged"/>
+                <TextBox x:Name="txtCategoria" PlaceholderText="Categoria" Width="400" MaxWidth="400" MaxLength="60" TextChanged="txtCategoria_TextChanged"/>
 
                 <Grid Background="{StaticResource Nenhuma}" Width="400" Height="100">
                     <Grid.ColumnDefinitions>
