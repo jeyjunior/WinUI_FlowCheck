@@ -1,6 +1,7 @@
 using FlowCheck.Application;
 using FlowCheck.Application.Interfaces;
 using FlowCheck.Application.Services;
+using FlowCheck.Domain.DTO;
 using FlowCheck.Domain.Entidades;
 using FlowCheck.Domain.Helpers;
 using FlowCheck.Domain.Interfaces;
@@ -15,6 +16,9 @@ using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 using System.Runtime.ConstrainedExecution;
 using System.Threading;
 using System.Threading.Tasks;
@@ -26,6 +30,7 @@ namespace FlowCheck.View
     {
         #region Interfaces
         private readonly ICategoriaAppService categoriaAppService;
+        private readonly ICorRepository corRepository;
         #endregion
 
         #region Propriedades
@@ -45,6 +50,7 @@ namespace FlowCheck.View
             this.DataContext = ViewModel;
 
             categoriaAppService = Bootstrap.ServiceProvider.GetRequiredService<ICategoriaAppService>();
+            corRepository = Bootstrap.ServiceProvider.GetRequiredService<ICorRepository>();
         }
         #endregion
 
@@ -54,6 +60,7 @@ namespace FlowCheck.View
             try
             {
                 CarregarCategorias();
+                CarregarCores();
             }
             catch (Exception ex)
             {
@@ -104,16 +111,7 @@ namespace FlowCheck.View
                         return;
 
                     if (categoria.Cor != null)
-                    {
-                        var rgb = categoria.Cor.RGB.Split(",");
-
-                        if (rgb.Length == 3)
-                        {
-                            rSlider.Value = Convert.ToDouble(rgb[0]);
-                            gSlider.Value = Convert.ToDouble(rgb[1]);
-                            bSlider.Value = Convert.ToDouble(rgb[2]);
-                        }
-                    }
+                        this.cbCores.SelectedValue = categoria.Cor.PK_Cor;
 
                     txtCategoria.Text = categoria.Nome;
                     txtCategoria.SelectAll();
@@ -125,13 +123,6 @@ namespace FlowCheck.View
             {
                 await Mensagem.ExibirErroAsync(this.Content.XamlRoot, ex.Message);
             }
-        }
-        private void Slider_ValueChanged(object sender, RangeBaseValueChangedEventArgs e)
-        {
-            byte r = (byte)rSlider.Value;
-            byte g = (byte)gSlider.Value;
-            byte b = (byte)bSlider.Value;
-            frameColorPreview.Background = new SolidColorBrush(Color.FromArgb(255, r, g, b));
         }
         private void txtCategoria_TextChanged(object sender, TextChangedEventArgs e)
         {
@@ -202,15 +193,8 @@ namespace FlowCheck.View
             this.categoria = null;
 
             this.txtCategoria.Text = "";
-            this.rSlider.Value = 0;
-            this.gSlider.Value = 0;
-            this.bSlider.Value = 0;
-
             this.ViewModel.MensagemAviso = "";
-        }
-        private string RgbToHex(byte r, byte g, byte b)
-        {
-            return $"#{r:X2}{g:X2}{b:X2}";
+            this.cbCores.SelectedIndex = 0;
         }
         #endregion
 
@@ -219,15 +203,11 @@ namespace FlowCheck.View
         {
             try
             {
-                byte r = (byte)rSlider.Value;
-                byte g = (byte)gSlider.Value;
-                byte b = (byte)bSlider.Value;
+                var corSelecionada = (Cor)this.cbCores.SelectedItem;
 
                 if (categoria != null && categoria.PK_Categoria > 0)
                 {
-                    categoria.Cor.Hexadecimal = RgbToHex(r, g, b);
-                    categoria.Cor.RGB = $"{r},{g},{b}";
-                    categoria.Cor.ValidarResultado = new JJ.Net.Core.Validador.ValidarResultado();
+                    categoria.Cor = corSelecionada;
 
                     categoria.Nome = txtCategoria.Text.Trim();
                     categoria.ValidarResultado = new JJ.Net.Core.Validador.ValidarResultado();
@@ -241,19 +221,10 @@ namespace FlowCheck.View
                 }
                 else
                 {
-                    var cor = new Cor
-                    {
-                        Hexadecimal = RgbToHex(r, g, b),
-                        Nome = "CorGenerica",
-                        RGB = $"{r},{g},{b}",
-                        PK_Cor = 0,
-                        ValidarResultado = new JJ.Net.Core.Validador.ValidarResultado()
-                    };
-
                     categoria = new Categoria
                     {
                         Nome = txtCategoria.Text.Trim(),
-                        Cor = cor,
+                        Cor = corSelecionada,
                         PK_Categoria = 0,
                         FK_Cor = 0,
                         ValidarResultado = new JJ.Net.Core.Validador.ValidarResultado()
@@ -301,5 +272,19 @@ namespace FlowCheck.View
             dialogCategoria.Hide();
         }
         #endregion
+
+        private void CbCores_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+
+        }
+
+        private void CarregarCores()
+        {
+            var corCollection = corRepository.ObterLista();
+
+            this.cbCores.ItemsSource = corCollection;
+            this.cbCores.SelectedValuePath = "PK_Cor";
+            this.cbCores.SelectedIndex = 0;
+        }
     }
 }

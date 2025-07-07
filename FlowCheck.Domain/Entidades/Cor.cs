@@ -4,6 +4,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.UI.Xaml.Media;
+using FlowCheck.Domain.Extensoes;
 using JJ.Net.Core.Extensoes;
 using JJ.Net.Core.Validador;
 using JJ.Net.CrossData_WinUI_3.Atributo;
@@ -23,6 +25,12 @@ namespace FlowCheck.Domain.Entidades
         public string Hexadecimal { get; set; }
         [Obrigatorio]
         public string RGB { get; set; }
+
+        [Editavel(false)]
+        public Microsoft.UI.Xaml.Media.SolidColorBrush Cor_SolidColorBrush
+        {
+            get => Hexadecimal.HexadecimalToSolidColorBrush();
+        }
 
         [Editavel(false)]
         public ValidarResultado ValidarResultado { get; set; } = new ValidarResultado();

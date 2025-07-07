@@ -68,9 +68,6 @@ namespace FlowCheck.Application.Services
                     }
                 }
 
-                if (categoria.Cor == null)
-                    categoria.Cor = corRepository.GerarCorAleatoria();
-
                 try
                 {
                     uow.Begin();
@@ -140,7 +137,6 @@ namespace FlowCheck.Application.Services
             using (var uow = new UnitOfWork(config.ConexaoAtiva))
             {
                 var categoriaRepository = new CategoriaRepository(uow);
-                var corRepository = new CorRepository(uow);
 
                 try
                 {
@@ -150,9 +146,6 @@ namespace FlowCheck.Application.Services
                     {
                         if (categoria.PK_Categoria <= 0)
                             continue;
-
-                        if (categoria.Cor != null)
-                            corRepository.Deletar(categoria.Cor.PK_Cor);
 
                         categoriaRepository.Deletar(categoria.PK_Categoria);
                     }

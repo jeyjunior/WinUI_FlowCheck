@@ -128,29 +128,19 @@
             <StackPanel Spacing="12" Padding="0" Margin="0">
                 <TextBox x:Name="txtCategoria" PlaceholderText="Categoria" Width="400" MaxWidth="400" MaxLength="60" TextChanged="txtCategoria_TextChanged"/>
 
-                <Grid Background="{StaticResource Nenhuma}" Width="400" Height="100">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="200"/>
-                        <ColumnDefinition Width="200"/>
-                    </Grid.ColumnDefinitions>
+                <ComboBox x:Name="cbCores" Width="400" MaxDropDownHeight="200">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                <Frame Width="20" Height="20" CornerRadius="4">
+                                    <Rectangle Fill="{Binding Cor_SolidColorBrush}" />
+                                </Frame>
 
-                    <StackPanel x:Name="myStackPanel" Margin="10,0,0,0">
-                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                            <TextBlock Text="R:" Width="24" VerticalAlignment="Center"/>
-                            <Slider x:Name="rSlider" Minimum="0" Maximum="255" HorizontalAlignment="Stretch" Width="158" ValueChanged="Slider_ValueChanged"/>
-                        </StackPanel>
-                        <StackPanel Orientation="Horizontal"  VerticalAlignment="Center">
-                            <TextBlock Text="G:" Width="24" VerticalAlignment="Center"/>
-                            <Slider x:Name="gSlider" Minimum="0" Maximum="255" HorizontalAlignment="Stretch" Width="158" ValueChanged="Slider_ValueChanged"/>
-                        </StackPanel>
-                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                            <TextBlock Text="B:" Width="24" VerticalAlignment="Center"/>
-                            <Slider x:Name="bSlider" Minimum="0" Maximum="255" HorizontalAlignment="Stretch" Width="158" ValueChanged="Slider_ValueChanged"/>
-                        </StackPanel>
-                    </StackPanel>
-
-                    <Frame Grid.Column="1" x:Name="frameColorPreview" CornerRadius="10" Background="Black" Margin="10"/>
-                </Grid>
+                                <TextBlock Text="{Binding Nome}" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
 
                 <Border x:Name="bAviso" Background="{StaticResource Vermelho3}" MaxWidth="400" CornerRadius="5" Visibility="{Binding ExibirAviso}">
                     <TextBlock x:Name="txtAviso" TextWrapping="Wrap" Padding="10" Text="{Binding MensagemAviso}"/>

@@ -11,6 +11,5 @@ namespace FlowCheck.Domain.Interfaces
 {
     public interface ICorRepository : IRepository<Cor>
     {
-        Cor GerarCorAleatoria();
     }
 }
