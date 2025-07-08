@@ -123,5 +123,52 @@
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
         </ScrollViewer>
+
+        <ContentDialog  x:Name="dialogAnotacao"
+                Title="Adicionar Anotação"
+                PrimaryButtonText="Salvar"
+                CloseButtonText="Cancelar"
+                DefaultButton="Primary"
+                PrimaryButtonClick="dialogAnotacao_PrimaryButtonClick"
+                CloseButtonClick="dialogAnotacao_CloseButtonClick"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Style="{StaticResource DefaultContentDialogStyle}"
+                Margin="0"
+                MaxWidth="400"
+                Closing="dialogAnotacao_Closing"
+                Background="{StaticResource Cinza13}">
+            
+            <StackPanel Spacing="12" Padding="0" Margin="0">
+                <TextBox x:Name="txtAnotacao" 
+                         PlaceholderText="Anotação" 
+                         Width="400" 
+                         MaxWidth="400" 
+                         MaxLength="540"
+                         TextWrapping="Wrap"
+                         MinHeight="150"
+                         Height="150"
+                         TextChanged="txtAnotacao_TextChanged"/>
+
+                <ComboBox x:Name="cboCategoria" Width="400" MaxDropDownHeight="200">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                <Frame Width="20" Height="20" CornerRadius="4">
+                                    <Rectangle Fill="{Binding Cor_SolidColorBrush}" />
+                                </Frame>
+
+                                <TextBlock Text="{Binding Nome}" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+
+                <Border x:Name="bAviso" Background="{StaticResource Vermelho3}" MaxWidth="400" CornerRadius="5" Visibility="{Binding ExibirAviso}">
+                    <TextBlock x:Name="txtAviso" TextWrapping="Wrap" Padding="10" Text="{Binding MensagemAviso}"/>
+                </Border>
+                
+            </StackPanel>
+        </ContentDialog>
     </Grid>
 </Page>

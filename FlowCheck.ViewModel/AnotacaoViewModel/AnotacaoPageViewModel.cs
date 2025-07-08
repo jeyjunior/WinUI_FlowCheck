@@ -25,7 +25,6 @@ namespace FlowCheck.ViewModel.AnotacaoViewModel
         }
         #endregion
 
-
         #region Anotacao Itens
         public ObservableCollection<AnotacaoViewModel> Anotacoes { get; } = new ObservableCollection<AnotacaoViewModel>();
         public AnotacaoViewModel AdicionarAnotacao(Anotacao anotacao)
@@ -36,7 +35,21 @@ namespace FlowCheck.ViewModel.AnotacaoViewModel
             AtualizarStatus();
             return anotacaoViewModel;
         }
-        public void LimparCategorias()
+
+        public void RemoverAnotacao(int PK_Anotacao)
+        {
+            var anotacao = this.Anotacoes.Where(i => i.Anotacao.PK_Anotacao.Equals(PK_Anotacao)).FirstOrDefault();
+            if (anotacao != null)
+                this.Anotacoes.Remove(anotacao);
+
+            AtualizarStatus();
+        }
+        public Anotacao ObterAnotacao(int PK_Anotacao)
+        {
+            return this.Anotacoes.Where(i => i.Anotacao.PK_Anotacao.Equals(PK_Anotacao)).FirstOrDefault().Anotacao;
+        }
+        
+        public void LimparAnotacoes()
         {
             Anotacoes.Clear();
             AtualizarStatus();
@@ -59,6 +72,25 @@ namespace FlowCheck.ViewModel.AnotacaoViewModel
         public void AtualizarStatus()
         {
             OnPropertyChanged(nameof(AnotacaoStatus));
+        }
+        #endregion
+
+        #region Aviso
+        private string _mensagemAviso { get; set; }
+        public Visibility ExibirAviso
+        {
+            get => (_mensagemAviso.ObterValorOuPadrao("").Trim() == "" ? Visibility.Collapsed : Visibility.Visible);
+        }
+
+        public string MensagemAviso
+        {
+            get => _mensagemAviso;
+            set
+            {
+                _mensagemAviso = value;
+                OnPropertyChanged(nameof(MensagemAviso));
+                OnPropertyChanged(nameof(ExibirAviso));
+            }
         }
         #endregion
     }

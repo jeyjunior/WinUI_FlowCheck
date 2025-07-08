@@ -37,6 +37,45 @@ namespace FlowCheck.Application.Services
         {
             _uow.Dispose();
         }
+        public bool SalvarAnotacao(Anotacao anotacao)
+        {
+            if (anotacao == null)
+                return false;
+
+            if (anotacao.ValidarResultado == null)
+                anotacao.ValidarResultado = new ValidarResultado();
+
+            var config = Bootstrap.ServiceProvider.GetRequiredService<IConfiguracaoBancoDados>();
+
+            using (var uow = new UnitOfWork(config.ConexaoAtiva))
+            {
+                var anotacaoRepository = new AnotacaoRepository(uow);
+
+                try
+                {
+                    uow.Begin();
+
+                    if (anotacao.PK_Anotacao > 0)
+                    {
+                        anotacaoRepository.Atualizar(anotacao);
+                    }
+                    else
+                    {
+                        anotacao.PK_Anotacao = anotacaoRepository.Adicionar(anotacao);
+                    }
+
+                    uow.Commit();
+                    return true;
+                }
+                catch (Exception ex)
+                {
+                    uow.Rollback();
+
+                }
+            }
+
+            return false;
+        }
         public IEnumerable<Anotacao> Pesquisar(Anotacao_Request request)
         {
             string condicao = "";

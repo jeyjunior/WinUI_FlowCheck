@@ -111,7 +111,7 @@ namespace FlowCheck.View
                         return;
 
                     if (categoria.Cor != null)
-                        this.cbCores.SelectedValue = categoria.Cor.PK_Cor;
+                        this.cboCores.SelectedValue = categoria.Cor.PK_Cor;
 
                     txtCategoria.Text = categoria.Nome;
                     txtCategoria.SelectAll();
@@ -182,7 +182,7 @@ namespace FlowCheck.View
         #region Métodos
         private void CarregarCategorias()
         {
-            ViewModel.Categorias.Clear();
+            ViewModel.LimparCategorias();
 
             var ret = categoriaAppService.Pesquisar(new Categoria_Request { Nome = "", PesquisaPorIgualdade = true });
             foreach (var item in ret)
@@ -194,7 +194,15 @@ namespace FlowCheck.View
 
             this.txtCategoria.Text = "";
             this.ViewModel.MensagemAviso = "";
-            this.cbCores.SelectedIndex = 0;
+            this.cboCores.SelectedIndex = 0;
+        }
+        private void CarregarCores()
+        {
+            var corCollection = corRepository.ObterLista();
+
+            this.cboCores.ItemsSource = corCollection;
+            this.cboCores.SelectedValuePath = "PK_Cor";
+            this.cboCores.SelectedIndex = 0;
         }
         #endregion
 
@@ -203,7 +211,7 @@ namespace FlowCheck.View
         {
             try
             {
-                var corSelecionada = (Cor)this.cbCores.SelectedItem;
+                var corSelecionada = (Cor)this.cboCores.SelectedItem;
 
                 if (categoria != null && categoria.PK_Categoria > 0)
                 {
@@ -272,19 +280,5 @@ namespace FlowCheck.View
             dialogCategoria.Hide();
         }
         #endregion
-
-        private void CbCores_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-
-        }
-
-        private void CarregarCores()
-        {
-            var corCollection = corRepository.ObterLista();
-
-            this.cbCores.ItemsSource = corCollection;
-            this.cbCores.SelectedValuePath = "PK_Cor";
-            this.cbCores.SelectedIndex = 0;
-        }
     }
 }
