@@ -98,6 +98,7 @@
                                 </Grid.ColumnDefinitions>
 
                                 <Frame Background="{Binding Cor}" 
+                                       Grid.Column="0"
                                        VerticalAlignment="Stretch" 
                                        HorizontalAlignment="Stretch" 
                                        VerticalContentAlignment="Center" 
@@ -117,6 +118,25 @@
                                         Padding="0" 
                                         VerticalAlignment="Center"
                                         FontWeight="Normal"/>
+
+                                <Button x:Name="btnOpcoes"
+                                        Grid.Column="2"
+                                        VerticalAlignment="Center"
+                                        HorizontalAlignment="Center"
+                                        Padding="0"
+                                        Margin="0,0,12,0"
+                                        Width="24"
+                                        Height="24"
+                                        Style="{StaticResource AlternateCloseButtonStyle}">
+                                    <FontIcon Glyph="&#xE712;" FontFamily="Segoe Fluent Icons" FontSize="14"/>
+                                    <Button.Flyout>
+                                        <MenuFlyout Placement="Left">
+                                            <MenuFlyoutItem x:Name="btnAdicionarComoTarefa" Text="Adicionar em Tarefa" Tag="{Binding PK_Categoria}" Click="btnAdicionarComoTarefa_Click"/>
+                                            <MenuFlyoutItem x:Name="btnEditarAnotacao" Text="Editar" Tag="{Binding PK_Anotacao}" Click="btnEditarAnotacao_Click"/>
+                                            <MenuFlyoutItem x:Name="btnRemoverAnotacao" Text="Remover" Tag="{Binding PK_Anotacao}" Click="btnRemoverAnotacao_Click"/>
+                                        </MenuFlyout>
+                                    </Button.Flyout>
+                                </Button>
                             </Grid>
                         </StackPanel>
                     </DataTemplate>
@@ -139,7 +159,7 @@
                 Closing="dialogAnotacao_Closing"
                 Background="{StaticResource Cinza13}">
             
-            <StackPanel Spacing="12" Padding="0" Margin="0">
+            <StackPanel Spacing="0" Padding="0" Margin="0">
                 <TextBox x:Name="txtAnotacao" 
                          PlaceholderText="Anotação" 
                          Width="400" 
@@ -150,6 +170,7 @@
                          Height="150"
                          TextChanged="txtAnotacao_TextChanged"/>
 
+                <TextBlock Text="Categoria:" Foreground="{StaticResource Cinza3}" Margin="0,16,0,4"/>
                 <ComboBox x:Name="cboCategoria" Width="400" MaxDropDownHeight="200">
                     <ComboBox.ItemTemplate>
                         <DataTemplate>

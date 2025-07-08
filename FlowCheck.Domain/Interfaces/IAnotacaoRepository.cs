@@ -11,5 +11,6 @@ namespace FlowCheck.Domain.Interfaces
 {
     public interface IAnotacaoRepository : IRepository<Anotacao>
     {
+        bool LimparCategoriaDasAnotacoes(int FK_Categoria);
     }
 }

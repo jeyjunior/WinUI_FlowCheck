@@ -24,7 +24,6 @@ namespace FlowCheck.Domain.Entidades
         [Obrigatorio]
         public bool Ativo { get; set; }
 
-        [Obrigatorio, Relacionamento("Categoria", "PK_Categoria")]
         public int? FK_Categoria { get; set; }
 
         /* Relacionamento */
@@ -41,11 +40,6 @@ namespace FlowCheck.Domain.Entidades
             if (Descricao.ObterValorOuPadrao("").Trim() == "")
             {
                 ValidarResultado.Adicionar("Descrição da anotação é obrigatório.");
-                return false;
-            }
-            else if (FK_Categoria <= 0)
-            {
-                ValidarResultado.Adicionar("Propriedade Categoria é obrigatória.");
                 return false;
             }
 

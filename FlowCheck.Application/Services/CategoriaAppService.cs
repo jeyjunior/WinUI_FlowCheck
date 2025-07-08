@@ -137,6 +137,7 @@ namespace FlowCheck.Application.Services
             using (var uow = new UnitOfWork(config.ConexaoAtiva))
             {
                 var categoriaRepository = new CategoriaRepository(uow);
+                var anotacaoRepository = new AnotacaoRepository(uow);
 
                 try
                 {
@@ -147,7 +148,10 @@ namespace FlowCheck.Application.Services
                         if (categoria.PK_Categoria <= 0)
                             continue;
 
-                        categoriaRepository.Deletar(categoria.PK_Categoria);
+                        var ret = categoriaRepository.Deletar(categoria.PK_Categoria);
+
+                        if (ret > 0)
+                            anotacaoRepository.LimparCategoriaDasAnotacoes(categoria.PK_Categoria);
                     }
 
                     uow.Commit();

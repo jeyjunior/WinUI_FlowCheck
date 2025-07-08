@@ -75,7 +75,7 @@ namespace FlowCheck.View
         {
             try
             {
-                var ret = await Mensagem.ExibirConfirmacaoAsync(this.Content.XamlRoot, "Tem certeza que deseja remover essa categoria? A operação não poderá ser desfeita.");
+                var ret = await Mensagem.ExibirConfirmacaoAsync(this.Content.XamlRoot, "Tem certeza que deseja remover essa categoria?\nA operação não poderá ser desfeita.");
                 if (ret != Domain.Enumerador.eTipoMensagemResultado.Sim)
                     return;
 

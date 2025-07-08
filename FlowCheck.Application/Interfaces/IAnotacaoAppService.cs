@@ -11,5 +11,7 @@ namespace FlowCheck.Application.Interfaces
     {
         IEnumerable<Anotacao> Pesquisar(Anotacao_Request request);
         bool SalvarAnotacao(Anotacao anotacao);
+        bool RemoverAnotacao(Anotacao anotacao);
+        bool RemoverAnotacoes(IEnumerable<Anotacao> anotacoes);
     }
 }

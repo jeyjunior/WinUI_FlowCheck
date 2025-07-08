@@ -57,5 +57,28 @@ namespace FlowCheck.InfraData.Repository
 
             return resultado;
         }
+
+        public bool LimparCategoriaDasAnotacoes(int FK_Categoria)
+        {
+            string query = @"UPDATE Anotacao 
+                    SET FK_Categoria = NULL 
+                    WHERE FK_Categoria = @FK_Categoria";
+
+            var parameters = new { FK_Categoria };
+
+            try
+            {
+                int linhasAfetadas = unitOfWork.Connection.Execute(
+                    sql: query,
+                    param: parameters,
+                    transaction: unitOfWork.Transaction);
+
+                return linhasAfetadas > 0;
+            }
+            catch
+            {
+                return false;
+            }
+        }
     }
 }

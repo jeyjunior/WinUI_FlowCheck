@@ -25,6 +25,7 @@ using FlowCheck.Domain.Interfaces;
 using FlowCheck.InfraData.Repository;
 using FlowCheck.ViewModel.AnotacaoViewModel;
 using FlowCheck.ViewModel.TarefaViewModel;
+using Microsoft.UI;
 
 namespace FlowCheck.View
 {
@@ -94,6 +95,65 @@ namespace FlowCheck.View
         {
 
         }
+        private async void btnEditarAnotacao_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                Limpar();
+
+                if (sender is MenuFlyoutItem btn && btn.Tag is int PK_Anotacao)
+                {
+                    anotacao = ViewModel.ObterAnotacao(PK_Anotacao);
+                    if (anotacao == null)
+                        return;
+
+                    if (anotacao.FK_Categoria != null)
+                        this.cboCategoria.SelectedValue = anotacao.FK_Categoria;
+
+                    txtAnotacao.Text = anotacao.Descricao;
+                    txtAnotacao.SelectAll();
+
+                    await this.dialogAnotacao.ShowAsync();
+                }
+            }
+            catch (Exception ex)
+            {
+                await Mensagem.ExibirErroAsync(this.Content.XamlRoot, ex.Message);
+            }
+        }
+
+        private async void btnRemoverAnotacao_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                var ret = await Mensagem.ExibirConfirmacaoAsync(this.Content.XamlRoot, "Tem certeza que deseja remover essa anotação?\nA operação não poderá ser desfeita.");
+                if (ret != Domain.Enumerador.eTipoMensagemResultado.Sim)
+                    return;
+
+                if (sender is MenuFlyoutItem btn && btn.Tag is int PK_Anotacao)
+                {
+                    anotacao = ViewModel.ObterAnotacao(PK_Anotacao);
+                    if (anotacao == null)
+                        return;
+
+                    if (anotacaoAppService.RemoverAnotacao(anotacao))
+                    {
+                        ViewModel.RemoverAnotacao(PK_Anotacao);
+                    }
+
+                    anotacao = null;
+                }
+            }
+            catch (Exception ex)
+            {
+                await Mensagem.ExibirErroAsync(this.Content.XamlRoot, ex.Message);
+            }
+        }
+
+        private void btnAdicionarComoTarefa_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
         #endregion
 
         #region Métodos
@@ -142,17 +202,29 @@ namespace FlowCheck.View
         }
         private void CarregarCategorias()
         {
-            var categorias = categoriaRepository.ObterLista();
+            var categorias = categoriaRepository.ObterLista().ToList();
+
+            categorias.Add(new Categoria { PK_Categoria = 0, Nome = "" });
 
             this.cboCategoria.ItemsSource = categorias.Select(i => new 
             {
                 PK_Categoria = i.PK_Categoria,
                 Nome = i.Nome,
-                Cor_SolidColorBrush = i.Cor.Cor_SolidColorBrush
-            }).ToList();
+                Cor_SolidColorBrush = ObterCorCategorias(i.Cor)
+            })
+                .OrderBy(i => i.Nome)
+                .ToList();
 
             this.cboCategoria.SelectedValuePath = "PK_Categoria";
             this.cboCategoria.SelectedIndex = 0;
+        }
+
+        private SolidColorBrush ObterCorCategorias(Cor cor)
+        {
+            if (cor == null)
+                return new SolidColorBrush(Colors.Transparent);
+
+            return cor.Cor_SolidColorBrush;
         }
         private void Limpar()
         {
@@ -169,16 +241,25 @@ namespace FlowCheck.View
         {
             try
             {
-                var PK_CategoriaSelecionada = (int)this.cboCategoria.SelectedValue;
+                var PK_CategoriaSelecionada = (int?)this.cboCategoria.SelectedValue;
 
-                anotacao = new Anotacao()
+                if (anotacao != null && anotacao.PK_Anotacao > 0)
                 {
-                    Ativo = true,
-                    FK_Categoria = PK_CategoriaSelecionada,
-                    Descricao = txtAnotacao.Text.Trim(),
-                    DataCriacao = DateTime.Now,
-                    PK_Anotacao = 0
-                };
+                    anotacao.Ativo = true;
+                    anotacao.FK_Categoria = PK_CategoriaSelecionada;
+                    anotacao.Descricao = txtAnotacao.Text.Trim();
+                }
+                else
+                {
+                    anotacao = new Anotacao()
+                    {
+                        Ativo = true,
+                        FK_Categoria = PK_CategoriaSelecionada,
+                        Descricao = txtAnotacao.Text.Trim(),
+                        DataCriacao = DateTime.Now,
+                        PK_Anotacao = 0
+                    };
+                }
 
                 if (!anotacao.Validar())
                 {
