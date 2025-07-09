@@ -13,5 +13,6 @@ namespace FlowCheck.Application.Interfaces
         bool SalvarAnotacao(Anotacao anotacao);
         bool RemoverAnotacao(Anotacao anotacao);
         bool RemoverAnotacoes(IEnumerable<Anotacao> anotacoes);
+        bool AdicionarAnotacaoEmTarefas(Anotacao anotacao);
     }
 }

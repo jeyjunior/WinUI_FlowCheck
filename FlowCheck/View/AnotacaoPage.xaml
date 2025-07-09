@@ -131,7 +131,7 @@
                                     <FontIcon Glyph="&#xE712;" FontFamily="Segoe Fluent Icons" FontSize="14"/>
                                     <Button.Flyout>
                                         <MenuFlyout Placement="Left">
-                                            <MenuFlyoutItem x:Name="btnAdicionarComoTarefa" Text="Adicionar em Tarefa" Tag="{Binding PK_Categoria}" Click="btnAdicionarComoTarefa_Click"/>
+                                            <MenuFlyoutItem x:Name="btnAdicionarComoTarefa" Text="Adicionar em Tarefa" Tag="{Binding PK_Anotacao}" Click="btnAdicionarComoTarefa_Click"/>
                                             <MenuFlyoutItem x:Name="btnEditarAnotacao" Text="Editar" Tag="{Binding PK_Anotacao}" Click="btnEditarAnotacao_Click"/>
                                             <MenuFlyoutItem x:Name="btnRemoverAnotacao" Text="Remover" Tag="{Binding PK_Anotacao}" Click="btnRemoverAnotacao_Click"/>
                                         </MenuFlyout>

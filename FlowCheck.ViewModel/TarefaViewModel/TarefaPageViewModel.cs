@@ -100,12 +100,15 @@ namespace FlowCheck.ViewModel.TarefaViewModel
                 Tarefas.Add(tarefaMovida);
             else
                 Tarefas.Insert(indiceAlvo, tarefaMovida);
+
+            AtualizarIndicesOrdem();
         }
         private void AtualizarIndicesOrdem()
         {
             for (int i = 0; i < Tarefas.Count; i++)
             {
                 Tarefas[i].IndiceOrdem = i;
+                Tarefas[i].Tarefa.IndiceExibicao = i;
             }
 
             OnPropertyChanged(nameof(Tarefas));

@@ -11,5 +11,6 @@ namespace FlowCheck.Domain.Interfaces
 {
     public interface ITarefaRepository : IRepository<Tarefa>
     {
+        int ObterUltimoIndiceExibicao();
     }
 }

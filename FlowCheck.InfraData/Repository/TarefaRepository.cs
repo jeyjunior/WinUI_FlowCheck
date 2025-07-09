@@ -50,5 +50,19 @@ namespace FlowCheck.InfraData.Repository
 
             return resultado;
         }
+
+        public int ObterUltimoIndiceExibicao()
+        {
+            string query = "SELECT   Tarefa.IndiceExibicao \n" +
+                           "FROM     Tarefa\n" +
+                           "ORDER    BY Tarefa.IndiceExibicao DESC\n" +
+                           "LIMIT    1;";
+
+            object result = unitOfWork.Connection.ExecuteScalar(
+                sql: query,
+                transaction: unitOfWork.Transaction);
+
+            return result != null ? Convert.ToInt32(result) : 0;
+        }
     }
 }

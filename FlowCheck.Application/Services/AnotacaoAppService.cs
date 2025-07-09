@@ -138,6 +138,49 @@ namespace FlowCheck.Application.Services
 
             return _anotacaoRepository.ObterLista(condicao, parametros);
         }
+        public bool AdicionarAnotacaoEmTarefas(Anotacao anotacao)
+        {
+            if (anotacao == null)
+                return false;
+
+            if (anotacao.ValidarResultado == null)
+                anotacao.ValidarResultado = new ValidarResultado();
+
+            var config = Bootstrap.ServiceProvider.GetRequiredService<IConfiguracaoBancoDados>();
+
+            using (var uow = new UnitOfWork(config.ConexaoAtiva))
+            {
+                var tarefaRepository = new TarefaRepository(uow);
+
+                try
+                {
+                    int ultimoIndice = tarefaRepository.ObterUltimoIndiceExibicao();
+
+                    var tarefa = new Tarefa
+                    {
+                        Arquivado = false,
+                        Concluido = false,
+                        Descricao = anotacao.Descricao.Trim(),
+                        IndiceExibicao = ultimoIndice,
+                        PK_Tarefa = 0
+                    };
+
+                    uow.Begin();
+
+                    tarefaRepository.Adicionar(tarefa);
+
+                    uow.Commit();
+                    return true;
+                }
+                catch (Exception ex)
+                {
+                    uow.Rollback();
+
+                }
+            }
+
+            return false;
+        }
         #endregion
     }
 }

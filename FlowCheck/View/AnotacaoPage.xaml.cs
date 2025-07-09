@@ -121,7 +121,6 @@ namespace FlowCheck.View
                 await Mensagem.ExibirErroAsync(this.Content.XamlRoot, ex.Message);
             }
         }
-
         private async void btnRemoverAnotacao_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -150,9 +149,24 @@ namespace FlowCheck.View
             }
         }
 
-        private void btnAdicionarComoTarefa_Click(object sender, RoutedEventArgs e)
+        private async void btnAdicionarComoTarefa_Click(object sender, RoutedEventArgs e)
         {
+            try
+            {
+                if (sender is MenuFlyoutItem btn && btn.Tag is int PK_Anotacao)
+                {
+                    anotacao = ViewModel.ObterAnotacao(PK_Anotacao);
+                    if (anotacao == null)
+                        return;
 
+                    anotacaoAppService.AdicionarAnotacaoEmTarefas(anotacao);
+                    anotacao = null;
+                }
+            }
+            catch (Exception ex)
+            {
+                await Mensagem.ExibirErroAsync(this.Content.XamlRoot, ex.Message);
+            }
         }
         #endregion
 
