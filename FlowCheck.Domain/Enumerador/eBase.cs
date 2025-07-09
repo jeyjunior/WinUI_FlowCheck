@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -32,5 +33,31 @@ namespace FlowCheck.Domain.Enumerador
         OK = 1,
         Sim = 2,
         Cancelar = 3
+    }
+
+    public enum eTipoPesquisaAnotacao
+    {
+        [Description("Tudo")]
+        Tudo = 0,
+        [Description("Categoria")]
+        Categoria = 1,
+        [Description("Anotação")]
+        Anotacao = 2
+    }
+
+    public enum eTipoOrdenacaoAnotacao
+    {
+        [Description("Data Criação")]
+        Data = 0,
+        [Description("Categoria")]
+        Categoria = 1,
+        [Description("Anotação")]
+        Anotacao = 2
+    }
+
+    public enum eDirecaoOrdenacao
+    {
+        Ascendente,
+        Descendente
     }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using FlowCheck.Domain.Enumerador;
 using JJ.Net.Core.Extensoes;
 using JJ.Net.Core.Validador;
 using JJ.Net.CrossData_WinUI_3.Atributo;
@@ -50,6 +51,7 @@ namespace FlowCheck.Domain.Entidades
     public class Anotacao_Request
     {
         public string Descricao { get; set; }
+        public eTipoPesquisaAnotacao TipoPesquisa { get; set; }
         public ValidarResultado ValidarResultado { get; set; } = new ValidarResultado();
     }
 }

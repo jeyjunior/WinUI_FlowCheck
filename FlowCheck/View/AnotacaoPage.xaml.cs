@@ -1,14 +1,17 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using System.Threading;
+using FlowCheck.Application;
+using FlowCheck.Application.Interfaces;
+using FlowCheck.Application.Services;
+using FlowCheck.Domain.Entidades;
+using FlowCheck.Domain.Enumerador;
+using FlowCheck.Domain.Helpers;
+using FlowCheck.Domain.Interfaces;
+using FlowCheck.InfraData.Repository;
+using FlowCheck.ViewModel.AnotacaoViewModel;
+using FlowCheck.ViewModel.TarefaViewModel;
 using JJ.Net.Core.DTO;
-using Windows.UI;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
+using JJ.Net.Core.Extensoes;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.UI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -16,16 +19,16 @@ using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
-using FlowCheck.Application;
-using FlowCheck.Application.Interfaces;
-using FlowCheck.Application.Services;
-using FlowCheck.Domain.Entidades;
-using FlowCheck.Domain.Helpers;
-using FlowCheck.Domain.Interfaces;
-using FlowCheck.InfraData.Repository;
-using FlowCheck.ViewModel.AnotacaoViewModel;
-using FlowCheck.ViewModel.TarefaViewModel;
-using Microsoft.UI;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading;
+using System.Threading.Tasks;
+using Windows.Foundation;
+using Windows.Foundation.Collections;
+using Windows.UI;
 
 namespace FlowCheck.View
 {
@@ -42,6 +45,7 @@ namespace FlowCheck.View
         private bool fecharDialog = true;
         private CancellationTokenSource _cancellationTokenSource;
         private readonly int _delayPesquisa = 500;
+        private eDirecaoOrdenacao direcaoOrdenacao = eDirecaoOrdenacao.Ascendente;
         #endregion
 
         #region Construtor
@@ -74,9 +78,40 @@ namespace FlowCheck.View
         {
 
         }
-        private void txtPesquisaCategoria_KeyUp(object sender, KeyRoutedEventArgs e)
+        private async void txtPesquisaAnotacao_KeyUp(object sender, KeyRoutedEventArgs e)
         {
+            try
+            {
+                _cancellationTokenSource?.Cancel();
+                _cancellationTokenSource = new CancellationTokenSource();
 
+                if (txtPesquisaAnotacao.Text.ObterValorOuPadrao("").Trim() == "")
+                {
+                    CarregarAnotacoes();
+                    return;
+                }
+
+                await Task.Delay(_delayPesquisa, _cancellationTokenSource.Token);
+
+                if (!_cancellationTokenSource.IsCancellationRequested)
+                {
+                    ViewModel.LimparAnotacoes();
+
+                    var request = new Anotacao_Request 
+                    { 
+                        Descricao = txtPesquisaAnotacao.Text,
+                        TipoPesquisa = (eTipoPesquisaAnotacao)(cboTipoDePesquisa.SelectedValue.ToString().ConverterParaInt32())
+                    };
+
+                    var ret = anotacaoAppService.Pesquisar(request);
+                    foreach (var item in ret)
+                        ViewModel.AdicionarAnotacao(item);
+                }
+            }
+            catch (TaskCanceledException)
+            {
+
+            }
         }
         private void dialogAnotacao_Closing(ContentDialog sender, ContentDialogClosingEventArgs args)
         {
@@ -148,7 +183,6 @@ namespace FlowCheck.View
                 await Mensagem.ExibirErroAsync(this.Content.XamlRoot, ex.Message);
             }
         }
-
         private async void btnAdicionarComoTarefa_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -168,6 +202,26 @@ namespace FlowCheck.View
                 await Mensagem.ExibirErroAsync(this.Content.XamlRoot, ex.Message);
             }
         }
+        private async void btnOrdenarAnotacoes_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                if (direcaoOrdenacao == eDirecaoOrdenacao.Ascendente) 
+                {
+                    OrdenarAsc();
+                    direcaoOrdenacao = eDirecaoOrdenacao.Descendente;
+                }
+                else if(direcaoOrdenacao == eDirecaoOrdenacao.Descendente)
+                {
+                    OrdenarDesc();
+                    direcaoOrdenacao = eDirecaoOrdenacao.Ascendente;
+                }
+            }
+            catch (Exception ex)
+            {
+                await Mensagem.ExibirErroAsync(this.Content.XamlRoot, ex.Message);
+            }
+        }
         #endregion
 
         #region Métodos
@@ -175,9 +229,35 @@ namespace FlowCheck.View
         {
             ViewModel.LimparAnotacoes();
 
-            var ret = anotacaoAppService.Pesquisar(new Anotacao_Request { Descricao = "" });
+            var request = new Anotacao_Request { Descricao = "", TipoPesquisa = eTipoPesquisaAnotacao.Anotacao };
 
-            foreach (var item in ret)
+            //List<Anotacao> queryAnotacoes = new List<Anotacao>();
+            //eTipoOrdenacaoAnotacao tipoOrdenacao = (eTipoOrdenacaoAnotacao)cboTipoDeOrdenacao.SelectedValue.ToString().ConverterParaInt32();
+
+            //if (tipoOrdenacao == eTipoOrdenacaoAnotacao.Data)
+            //{
+            //    queryAnotacoes = anotacaoAppService.Pesquisar(request)
+            //        .OrderBy(i => i.DataCriacao)
+            //        .ThenBy(i => i.Categoria)
+            //        .ThenBy(i => i.Descricao)
+            //        .ToList();
+            //}
+            //else if (tipoOrdenacao == eTipoOrdenacaoAnotacao.Categoria)
+            //{
+            //    queryAnotacoes = anotacaoAppService.Pesquisar(request)
+            //        .OrderBy(i => i.Categoria)
+            //        .ThenBy(i => i.Descricao)
+            //        .ToList();
+            //}
+            //else if (tipoOrdenacao == eTipoOrdenacaoAnotacao.Anotacao)
+            //{
+            //    queryAnotacoes = anotacaoAppService.Pesquisar(request)
+            //        .OrderBy(i => i.Descricao)
+            //        .ThenBy(i => i.Categoria)
+            //        .ToList();
+            //}
+
+            foreach (var item in anotacaoAppService.Pesquisar(request))
                 ViewModel.AdicionarAnotacao(item);
         }
         private void CarregarDropDown()
@@ -188,31 +268,27 @@ namespace FlowCheck.View
         }
         private void CarregarTipoDePesquisa()
         {
-            var tipoDePesqusia = new List<Item>
-            {
-                new Item { ID = "0", Valor = "Tudo"},
-                new Item { ID = "1", Valor = "Categoria"},
-                new Item { ID = "2", Valor = "Anotação"},
-            };
+            var tipoDePesqusia = new List<Item>();
+
+            foreach (eTipoPesquisaAnotacao item in Enum.GetValues(typeof(eTipoPesquisaAnotacao)))
+                tipoDePesqusia.Add(new Item { ID = ((int)item).ToString(), Valor = item.ObterDescricao() });
 
             this.cboTipoDePesquisa.ItemsSource = tipoDePesqusia;
             this.cboTipoDePesquisa.SelectedValuePath = "ID";
             this.cboTipoDePesquisa.DisplayMemberPath = "Valor";
-            this.cboTipoDePesquisa.SelectedValue = "0";
+            this.cboTipoDePesquisa.SelectedValue = ((int)eTipoPesquisaAnotacao.Anotacao).ToString();
         }
         private void CarregarTipoDeOrdenacao()
         {
-            var tipoDePesqusia = new List<Item>
-            {
-                new Item { ID = "0", Valor = "Data"},
-                new Item { ID = "1", Valor = "Categoria"},
-                new Item { ID = "2", Valor = "Anotação"},
-            };
+            var tipoDePesqusia = new List<Item>();
+
+            foreach (eTipoOrdenacaoAnotacao item in Enum.GetValues(typeof(eTipoOrdenacaoAnotacao)))
+                tipoDePesqusia.Add(new Item { ID = ((int)item).ToString(), Valor = item.ObterDescricao() });
 
             this.cboTipoDeOrdenacao.ItemsSource = tipoDePesqusia;
             this.cboTipoDeOrdenacao.SelectedValuePath = "ID";
             this.cboTipoDeOrdenacao.DisplayMemberPath = "Valor";
-            this.cboTipoDeOrdenacao.SelectedValue = "2";
+            this.cboTipoDeOrdenacao.SelectedValue = ((int)eTipoOrdenacaoAnotacao.Categoria).ToString();
         }
         private void CarregarCategorias()
         {
@@ -232,7 +308,6 @@ namespace FlowCheck.View
             this.cboCategoria.SelectedValuePath = "PK_Categoria";
             this.cboCategoria.SelectedIndex = 0;
         }
-
         private SolidColorBrush ObterCorCategorias(Cor cor)
         {
             if (cor == null)
@@ -247,6 +322,67 @@ namespace FlowCheck.View
             txtAnotacao.Text = "";
             this.ViewModel.MensagemAviso = "";
             this.cboCategoria.SelectedIndex = 0;
+        }
+
+        private void OrdenarAsc()
+        {
+            IEnumerable<AnotacaoViewModel> anotacoesOrdenadas = new List<AnotacaoViewModel>();
+            eTipoOrdenacaoAnotacao tipoOrdenacao = (eTipoOrdenacaoAnotacao)cboTipoDeOrdenacao.SelectedValue.ToString().ConverterParaInt32();
+
+            if (tipoOrdenacao == eTipoOrdenacaoAnotacao.Data)
+            {
+                anotacoesOrdenadas = ViewModel.Anotacoes
+                    .OrderBy(i => i.Anotacao.DataCriacao)
+                    .ThenBy(i => i.Anotacao.Categoria)
+                    .ThenBy(i => i.Anotacao.Descricao);
+            }
+            else if (tipoOrdenacao == eTipoOrdenacaoAnotacao.Categoria)
+            {
+                anotacoesOrdenadas = ViewModel.Anotacoes
+                    .OrderBy(i => i.Anotacao.Categoria)
+                    .ThenBy(i => i.Anotacao.Descricao);
+            }
+            else if (tipoOrdenacao == eTipoOrdenacaoAnotacao.Anotacao)
+            {
+                anotacoesOrdenadas = ViewModel.Anotacoes
+                    .OrderBy(i => i.Anotacao.Descricao)
+                    .ThenBy(i => i.Anotacao.Categoria);
+            }
+
+            ViewModel.LimparAnotacoes();
+
+            foreach (var item in anotacoesOrdenadas)
+                ViewModel.AdicionarAnotacao(item);
+        }
+        private void OrdenarDesc()
+        {
+            IEnumerable<AnotacaoViewModel> anotacoesOrdenadas = new List<AnotacaoViewModel>();
+            eTipoOrdenacaoAnotacao tipoOrdenacao = (eTipoOrdenacaoAnotacao)cboTipoDeOrdenacao.SelectedValue.ToString().ConverterParaInt32();
+
+            if (tipoOrdenacao == eTipoOrdenacaoAnotacao.Data)
+            {
+                anotacoesOrdenadas = ViewModel.Anotacoes
+                    .OrderByDescending(i => i.Anotacao.DataCriacao)
+                    .ThenByDescending(i => i.Anotacao.Categoria)
+                    .ThenByDescending(i => i.Anotacao.Descricao);
+            }
+            else if (tipoOrdenacao == eTipoOrdenacaoAnotacao.Categoria)
+            {
+                anotacoesOrdenadas = ViewModel.Anotacoes
+                    .OrderByDescending(i => i.Anotacao.Categoria)
+                    .ThenByDescending(i => i.Anotacao.Descricao);
+            }
+            else if (tipoOrdenacao == eTipoOrdenacaoAnotacao.Anotacao)
+            {
+                anotacoesOrdenadas = ViewModel.Anotacoes
+                    .OrderByDescending(i => i.Anotacao.Descricao)
+                    .ThenByDescending(i => i.Anotacao.Categoria);
+            }
+
+            ViewModel.LimparAnotacoes();
+
+            foreach (var item in anotacoesOrdenadas)
+                ViewModel.AdicionarAnotacao(item);
         }
         #endregion
 

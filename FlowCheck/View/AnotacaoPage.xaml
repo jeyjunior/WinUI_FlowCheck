@@ -39,7 +39,7 @@
                     <ColumnDefinition Width="120"/>
                 </Grid.ColumnDefinitions>
 
-                <TextBox x:Name="txtPesquisa"
+                <TextBox x:Name="txtPesquisaAnotacao"
                          Grid.Column="0"
                          TextWrapping="Wrap"
                          MaxLength="1000"
@@ -47,7 +47,7 @@
                          PlaceholderText="Pesquisar"
                          VerticalAlignment="Center" 
                          Text=""
-                         KeyUp="txtPesquisaCategoria_KeyUp"
+                         KeyUp="txtPesquisaAnotacao_KeyUp"
                          Foreground="{StaticResource Branco}" 
                          FontWeight="Normal" />
 
@@ -67,6 +67,7 @@
                         Padding="0" 
                         Width="32" 
                         Height="32" 
+                        Click="btnOrdenarAnotacoes_Click"
                         Style="{StaticResource DefaultButtonStyle}">
                     <FontIcon Glyph="&#xE8CB;" FontFamily="Segoe Fluent Icons" FontSize="14"/>
                 </Button>
@@ -88,8 +89,8 @@
                                     Margin="0,0,0,6" 
                                     Background="{Binding Nenhuma}"
                                     CornerRadius="6"
-                                    CanDrag="True"
-                                    AllowDrop="True">
+                                    CanDrag="False"
+                                    AllowDrop="False">
                             <Grid Background="{StaticResource Cinza10}" Padding="0" Margin="0" CornerRadius="6">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="100"/>

@@ -1,4 +1,5 @@
 ﻿using FlowCheck.Domain.Entidades;
+using FlowCheck.Domain.Enumerador;
 using JJ.Net.Core.Extensoes;
 using Microsoft.UI.Xaml;
 using System;
@@ -35,7 +36,13 @@ namespace FlowCheck.ViewModel.AnotacaoViewModel
             AtualizarStatus();
             return anotacaoViewModel;
         }
+        public AnotacaoViewModel AdicionarAnotacao(AnotacaoViewModel anotacao)
+        {
+            this.Anotacoes.Add(anotacao);
 
+            AtualizarStatus();
+            return anotacao;
+        }
         public void RemoverAnotacao(int PK_Anotacao)
         {
             var anotacao = this.Anotacoes.Where(i => i.Anotacao.PK_Anotacao.Equals(PK_Anotacao)).FirstOrDefault();
@@ -48,7 +55,6 @@ namespace FlowCheck.ViewModel.AnotacaoViewModel
         {
             return this.Anotacoes.Where(i => i.Anotacao.PK_Anotacao.Equals(PK_Anotacao)).FirstOrDefault().Anotacao;
         }
-        
         public void LimparAnotacoes()
         {
             Anotacoes.Clear();

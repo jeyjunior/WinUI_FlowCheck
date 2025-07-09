@@ -126,10 +126,24 @@ namespace FlowCheck.Application.Services
         public IEnumerable<Anotacao> Pesquisar(Anotacao_Request request)
         {
             string condicao = "";
+            string descricao = "";
 
-            string descricao = request.Descricao.ObterValorOuPadrao("").LimparEntradaSQL().Trim();
-            if (descricao != "")
-                condicao += "Descricao = @Descricao\n ";
+            if (request.Descricao.ObterValorOuPadrao("").Trim() != "")
+                descricao = request.Descricao.LimparEntradaSQL();
+            
+            if (request.TipoPesquisa == Domain.Enumerador.eTipoPesquisaAnotacao.Tudo)
+            {
+                condicao = $"Anotacao.Descricao LIKE '%{descricao}%'\n" +
+                      $"OR       Categoria.Nome LIKE '%{descricao}%'\n";
+            }
+            else if (request.TipoPesquisa == Domain.Enumerador.eTipoPesquisaAnotacao.Categoria)
+            {
+                condicao = $"Categoria.Nome LIKE '%{descricao}%'\n";
+            }
+            else if(request.TipoPesquisa == Domain.Enumerador.eTipoPesquisaAnotacao.Anotacao)
+            {
+                condicao = $"Anotacao.Descricao LIKE '%{descricao}%'\n";
+            }
 
             var parametros = new
             {
