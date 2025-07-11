@@ -108,10 +108,10 @@ namespace FlowCheck.Application.Services
                 catch (Exception ex)
                 {
                     uow.Rollback();
-                    
+
                 }
             }
-            
+
             return false;
         }
         public bool RemoverCategoria(Categoria categoria)
@@ -171,7 +171,7 @@ namespace FlowCheck.Application.Services
             string condicao = "";
 
             string nome = request.Nome.ObterValorOuPadrao("").LimparEntradaSQL().Trim();
-            
+
             if (nome != "")
             {
                 condicao += ((request.PesquisaPorIgualdade) ? "Categoria.Nome = @Nome\n" : $"Categoria.Nome LIKE '%{nome}%'");

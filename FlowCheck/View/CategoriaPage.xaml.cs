@@ -136,9 +136,9 @@ namespace FlowCheck.View
             if (!fecharDialog)
                 args.Cancel = true;
         }
-        private void dialogCategoria_PrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
+        private async void dialogCategoria_PrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
         {
-            Salvar();
+            await SalvarSync();
         }
         private void dialogCategoria_CloseButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
         {
@@ -207,7 +207,7 @@ namespace FlowCheck.View
         #endregion
 
         #region Métodos Públicos
-        public void Salvar()
+        public async Task SalvarSync()
         {
             try
             {
@@ -268,7 +268,7 @@ namespace FlowCheck.View
         {
             Limpar();
 
-            dialogCategoria.XamlRoot = this.Content.XamlRoot; 
+            dialogCategoria.XamlRoot = this.Content.XamlRoot;
             dialogCategoria.HorizontalAlignment = HorizontalAlignment.Center;
             dialogCategoria.VerticalAlignment = VerticalAlignment.Center;
 

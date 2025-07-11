@@ -10,6 +10,6 @@ namespace FlowCheck.Domain.Interfaces
     public interface IPageComandos
     {
         void Adicionar();
-        void Salvar();
+        Task SalvarSync();
     }
 }

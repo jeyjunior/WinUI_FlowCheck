@@ -43,12 +43,14 @@ namespace FlowCheck
         #endregion
 
         #region Eventos
-        private void MainWindow_Closed(object sender, WindowEventArgs args)
+        private async void MainWindow_Closed(object sender, WindowEventArgs args)
         {
             try
             {
                 if (MainFrame.Content is IPageComandos pagina)
-                    pagina.Salvar();
+                {
+                    await pagina.SalvarSync();
+                }
             }
             catch
             {
@@ -67,6 +69,10 @@ namespace FlowCheck
         {
             CarregarTelaCategoria();
         }
+        private void btnTarefaArquivo_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
         private async void btnAdicionar_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -78,10 +84,6 @@ namespace FlowCheck
             {
                 await Mensagem.ExibirErroAsync(this.Content.XamlRoot, $"Erro ao tentar adicionar a tarefa: \n{ex.Message}");
             }
-        }
-        private async void btnArquivarTudo_Click(object sender, RoutedEventArgs e)
-        {
-
         }
         private async void btnExcluirTudo_Click(object sender, RoutedEventArgs e)
         {

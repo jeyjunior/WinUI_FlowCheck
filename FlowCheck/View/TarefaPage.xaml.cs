@@ -19,7 +19,7 @@ using FlowCheck.Domain.Enumerador;
 using FlowCheck.Domain.Helpers;
 using FlowCheck.Domain.Interfaces;
 using FlowCheck.ViewModel.TarefaViewModel;
-
+using System.Threading.Tasks;
 
 namespace FlowCheck.View
 {
@@ -61,17 +61,17 @@ namespace FlowCheck.View
                 await Mensagem.ExibirErroAsync(this.Content.XamlRoot, ex.Message);
             }
         }
-        protected override void OnNavigatedFrom(NavigationEventArgs e)
+        protected async override void OnNavigatedFrom(NavigationEventArgs e)
         {
             try
             {
                 base.OnNavigatedFrom(e);
                 SalvarParametros();
-                Salvar();
+                await SalvarSync();
             }
             catch (Exception ex)
             {
-                Mensagem.ExibirErroAsync(this.Content.XamlRoot, ex.Message);
+                await Mensagem.ExibirErroAsync(this.Content.XamlRoot, ex.Message);
             }
         }
         private void txtTituloTarefa_LostFocus(object sender, RoutedEventArgs e)
@@ -80,6 +80,14 @@ namespace FlowCheck.View
             txtTituloTarefa.Visibility = Visibility.Collapsed;
 
         }
+        private void txtTituloTarefa_KeyDown(object sender, KeyRoutedEventArgs e)
+        {
+            if (e.Key == Windows.System.VirtualKey.Enter)
+            {
+                txbTituloTarefa.Visibility = Visibility.Visible;
+                txtTituloTarefa.Visibility = Visibility.Collapsed;
+            }
+        }
         private void txbTituloTarefa_DoubleTapped(object sender, DoubleTappedRoutedEventArgs e)
         {
             txbTituloTarefa.Visibility = Visibility.Collapsed;
@@ -87,7 +95,7 @@ namespace FlowCheck.View
             txtTituloTarefa.Focus(FocusState.Keyboard);
             txtTituloTarefa.SelectAll();
         }
-        private void txtTarefa_LostFocus(object sender, RoutedEventArgs e)
+        private async void txtTarefa_LostFocus(object sender, RoutedEventArgs e)
         {
             try
             {
@@ -98,31 +106,18 @@ namespace FlowCheck.View
             }
             catch (Exception ex)
             {
-                Mensagem.ExibirErroAsync(this.Content.XamlRoot, ex.Message);
+                await Mensagem.ExibirErroAsync(this.Content.XamlRoot, ex.Message);
             }
         }
-        private async void txbTarefa_DoubleTapped(object sender, DoubleTappedRoutedEventArgs e)
+        private async void txtTarefa_KeyDown(object sender, KeyRoutedEventArgs e)
         {
             try
             {
-                if (sender is TextBlock txb && txb.Tag is string IDGenerico)
+                if (e.Key == Windows.System.VirtualKey.Enter)
                 {
-                    ViewModel.EditarTarefa(IDGenerico, true);
-
-                    var parent = VisualTreeHelper.GetParent(txb);
-                    while (parent != null && !(parent is StackPanel))
+                    if (sender is TextBox txt && txt.Tag is string IDGenerico)
                     {
-                        parent = VisualTreeHelper.GetParent(parent);
-                    }
-
-                    if (parent is StackPanel container)
-                    {
-                        var textBox = FindVisualChild<TextBox>(container, "txtTarefa");
-                        if (textBox != null)
-                        {
-                            textBox.Focus(FocusState.Programmatic);
-                            textBox.SelectAll();
-                        }
+                        ViewModel.EditarTarefa(IDGenerico, false);
                     }
                 }
             }
@@ -146,7 +141,34 @@ namespace FlowCheck.View
                         ViewModel.RemoverTarefa(IDGenerico);
                     }
                 }
-
+            }
+            catch (Exception ex)
+            {
+                await Mensagem.ExibirErroAsync(this.Content.XamlRoot, ex.Message);
+            }
+        }
+        private async void btnEditarTarefa_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                if (sender is MenuFlyoutItem btn && btn.Tag is string IDGenerico)
+                {
+                    await EditarTarefa(IDGenerico);
+                }
+            }
+            catch (Exception ex)
+            {
+                await Mensagem.ExibirErroAsync(this.Content.XamlRoot, ex.Message);
+            }
+        }
+        private async void txbTarefa_DoubleTapped(object sender, DoubleTappedRoutedEventArgs e)
+        {
+            try
+            {
+                if (sender is TextBlock txb && txb.Tag is string IDGenerico)
+                {
+                    await EditarTarefa(IDGenerico);
+                }
             }
             catch (Exception ex)
             {
@@ -227,6 +249,8 @@ namespace FlowCheck.View
         #region Métodos
         private void CarregarTarefas()
         {
+            ViewModel.LimparTarefas();
+
             var ret = tarefaAppService.Pesquisar(new Tarefa_Request { Arquivado = false });
 
             foreach (var item in ret)
@@ -268,6 +292,43 @@ namespace FlowCheck.View
                 }
             }
         }
+        private async Task EditarTarefa(string IDGenerico)
+        {
+            try
+            {
+                ViewModel.EditarTarefa(IDGenerico, true);
+
+                var itemData = ViewModel.Tarefas.FirstOrDefault(t => t.IDGenerico == IDGenerico);
+
+                if (itemData != null)
+                {
+                    UIElement container = spPrincipal.ContainerFromItem(itemData) as UIElement;
+
+                    if (container is ContentPresenter contentPresenter)
+                    {
+                        StackPanel spTarefa = FindVisualChildByName<StackPanel>(contentPresenter, "spTarefa");
+
+                        if (spTarefa != null)
+                        {
+                            TextBox txtTarefa = FindVisualChildByName<TextBox>(spTarefa, "txtTarefa");
+
+                            if (txtTarefa != null)
+                            {
+                                if (txtTarefa.Visibility == Visibility.Visible)
+                                {
+                                    txtTarefa.Focus(FocusState.Programmatic);
+                                    txtTarefa.SelectAll();
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                await Mensagem.ExibirErroAsync(this.Content.XamlRoot, ex.Message);
+            }
+        }
         private static T FindVisualChild<T>(DependencyObject parent, string name = null) where T : DependencyObject
         {
             for (int i = 0; i < VisualTreeHelper.GetChildrenCount(parent); i++)
@@ -279,6 +340,26 @@ namespace FlowCheck.View
                 var descendant = FindVisualChild<T>(child, name);
                 if (descendant != null)
                     return descendant;
+            }
+            return null;
+        }
+        public static T FindVisualChildByName<T>(DependencyObject parent, string name) where T : FrameworkElement
+        {
+            if (parent == null) return null;
+
+            for (int i = 0; i < VisualTreeHelper.GetChildrenCount(parent); i++)
+            {
+                var child = VisualTreeHelper.GetChild(parent, i);
+                if (child is T element && element.Name == name)
+                {
+                    return element;
+                }
+
+                T result = FindVisualChildByName<T>(child, name);
+                if (result != null)
+                {
+                    return result;
+                }
             }
             return null;
         }
@@ -298,7 +379,7 @@ namespace FlowCheck.View
 
             FocarTarefaNovaTextBox(tarefaViewModel);
         }
-        public void Salvar()
+        public async Task SalvarSync()
         {
             var tarefa_AppServiceRequest = new Tarefa_AppServiceRequest
             {
@@ -310,7 +391,7 @@ namespace FlowCheck.View
 
             if (!tarefa_AppServiceRequest.ValidarResultado.EhValido)
             {
-                Mensagem.ExibirErroAsync(this.Content.XamlRoot, tarefa_AppServiceRequest.ValidarResultado.ObterPrimeiroErro());
+                await Mensagem.ExibirErroAsync(this.Content.XamlRoot, tarefa_AppServiceRequest.ValidarResultado.ObterPrimeiroErro());
             }
         }
         public bool ExisteItensSelecionados()

@@ -16,25 +16,25 @@ namespace FlowCheck.ViewModel.TarefaViewModel
     public class TarefaPageViewModel : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
-        protected void OnPropertyChanged(string name) 
+        protected void OnPropertyChanged(string name)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
         private Parametro _parametro { get; set; }
-        public Parametro Parametro 
-        { 
+        public Parametro Parametro
+        {
             get => _parametro;
-            set 
+            set
             {
                 _parametro = value;
                 OnPropertyChanged(nameof(Titulo));
-            } 
+            }
         }
 
         private string _titulo;
-        public string Titulo 
+        public string Titulo
         {
-            get 
+            get
             {
                 if (_titulo.ObterValorOuPadrao("").Trim() != "")
                     return _titulo;
@@ -89,6 +89,11 @@ namespace FlowCheck.ViewModel.TarefaViewModel
         public TarefaViewModel ObterTarefa(string IDGenerico)
         {
             return this.Tarefas.Where(i => i.IDGenerico.Equals(IDGenerico)).FirstOrDefault();
+        }
+        public void LimparTarefas()
+        {
+            Tarefas.Clear();
+            AtualizarStatus();
         }
         #endregion
 

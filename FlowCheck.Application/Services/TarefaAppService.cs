@@ -153,10 +153,7 @@ namespace FlowCheck.Application.Services
         }
         public IEnumerable<Tarefa> Pesquisar(Tarefa_Request request)
         {
-            string condicao = "";
-
-            if (request.Arquivado)
-                condicao += "Arquivado = @Arquivado\n ";
+            string condicao = "Arquivado = @Arquivado\n ";
 
             var parametros = new
             {

@@ -148,9 +148,9 @@ namespace FlowCheck.Application.Services
             if (request.FK_Categoria == 0)
             {
                 condicao = ((condicao.Length > 0) ? $"({condicao})" : condicao) +
-                    "\nAND  (Anotacao.FK_Categoria IS NULL OR Anotacao.FK_Categoria = 0)\n"; 
+                    "\nAND  (Anotacao.FK_Categoria IS NULL OR Anotacao.FK_Categoria = 0)\n";
             }
-            else if(request.FK_Categoria > 0)
+            else if (request.FK_Categoria > 0)
             {
                 condicao = ((condicao.Length > 0) ? $"({condicao})" : condicao) +
                             "\nAND  Anotacao.FK_Categoria = @FK_Categoria\n";

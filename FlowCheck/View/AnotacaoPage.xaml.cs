@@ -111,9 +111,9 @@ namespace FlowCheck.View
             if (!fecharDialog)
                 args.Cancel = true;
         }
-        private void dialogAnotacao_PrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
+        private async void dialogAnotacao_PrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
         {
-            Salvar();
+            await SalvarSync();
         }
         private void dialogAnotacao_CloseButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
         {
@@ -490,7 +490,7 @@ namespace FlowCheck.View
         #endregion
 
         #region Métodos Públicos
-        public void Salvar()
+        public async Task SalvarSync()
         {
             try
             {

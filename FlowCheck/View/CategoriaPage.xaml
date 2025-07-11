@@ -33,7 +33,7 @@
         </Border>
 
         <StackPanel Grid.Row="1" Margin="20,0" Padding="0" Background="{StaticResource Cinza11Transp50}" CornerRadius="5">
-            
+
             <TextBox x:Name="txtPesquisaCategoria" 
                     TextWrapping="Wrap"
                     MaxLength="300"
@@ -59,7 +59,7 @@
                         <StackPanel x:Name="spCategoria" 
                                     Padding="0" 
                                     Margin="0,0,0,6" 
-                                    Background="{Binding Nenhuma}"
+                                    Background="{StaticResource Nenhuma}"
                                     CornerRadius="6"
                                     CanDrag="False"
                                     AllowDrop="False">
@@ -82,8 +82,6 @@
                                         Margin="12,8"
                                         Padding="0" 
                                         VerticalAlignment="Center"
-                                        TextDecorations="{Binding DecoracaoTexto}"
-                                        Foreground="{Binding CorTextoTextBlock}" 
                                         FontWeight="Normal"/>
 
                                 <Button x:Name="btnOpcoes"
@@ -94,7 +92,7 @@
                                         Margin="0,0,12,0"
                                         Width="24"
                                         Height="24"
-                                        Style="{StaticResource AlternateCloseButtonStyle}"> 
+                                        Style="{StaticResource AlternateCloseButtonStyle}">
                                     <FontIcon Glyph="&#xE712;" FontFamily="Segoe Fluent Icons" FontSize="14"/>
                                     <Button.Flyout>
                                         <MenuFlyout Placement="Left">

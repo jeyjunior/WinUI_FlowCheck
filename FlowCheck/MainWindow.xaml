@@ -45,21 +45,6 @@
                             Style="{StaticResource AlternateCloseButtonStyle}">
                         <FontIcon Glyph="&#xE74D;" FontFamily="Segoe Fluent Icons" FontWeight="Normal" FontSize="18"/>
                     </Button>
-
-                    <Button x:Name="btnArquivarTudo" 
-                            Click="btnArquivarTudo_Click"
-                            Grid.Column="2"
-                            Width="32"
-                            Height="32"
-                            Padding="0"
-                            Visibility="Collapsed"
-                            IsEnabled="False"
-                            VerticalAlignment="Center"
-                            HorizontalAlignment="Left"
-                            Style="{StaticResource AlternateCloseButtonStyle}">
-                        <FontIcon Glyph="&#xF158;" FontFamily="Segoe Fluent Icons" FontWeight="Normal" FontSize="18"/>
-                    </Button>
-
                 </StackPanel>
 
                 <Button x:Name="btnAdicionar" 

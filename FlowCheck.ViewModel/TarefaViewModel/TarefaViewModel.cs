@@ -49,7 +49,7 @@ namespace FlowCheck.ViewModel.TarefaViewModel
         #region Tarefa
         private Guid _idGenerico;
         public string IDGenerico => _idGenerico.ToString();
-        
+
         private readonly Tarefa _tarefa;
         public Tarefa Tarefa { get => _tarefa; }
         public bool Concluido
@@ -107,7 +107,7 @@ namespace FlowCheck.ViewModel.TarefaViewModel
             get
             {
                 return Concluido
-                    ? (SolidColorBrush)Microsoft.UI.Xaml.Application.Current.Resources["Cinza3"] 
+                    ? (SolidColorBrush)Microsoft.UI.Xaml.Application.Current.Resources["Cinza3"]
                     : (SolidColorBrush)Microsoft.UI.Xaml.Application.Current.Resources["Branco"];
             }
         }

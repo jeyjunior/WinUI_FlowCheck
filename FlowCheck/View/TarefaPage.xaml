@@ -36,6 +36,7 @@
             <TextBox x:Name="txtTituloTarefa" 
                      LostFocus="txtTituloTarefa_LostFocus" 
                      Visibility="Collapsed"  
+                     KeyDown="txtTituloTarefa_KeyDown"
                      TextWrapping="Wrap"
                      MaxLength="200"
                      Padding="10" 
@@ -71,6 +72,7 @@
                                     Margin="0,0,0,6" 
                                     Background="{StaticResource Nenhuma}"
                                     CanDrag="True"
+                                    Tag="{Binding IDGenerico}"
                                     DragStarting="SpTarefa_DragStarting"
                                     Drop="SpTarefa_Drop"
                                     DragOver="SpTarefa_DragOver"
@@ -116,7 +118,8 @@
                                 <TextBox x:Name="txtTarefa" 
                                          Grid.Column="1"
                                          LostFocus="txtTarefa_LostFocus" 
-                                         Visibility="{Binding ExibirTextoEditavel}"  
+                                         KeyDown="txtTarefa_KeyDown"
+                                         Visibility="{Binding ExibirTextoEditavel}" 
                                          TextWrapping="Wrap"
                                          MaxLength="540"
                                          Margin="12,0"
@@ -162,7 +165,8 @@
                                     <FontIcon Glyph="&#xE712;" FontFamily="Segoe Fluent Icons" FontSize="14"/>
                                     <Button.Flyout>
                                         <MenuFlyout Placement="Left">
-                                            <MenuFlyoutItem Text="Remover Tarefa" Tag="{Binding IDGenerico}" Click="btnRemoverTarefa_Click"/>
+                                            <MenuFlyoutItem x:Name="btnEditarTarefa" Text="Editar" Tag="{Binding IDGenerico}" Click="btnEditarTarefa_Click"/>
+                                            <MenuFlyoutItem x:Name="btnRemoverTarefa" Text="Remover" Tag="{Binding IDGenerico}" Click="btnRemoverTarefa_Click"/>
                                         </MenuFlyout>
                                     </Button.Flyout>
                                 </Button>
