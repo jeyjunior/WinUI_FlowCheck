@@ -28,6 +28,7 @@ namespace FlowCheck.ViewModel.AnotacaoViewModel
 
         #region Anotacao Itens
         public ObservableCollection<AnotacaoViewModel> Anotacoes { get; } = new ObservableCollection<AnotacaoViewModel>();
+
         public AnotacaoViewModel AdicionarAnotacao(Anotacao anotacao)
         {
             var anotacaoViewModel = new AnotacaoViewModel(anotacao);

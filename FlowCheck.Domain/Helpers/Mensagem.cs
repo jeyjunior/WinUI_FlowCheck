@@ -13,42 +13,51 @@ namespace FlowCheck.Domain.Helpers
     {
         public static async Task<eTipoMensagemResultado> ExibirAsync(MensagemRequest mensagemRequest)
         {
-            if (mensagemRequest == null)
-                return eTipoMensagemResultado.Nenhum;
+            ContentDialogResult result = ContentDialogResult.None;
 
-            var dialog = new ContentDialog
+            try
             {
-                Title = mensagemRequest.Titulo,
-                Content = mensagemRequest.Mensagem,
-                XamlRoot = mensagemRequest.XamlRoot,
-                DefaultButton = ContentDialogButton.Primary
-            };
+                if (mensagemRequest == null)
+                    return eTipoMensagemResultado.Nenhum;
 
-            switch (mensagemRequest.TipoMensagem)
-            {
-                case eTipoMensagem.Informacao:
-                    dialog.PrimaryButtonText = "OK";
-                    dialog.RequestedTheme = ElementTheme.Dark;
-                    break;
+                var dialog = new ContentDialog
+                {
+                    Title = mensagemRequest.Titulo,
+                    Content = mensagemRequest.Mensagem,
+                    XamlRoot = mensagemRequest.XamlRoot,
+                    DefaultButton = ContentDialogButton.Primary
+                };
 
-                case eTipoMensagem.Confirmacao:
-                    dialog.PrimaryButtonText = "Sim";
-                    dialog.CloseButtonText = "Não";
-                    dialog.DefaultButton = ContentDialogButton.Primary;
-                    break;
+                switch (mensagemRequest.TipoMensagem)
+                {
+                    case eTipoMensagem.Informacao:
+                        dialog.PrimaryButtonText = "OK";
+                        dialog.RequestedTheme = ElementTheme.Dark;
+                        break;
 
-                case eTipoMensagem.Aviso:
-                    dialog.PrimaryButtonText = "OK";
-                    dialog.RequestedTheme = ElementTheme.Dark;
-                    break;
+                    case eTipoMensagem.Confirmacao:
+                        dialog.PrimaryButtonText = "Sim";
+                        dialog.CloseButtonText = "Não";
+                        dialog.DefaultButton = ContentDialogButton.Primary;
+                        break;
 
-                case eTipoMensagem.Erro:
-                    dialog.PrimaryButtonText = "OK";
-                    dialog.RequestedTheme = ElementTheme.Dark;
-                    break;
+                    case eTipoMensagem.Aviso:
+                        dialog.PrimaryButtonText = "OK";
+                        dialog.RequestedTheme = ElementTheme.Dark;
+                        break;
+
+                    case eTipoMensagem.Erro:
+                        dialog.PrimaryButtonText = "OK";
+                        dialog.RequestedTheme = ElementTheme.Dark;
+                        break;
+                }
+
+                result = await dialog.ShowAsync();
             }
-
-            var result = await dialog.ShowAsync();
+            catch 
+            {
+                result = ContentDialogResult.None;
+            }
 
             return mensagemRequest.TipoMensagem switch
             {

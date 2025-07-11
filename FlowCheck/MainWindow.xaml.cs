@@ -31,10 +31,10 @@ namespace FlowCheck
             this.InitializeComponent();
 
             DefinirPadraoUI();
-            
+
             ViewModel = new MainViewModel();
             this.RootGrid.DataContext = ViewModel;
-            
+
             Configuracao.Iniciar();
 
             this.Closed += MainWindow_Closed;
@@ -122,6 +122,24 @@ namespace FlowCheck
 
             DefinirTamanhoUI();
             CentralizarUI();
+
+            var appWindow = ObterAppWindowAtual();
+            if (appWindow != null && Microsoft.UI.Windowing.AppWindowTitleBar.IsCustomizationSupported())
+            {
+                var titleBar = appWindow.TitleBar;
+
+                titleBar.BackgroundColor = Windows.UI.Color.FromArgb(255, 18, 18, 18);
+                titleBar.ForegroundColor = Colors.White;
+
+                titleBar.InactiveBackgroundColor = titleBar.BackgroundColor;
+                titleBar.InactiveForegroundColor = titleBar.ForegroundColor;
+
+                titleBar.ButtonBackgroundColor = titleBar.BackgroundColor;
+                titleBar.ButtonForegroundColor = titleBar.ForegroundColor;
+                titleBar.ButtonHoverBackgroundColor = Windows.UI.Color.FromArgb(255, 18, 18, 18);
+                titleBar.ButtonHoverForegroundColor = titleBar.ForegroundColor;
+                titleBar.ButtonPressedBackgroundColor = Windows.UI.Color.FromArgb(255, 18, 18, 18);
+            }
         }
         private void DefinirTamanhoUI()
         {
@@ -157,6 +175,7 @@ namespace FlowCheck
         {
             btnTarefa.Opacity = 1;
             btnAnotacao.Opacity = 1;
+            btnCategoria.Opacity = 1;
 
             activeButton.Opacity = 0.6;
         }

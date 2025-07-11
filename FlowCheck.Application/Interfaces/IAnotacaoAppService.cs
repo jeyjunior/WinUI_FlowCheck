@@ -9,7 +9,8 @@ namespace FlowCheck.Application.Interfaces
 {
     public interface IAnotacaoAppService
     {
-        IEnumerable<Anotacao> Pesquisar(Anotacao_Request request);
+        IEnumerable<Anotacao> PesquisarPorDescricao(Anotacao_Request request);
+        IEnumerable<Anotacao> PesquisarPorCategoria(int PK_Categoria);
         bool SalvarAnotacao(Anotacao anotacao);
         bool RemoverAnotacao(Anotacao anotacao);
         bool RemoverAnotacoes(IEnumerable<Anotacao> anotacoes);

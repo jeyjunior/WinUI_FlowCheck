@@ -123,14 +123,14 @@ namespace FlowCheck.Application.Services
 
             return false;
         }
-        public IEnumerable<Anotacao> Pesquisar(Anotacao_Request request)
+        public IEnumerable<Anotacao> PesquisarPorDescricao(Anotacao_Request request)
         {
             string condicao = "";
             string descricao = "";
 
             if (request.Descricao.ObterValorOuPadrao("").Trim() != "")
                 descricao = request.Descricao.LimparEntradaSQL();
-            
+
             if (request.TipoPesquisa == Domain.Enumerador.eTipoPesquisaAnotacao.Tudo)
             {
                 condicao = $"Anotacao.Descricao LIKE '%{descricao}%'\n" +
@@ -140,14 +140,46 @@ namespace FlowCheck.Application.Services
             {
                 condicao = $"Categoria.Nome LIKE '%{descricao}%'\n";
             }
-            else if(request.TipoPesquisa == Domain.Enumerador.eTipoPesquisaAnotacao.Anotacao)
+            else if (request.TipoPesquisa == Domain.Enumerador.eTipoPesquisaAnotacao.Anotacao)
             {
                 condicao = $"Anotacao.Descricao LIKE '%{descricao}%'\n";
             }
 
+            if (request.FK_Categoria == 0)
+            {
+                condicao = ((condicao.Length > 0) ? $"({condicao})" : condicao) +
+                    "\nAND  (Anotacao.FK_Categoria IS NULL OR Anotacao.FK_Categoria = 0)\n"; 
+            }
+            else if(request.FK_Categoria > 0)
+            {
+                condicao = ((condicao.Length > 0) ? $"({condicao})" : condicao) +
+                            "\nAND  Anotacao.FK_Categoria = @FK_Categoria\n";
+            }
+
             var parametros = new
             {
-                Descricao = descricao
+                Descricao = descricao,
+                FK_Categoria = request.FK_Categoria
+            };
+
+            return _anotacaoRepository.ObterLista(condicao, parametros);
+        }
+        public IEnumerable<Anotacao> PesquisarPorCategoria(int PK_Categoria)
+        {
+            string condicao = "";
+
+            if (PK_Categoria == 0)
+            {
+                condicao = $"Anotacao.FK_Categoria IS NULL OR Anotacao.FK_Categoria = 0\n";
+            }
+            else if (PK_Categoria > 0)
+            {
+                condicao = $"Anotacao.FK_Categoria = @FK_Categoria\n";
+            }
+
+            var parametros = new
+            {
+                FK_Categoria = PK_Categoria
             };
 
             return _anotacaoRepository.ObterLista(condicao, parametros);

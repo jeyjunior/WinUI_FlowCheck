@@ -51,6 +51,7 @@ namespace FlowCheck.Domain.Entidades
     public class Anotacao_Request
     {
         public string Descricao { get; set; }
+        public int FK_Categoria { get; set; }
         public eTipoPesquisaAnotacao TipoPesquisa { get; set; }
         public ValidarResultado ValidarResultado { get; set; } = new ValidarResultado();
     }
